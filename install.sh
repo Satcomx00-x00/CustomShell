@@ -41,28 +41,28 @@ install_dependencies() {
     case $OS in
         "debian")
             apt-get update -y
-            apt-get install -y zsh git curl wget vim nano sudo
+            apt-get install -y zsh git curl wget vim nano sudo tmux
             ;;
         "redhat")
             if command -v dnf &> /dev/null; then
-                dnf install -y zsh git curl wget vim nano sudo
+                dnf install -y zsh git curl wget vim nano sudo tmux
             else
-                yum install -y zsh git curl wget vim nano sudo
+                yum install -y zsh git curl wget vim nano sudo tmux
             fi
             ;;
         "alpine")
             apk update
-            apk add --no-cache zsh git curl wget vim nano sudo shadow
+            apk add --no-cache zsh git curl wget vim nano sudo shadow tmux
             ;;
         "macos")
             if ! command -v brew &> /dev/null; then
                 log_warning "Homebrew not found. Installing..."
                 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
             fi
-            brew install zsh git curl wget vim nano
+            brew install zsh git curl wget vim nano tmux
             ;;
         *)
-            log_error "Unsupported OS. Please install zsh, git, curl, wget manually."
+            log_error "Unsupported OS. Please install zsh, git, curl, wget, tmux manually."
             exit 1
             ;;
     esac
@@ -91,12 +91,11 @@ install_plugins() {
     
     local custom_dir="$HOME/.oh-my-zsh/custom"
     
-    # Essential plugins
+    # Essential plugins (removed zsh-autocomplete due to input duplication issues)
     local plugins=(
         "zsh-users/zsh-syntax-highlighting"
         "zsh-users/zsh-autosuggestions" 
         "zsh-users/zsh-history-substring-search"
-        "marlonrichert/zsh-autocomplete"
         "zdharma-continuum/fast-syntax-highlighting"
         "zsh-users/zsh-completions"
     )
@@ -160,6 +159,50 @@ setup_zshrc() {
         log_success "Custom .zshrc configuration applied"
     else
         log_warning "Custom .zshrc not found, using default Oh My Zsh configuration"
+    fi
+}
+
+# Install tmux configuration and plugins
+install_tmux() {
+    log_info "Setting up Tmux configuration..."
+    
+    # Backup existing tmux config
+    if [[ -f "$HOME/.tmux.conf" ]]; then
+        cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup.$(date +%Y%m%d_%H%M%S)"
+        log_warning "Existing .tmux.conf backed up"
+    fi
+    
+    # Copy our custom tmux config
+    if [[ -f "$(dirname "$0")/.tmux.conf" ]]; then
+        cp "$(dirname "$0")/.tmux.conf" "$HOME/.tmux.conf"
+        log_success "Custom .tmux.conf configuration applied"
+    else
+        log_warning "Custom .tmux.conf not found, skipping tmux configuration"
+        return
+    fi
+    
+    # Install TPM (Tmux Plugin Manager)
+    if [[ ! -d "$HOME/.tmux/plugins/tpm" ]]; then
+        log_info "Installing Tmux Plugin Manager (TPM)..."
+        git clone --depth 1 https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+        log_success "TPM installed successfully"
+    else
+        log_info "TPM already installed, updating..."
+        cd "$HOME/.tmux/plugins/tpm" && git pull
+    fi
+    
+    # Install tmux plugins
+    log_info "Installing tmux plugins..."
+    if command -v tmux &> /dev/null; then
+        # Start tmux server in detached mode and install plugins
+        tmux new-session -d -s plugin_install 2>/dev/null || true
+        tmux send-keys -t plugin_install 'source ~/.tmux.conf' Enter 2>/dev/null || true
+        tmux send-keys -t plugin_install '~/.tmux/plugins/tpm/bin/install_plugins' Enter 2>/dev/null || true
+        sleep 3
+        tmux kill-session -t plugin_install 2>/dev/null || true
+        log_success "Tmux plugins installed"
+    else
+        log_warning "Tmux not available, plugins will be installed on first tmux startup"
     fi
 }
 
@@ -244,12 +287,15 @@ main() {
     install_oh_my_zsh
     install_plugins
     setup_zshrc
+    install_tmux
     change_shell
     install_additional_tools
     
     log_success "Zsh installation completed successfully!"
     log_info "Please restart your terminal or run 'exec zsh' to start using zsh"
     log_info "Run 'p10k configure' to configure Powerlevel10k theme"
+    log_info "Run 'tmux' to start tmux with the enhanced configuration"
+    log_info "Use 'prefix + I' (Ctrl-a + I) to install tmux plugins"
 }
 
 # Run installation

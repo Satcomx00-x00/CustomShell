@@ -63,6 +63,31 @@ restore_zshrc() {
     fi
 }
 
+# Remove tmux configuration
+remove_tmux_config() {
+    log_info "Removing tmux configuration..."
+    
+    # Remove tmux config
+    if [[ -f "$HOME/.tmux.conf" ]]; then
+        mv "$HOME/.tmux.conf" "$HOME/.tmux.conf.removed.$(date +%Y%m%d_%H%M%S)"
+        log_success "Tmux configuration removed"
+    fi
+    
+    # Remove TPM and plugins
+    if [[ -d "$HOME/.tmux" ]]; then
+        mv "$HOME/.tmux" "$HOME/.tmux.removed.$(date +%Y%m%d_%H%M%S)"
+        log_success "Tmux plugins removed"
+    fi
+    
+    # Restore backup if exists
+    local backup=$(ls -t "$HOME/.tmux.conf.backup."* 2>/dev/null | head -1)
+    if [[ -n "$backup" ]]; then
+        log_info "Restoring .tmux.conf backup..."
+        cp "$backup" "$HOME/.tmux.conf"
+        log_success ".tmux.conf backup restored"
+    fi
+}
+
 # Main uninstall function
 main() {
     log_info "Starting Zsh uninstallation..."
@@ -70,10 +95,12 @@ main() {
     confirm_uninstall
     remove_oh_my_zsh
     restore_zshrc
+    remove_tmux_config
     restore_shell
     
     log_success "Zsh uninstallation completed!"
     log_info "Please restart your terminal to use bash as default shell"
+    log_info "Tmux configuration and plugins have been removed"
 }
 
 main "$@"

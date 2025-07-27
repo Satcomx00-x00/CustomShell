@@ -79,7 +79,6 @@ plugins=(
     zsh-syntax-highlighting
     zsh-completions
     fast-syntax-highlighting
-    zsh-autocomplete
     bun
     gh
     pip
@@ -141,6 +140,13 @@ alias kds='kubectl describe service'
 alias kdd='kubectl describe deployment'
 alias kex='kubectl exec -it'
 alias klogs='kubectl logs -f'
+
+# Tmux aliases
+alias tm='tmux'
+alias tma='tmux attach -t'
+alias tms='tmux new-session -s'
+alias tml='tmux list-sessions'
+alias tmk='tmux kill-session -t'
 
 # System aliases
 alias h='history'
@@ -231,9 +237,6 @@ bindkey '^[[1;5D' backward-word
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
 ZSH_AUTOSUGGEST_STRATEGY=(history completion)
 ZSH_AUTOSUGGEST_USE_ASYNC=1
-ZSH_AUTOCOMPLETE_HIGHLIGHT_STYLE="fg=6"
-ZSH_AUTOCOMPLETE_STRATEGY=(history completion)
-
 
 # Fast syntax highlighting
 FAST_HIGHLIGHT_MAXLENGTH=300
@@ -249,6 +252,11 @@ zstyle ':autocomplete:*' max-lines 10
 # Custom welcome message
 echo "🚀 Welcome to your enhanced Zsh environment!"
 echo "💡 Type 'help-zsh' for custom commands and shortcuts"
+
+# Tmux auto-start (uncomment to enable)
+# if command -v tmux &> /dev/null && [ -z "$TMUX" ] && [ -z "$SSH_CONNECTION" ]; then
+#     tmux attach-session -t default || tmux new-session -s default
+# fi
 
 # Help function
 help-zsh() {
@@ -269,8 +277,14 @@ help-zsh() {
     echo "☸️  Kubernetes shortcuts:"
     echo "  k / kgp / kgs    - kubectl / get pods / get services"
     echo ""
+    echo "📺 Tmux shortcuts:"
+    echo "  tm / tma / tms   - tmux / attach / new session"
+    echo "  tml / tmk        - list sessions / kill session"
+    echo "  Prefix: Ctrl-a   - Use Ctrl-a instead of Ctrl-b"
+    echo ""
     echo "🎨 Enhanced tools:"
     echo "  ls (exa) / cat (bat) - Better versions if installed"
     echo ""
     echo "Run 'p10k configure' to setup your theme!"
+    echo "Run 'tmux' to start your enhanced terminal multiplexer!"
 }
