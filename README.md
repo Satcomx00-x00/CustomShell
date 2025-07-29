@@ -15,7 +15,7 @@ Elle inclut des thèmes, plugins, alias, et une expérience terminal enrichie (a
 ## Installation rapide
 
 ```bash
-git clone https://github.com/votre-utilisateur/CustomShell.git
+git clone https://github.com/Satcomx00-x00/CustomShell
 cd CustomShell
 ./scripts/install.sh
 ```
