@@ -1,18 +1,18 @@
 # CustomShell
 
-CustomShell fournit une configuration moderne pour Zsh, Powerlevel10k et tmux, optimisée pour le développement sur Linux et macOS.  
-Elle inclut des thèmes, plugins, alias, et une expérience terminal enrichie (affichage RAM, charge, IP, etc).
+CustomShell provides a modern configuration for Zsh, Powerlevel10k, and tmux, optimized for development on Linux and macOS.  
+It includes themes, plugins, aliases, and an enhanced terminal experience (RAM, load, IP display, etc).
 
-## Fonctionnalités principales
+## Main Features
 
-- Zsh avec Oh My Zsh et de nombreux plugins utiles
-- Thème Powerlevel10k moderne, violet, compatible ASCII
-- Configuration tmux avancée avec gestionnaire de plugins
-- Alias pratiques pour git, docker, tmux, etc.
-- Détection automatique d’outils modernes (`exa`, `bat`, etc.)
-- Prise en charge de la langue française (locale fr_FR.UTF-8)
+- Zsh with Oh My Zsh and many useful plugins
+- Modern, purple, ASCII-friendly Powerlevel10k theme
+- Advanced tmux configuration with plugin manager
+- Handy aliases for git, docker, tmux, and more
+- Automatic detection of modern tools (`exa`, `bat`, etc.)
+- French locale support (`fr_FR.UTF-8`)
 
-## Installation rapide
+## Quick Install
 
 ```bash
 git clone https://github.com/Satcomx00-x00/CustomShell
@@ -20,22 +20,22 @@ cd CustomShell
 ./scripts/install.sh
 ```
 
-> **Astuce** : Pour mettre à jour la configuration Powerlevel10k après modification :
+> **Tip:** To update the Powerlevel10k configuration after modification:
 > ```bash
 > ./scripts/update-p10k.sh
 > ```
 
-## Désinstallation
+## Uninstall
 
 ```bash
 ./scripts/uninstall.sh
 ```
 
-## Personnalisation
+## Customization
 
-- Modifiez les fichiers dans `config/` pour adapter les alias, le prompt ou tmux à vos besoins.
-- Relancez votre terminal ou exécutez `exec zsh` pour appliquer les changements.
+- Edit files in `config/` to adapt aliases, prompt, or tmux to your needs.
+- Restart your terminal or run `exec zsh` to apply changes.
 
 ---
 
-Licence : Apache 2.0
+License: Apache 2.0
