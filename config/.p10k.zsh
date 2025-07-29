@@ -1,8 +1,35 @@
 # Powerlevel10k configuration: Modern purple UI/UX, ASCII-friendly
 
 # --- Prompt Elements ---
-typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(project os_icon dir dir_writable vcs newline prompt_char)
-typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status command_execution_time background_jobs time date)
+typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
+  project
+  os_icon
+  context
+  direnv
+  dir
+  dir_writable
+  vcs
+  newline
+  prompt_char
+)
+typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
+  status
+  command_execution_time
+  background_jobs
+  virtualenv
+  node_version
+  python_version
+  rust_version
+  aws
+  gcloud
+  kubecontext
+  ram
+  load
+  disk_usage
+  battery
+  time
+  ip
+)
 
 # --- Colors ---
 typeset -g POWERLEVEL9K_COLOR_SCHEME='dark'
@@ -53,8 +80,8 @@ typeset -g POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=''
 typeset -g POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=''
 typeset -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR='|'
 typeset -g POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR='|'
-typeset -g POWERLEVEL9K_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL='╭'
-typeset -g POWERLEVEL9K_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL='╰'
+typeset -g POWERLEVEL9K_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL=''   # removed '╭'
+typeset -g POWERLEVEL9K_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL=''      # removed '╰'
 typeset -g POWERLEVEL9K_RIGHT_PROMPT_FIRST_SEGMENT_START_SYMBOL=''
 typeset -g POWERLEVEL9K_RIGHT_PROMPT_LAST_SEGMENT_END_SYMBOL=''
 
@@ -66,7 +93,7 @@ typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_VIVIS_CONTENT='❯'
 typeset -g POWERLEVEL9K_PROMPT_CHAR_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL=''
 
 # --- OS Icon (ASCII) ---
-typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='[ZSH]'
+typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='[SATCOM]'
 
 # --- VCS Icons (ASCII/Unicode) ---
 typeset -g POWERLEVEL9K_VCS_BRANCH_ICON=''

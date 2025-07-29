@@ -2,7 +2,7 @@
 
 set -e
 
-P10K_SRC="$(dirname "$0")/.p10k.zsh"
+P10K_SRC="$(dirname "$0")/../config/.p10k.zsh"
 P10K_DEST="$HOME/.p10k.zsh"
 
 if [[ ! -f "$P10K_SRC" ]]; then

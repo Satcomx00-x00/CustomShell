@@ -1,5 +1,8 @@
 #!/bin/bash
 
+export LANG=fr_FR.UTF-8
+export LC_ALL=fr_FR.UTF-8
+
 # Zsh Installation Script - Multi-OS Support
 # Supports: Ubuntu/Debian, CentOS/RHEL/Fedora, Alpine, macOS, and Docker containers
 
@@ -144,19 +147,24 @@ install_plugins() {
     log_success "All plugins installed successfully"
 }
 
-# Install Powerlevel10k config
-setup_p10k_config() {
-    log_info "Setting up Powerlevel10k configuration..."
-    if [[ -f "$HOME/.p10k.zsh" ]]; then
-        cp "$HOME/.p10k.zsh" "$HOME/.p10k.zsh.backup.$(date +%Y%m%d_%H%M%S)"
-        log_warning "Existing .p10k.zsh backed up"
-    fi
-    if [[ -f "$(dirname "$0")/.p10k.zsh" ]]; then
-        cp "$(dirname "$0")/.p10k.zsh" "$HOME/.p10k.zsh"
-        log_success "Custom .p10k.zsh configuration applied"
-    else
-        log_warning "Custom .p10k.zsh not found, skipping Powerlevel10k config"
-    fi
+# --- Ensure clean folder structure ---
+setup_folder_structure() {
+    mkdir -p "$(dirname "$0")/../config"
+    mkdir -p "$(dirname "$0")/../scripts"
+
+    # Move config files if not already in config/
+    for f in .zshrc .p10k.zsh .tmux.conf; do
+        if [[ -f "$(dirname "$0")/../$f" ]]; then
+            mv "$(dirname "$0")/../$f" "$(dirname "$0")/../config/$f"
+        fi
+    done
+
+    # Move scripts if not already in scripts/
+    for f in install.sh uninstall.sh update-p10k.sh; do
+        if [[ -f "$(dirname "$0")/../$f" && "$(basename "$0")" != "$f" ]]; then
+            mv "$(dirname "$0")/../$f" "$(dirname "$0")/../scripts/$f"
+        fi
+    done
 }
 
 # Setup .zshrc configuration
@@ -169,11 +177,26 @@ setup_zshrc() {
     fi
     
     # Copy our custom .zshrc
-    if [[ -f "$(dirname "$0")/.zshrc" ]]; then
-        cp "$(dirname "$0")/.zshrc" "$HOME/.zshrc"
+    if [[ -f "$(dirname "$0")/../config/.zshrc" ]]; then
+        cp "$(dirname "$0")/../config/.zshrc" "$HOME/.zshrc"
         log_success "Custom .zshrc configuration applied"
     else
         log_warning "Custom .zshrc not found, using default Oh My Zsh configuration"
+    fi
+}
+
+# Install Powerlevel10k config
+setup_p10k_config() {
+    log_info "Setting up Powerlevel10k configuration..."
+    if [[ -f "$HOME/.p10k.zsh" ]]; then
+        cp "$HOME/.p10k.zsh" "$HOME/.p10k.zsh.backup.$(date +%Y%m%d_%H%M%S)"
+        log_warning "Existing .p10k.zsh backed up"
+    fi
+    if [[ -f "$(dirname "$0")/../config/.p10k.zsh" ]]; then
+        cp "$(dirname "$0")/../config/.p10k.zsh" "$HOME/.p10k.zsh"
+        log_success "Custom .p10k.zsh configuration applied"
+    else
+        log_warning "Custom .p10k.zsh not found, skipping Powerlevel10k config"
     fi
 }
 
@@ -188,8 +211,8 @@ install_tmux() {
     fi
     
     # Copy our custom tmux config
-    if [[ -f "$(dirname "$0")/.tmux.conf" ]]; then
-        cp "$(dirname "$0")/.tmux.conf" "$HOME/.tmux.conf"
+    if [[ -f "$(dirname "$0")/../config/.tmux.conf" ]]; then
+        cp "$(dirname "$0")/../config/.tmux.conf" "$HOME/.tmux.conf"
         log_success "Custom .tmux.conf configuration applied"
     else
         log_warning "Custom .tmux.conf not found, skipping tmux configuration"
@@ -297,6 +320,7 @@ install_additional_tools() {
 main() {
     log_info "Starting Zsh installation..."
     
+    setup_folder_structure
     detect_os
     install_dependencies
     install_oh_my_zsh
