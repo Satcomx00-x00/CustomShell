@@ -5,7 +5,7 @@ export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
 export ZSH="$HOME/.oh-my-zsh"
 
 # Set name of the theme to load
-ZSH_THEME="xiong-chiamiov-plus"
+ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Uncomment the following line to use case-sensitive completion.
 # CASE_SENSITIVE="true"
@@ -247,6 +247,7 @@ zstyle ':autocomplete:*' min-input 2
 zstyle ':autocomplete:*' max-lines 10
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+# (Custom Powerlevel10k config is provided. No need to run p10k configure.)
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # Custom welcome message

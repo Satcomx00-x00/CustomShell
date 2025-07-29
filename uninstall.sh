@@ -18,7 +18,7 @@ log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 
 # Confirm uninstallation
 confirm_uninstall() {
-    echo -e "${YELLOW}This will remove Oh My Zsh and all custom configurations.${NC}"
+    echo -e "${YELLOW}This will remove Oh My Zsh, Powerlevel10k, tmux config, and all custom configurations.${NC}"
     read -p "Are you sure you want to continue? (y/N): " -n 1 -r
     echo
     if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -27,12 +27,21 @@ confirm_uninstall() {
     fi
 }
 
-# Remove Oh My Zsh
+# Remove Oh My Zsh and plugins/themes
 remove_oh_my_zsh() {
     if [[ -d "$HOME/.oh-my-zsh" ]]; then
         log_info "Removing Oh My Zsh..."
         rm -rf "$HOME/.oh-my-zsh"
         log_success "Oh My Zsh removed"
+    fi
+}
+
+# Remove Powerlevel10k config
+remove_p10k_config() {
+    if [[ -f "$HOME/.p10k.zsh" ]]; then
+        log_info "Removing Powerlevel10k config..."
+        rm -f "$HOME/.p10k.zsh"
+        log_success "Powerlevel10k config removed"
     fi
 }
 
@@ -53,9 +62,14 @@ restore_zshrc() {
         log_info "Backing up current .zshrc..."
         mv "$HOME/.zshrc" "$HOME/.zshrc.removed.$(date +%Y%m%d_%H%M%S)"
     fi
-    
-    # Restore backup if exists
-    local backup=$(ls -t "$HOME/.zshrc.backup."* 2>/dev/null | head -1)
+
+    # Remove all .zshrc backups created by install.sh
+    for backup in "$HOME"/.zshrc.backup.*; do
+        [[ -e "$backup" ]] && rm -f "$backup"
+    done
+
+    # Restore backup if exists (oldest backup, if any)
+    local backup=$(ls -t "$HOME/.zshrc.removed."* 2>/dev/null | head -1)
     if [[ -n "$backup" ]]; then
         log_info "Restoring .zshrc backup..."
         cp "$backup" "$HOME/.zshrc"
@@ -63,24 +77,32 @@ restore_zshrc() {
     fi
 }
 
-# Remove tmux configuration
+# Remove tmux configuration and logs
 remove_tmux_config() {
     log_info "Removing tmux configuration..."
-    
+
     # Remove tmux config
     if [[ -f "$HOME/.tmux.conf" ]]; then
         mv "$HOME/.tmux.conf" "$HOME/.tmux.conf.removed.$(date +%Y%m%d_%H%M%S)"
         log_success "Tmux configuration removed"
     fi
-    
+
+    # Remove all .tmux.conf backups created by install.sh
+    for backup in "$HOME"/.tmux.conf.backup.*; do
+        [[ -e "$backup" ]] && rm -f "$backup"
+    done
+
     # Remove TPM and plugins
     if [[ -d "$HOME/.tmux" ]]; then
         mv "$HOME/.tmux" "$HOME/.tmux.removed.$(date +%Y%m%d_%H%M%S)"
         log_success "Tmux plugins removed"
     fi
-    
-    # Restore backup if exists
-    local backup=$(ls -t "$HOME/.tmux.conf.backup."* 2>/dev/null | head -1)
+
+    # Remove tmux logs
+    rm -f "$HOME"/tmux-*.log 2>/dev/null || true
+
+    # Restore backup if exists (oldest backup, if any)
+    local backup=$(ls -t "$HOME/.tmux.conf.removed."* 2>/dev/null | head -1)
     if [[ -n "$backup" ]]; then
         log_info "Restoring .tmux.conf backup..."
         cp "$backup" "$HOME/.tmux.conf"
@@ -88,16 +110,32 @@ remove_tmux_config() {
     fi
 }
 
+# Remove exa and bat if installed by package manager (optional)
+remove_additional_tools() {
+    log_info "Attempting to remove exa and bat (if installed by package manager)..."
+    if command -v apt-get &> /dev/null; then
+        sudo apt-get remove -y exa bat 2>/dev/null || true
+    elif command -v dnf &> /dev/null; then
+        sudo dnf remove -y exa bat 2>/dev/null || true
+    elif command -v brew &> /dev/null; then
+        brew uninstall --ignore-dependencies exa bat 2>/dev/null || true
+    elif command -v apk &> /dev/null; then
+        sudo apk del exa bat 2>/dev/null || true
+    fi
+}
+
 # Main uninstall function
 main() {
     log_info "Starting Zsh uninstallation..."
-    
+
     confirm_uninstall
     remove_oh_my_zsh
+    remove_p10k_config
     restore_zshrc
     remove_tmux_config
+    remove_additional_tools
     restore_shell
-    
+
     log_success "Zsh uninstallation completed!"
     log_info "Please restart your terminal to use bash as default shell"
     log_info "Tmux configuration and plugins have been removed"
