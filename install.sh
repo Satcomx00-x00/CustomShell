@@ -144,6 +144,21 @@ install_plugins() {
     log_success "All plugins installed successfully"
 }
 
+# Install Powerlevel10k config
+setup_p10k_config() {
+    log_info "Setting up Powerlevel10k configuration..."
+    if [[ -f "$HOME/.p10k.zsh" ]]; then
+        cp "$HOME/.p10k.zsh" "$HOME/.p10k.zsh.backup.$(date +%Y%m%d_%H%M%S)"
+        log_warning "Existing .p10k.zsh backed up"
+    fi
+    if [[ -f "$(dirname "$0")/.p10k.zsh" ]]; then
+        cp "$(dirname "$0")/.p10k.zsh" "$HOME/.p10k.zsh"
+        log_success "Custom .p10k.zsh configuration applied"
+    else
+        log_warning "Custom .p10k.zsh not found, skipping Powerlevel10k config"
+    fi
+}
+
 # Setup .zshrc configuration
 setup_zshrc() {
     log_info "Setting up .zshrc configuration..."
@@ -286,6 +301,7 @@ main() {
     install_dependencies
     install_oh_my_zsh
     install_plugins
+    setup_p10k_config
     setup_zshrc
     install_tmux
     change_shell
