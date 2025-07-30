@@ -240,12 +240,6 @@ show_post_uninstall_info() {
 main() {
     log_info "Starting Zsh environment uninstallation..."
     
-    # Validate we're not running as root (safety check)
-    if [[ $EUID -eq 0 ]]; then
-        log_error "This script should not be run as root"
-        exit 1
-    fi
-    
     confirm_uninstall
     
     # Execute removal steps
