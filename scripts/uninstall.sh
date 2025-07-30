@@ -75,24 +75,49 @@ confirm_uninstall() {
 remove_p10k_config() {
     log_info "Removing Powerlevel10k configuration..."
     
-    if create_backup "$HOME/.p10k.zsh"; then
-        log_success "Powerlevel10k config removed"
+    local count=0
+    for p10k_file in "$HOME"/.p10k*; do
+        if [[ -f "$p10k_file" ]]; then
+            rm -f "$p10k_file"
+            ((count++))
+        fi
+    done
+    
+    if [[ $count -gt 0 ]]; then
+        log_success "Removed $count Powerlevel10k config files"
     else
-        log_warning "No Powerlevel10k config found"
+        log_warning "No Powerlevel10k config files found"
     fi
 }
 
 # Remove zinit plugin manager
 remove_zinit() {
-    log_info "Removing zinit plugin manager..."
+    log_info "Removing zinit plugin manager and related files..."
     
-    if [[ -d "$HOME/.zinit" ]]; then
-        # Create backup of zinit directory for safety
-        local backup_dir="$HOME/.zinit.removed.$(date +%Y%m%d_%H%M%S)"
-        mv "$HOME/.zinit" "$backup_dir"
-        log_success "zinit removed (backed up to $backup_dir)"
+    local count=0
+    
+    # Remove zinit directories
+    for zinit_dir in "$HOME"/.zinit*; do
+        if [[ -d "$zinit_dir" ]]; then
+            rm -rf "$zinit_dir"
+            ((count++))
+            log_info "Removed directory: $(basename "$zinit_dir")"
+        fi
+    done
+    
+    # Remove zinit files
+    for zinit_file in "$HOME"/.zinit*; do
+        if [[ -f "$zinit_file" ]]; then
+            rm -f "$zinit_file"
+            ((count++))
+            log_info "Removed file: $(basename "$zinit_file")"
+        fi
+    done
+    
+    if [[ $count -gt 0 ]]; then
+        log_success "Removed $count zinit items"
     else
-        log_warning "zinit directory not found"
+        log_warning "No zinit files or directories found"
     fi
 }
 
@@ -221,24 +246,6 @@ main() {
         exit 1
     fi
     
-    confirm_uninstall
-    
-    # Execute removal steps
-    remove_zinit
-    remove_p10k_config
-    restore_zshrc
-    remove_tmux_config
-    remove_additional_tools
-    restore_shell
-    
-    show_post_uninstall_info
-}
-
-# Error handling
-trap 'log_error "Uninstallation failed at line $LINENO"' ERR
-
-# Run main function
-main "$@"
     confirm_uninstall
     
     # Execute removal steps

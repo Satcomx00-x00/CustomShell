@@ -419,4 +419,17 @@ main() {
 # Run installation
 main "$@"
 
+
+# set the default shell to zsh
+if [[ "$SHELL" != *"zsh"* ]]; then
+    log_info "Setting default shell to zsh..."
+    if command -v chsh &> /dev/null; then
+        chsh -s "$(which zsh)"
+        log_success "Default shell changed to zsh"
+    else
+        log_warning "chsh not available. Please manually change shell to: $(which zsh)"
+    fi
+else
+    log_info "Zsh is already the default shell"
+fi
 exec zsh
