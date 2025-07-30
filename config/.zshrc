@@ -7,10 +7,6 @@ export EDITOR="vim"
 export VISUAL="vim"
 export BROWSER="firefox"
 
-# --- Oh My Zsh & Theme ---
-export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="powerlevel10k/powerlevel10k"
-
 # --- Zinit plugin manager ---
 if [[ ! -f "$HOME/.zinit/bin/zinit.zsh" ]]; then
     echo "Installing zinit plugin manager..."
@@ -28,6 +24,17 @@ zinit ice depth=1; zinit light zdharma-continuum/fast-syntax-highlighting
 zinit ice depth=1; zinit light romkatv/powerlevel10k
 zinit ice depth=1; zinit light Aloxaf/fzf-tab
 
+# --- OMZ snippets/plugins via zinit ---
+zinit snippet OMZP::git
+zinit snippet OMZP::python
+zinit snippet OMZP::tmux
+zinit snippet OMZP::docker
+zinit snippet OMZP::kubectl
+zinit snippet OMZP::command-not-found
+
+# Load zinit completions
+zinit cdreplay -q
+
 # --- Powerlevel10k config ---
 # Ensure this is after zinit loads powerlevel10k
 if [[ -f "$HOME/.p10k.zsh" ]]; then
@@ -36,8 +43,8 @@ else
     echo "[WARNING] $HOME/.p10k.zsh not found or not readable"
 fi
 
-bindkey -e
 # --- Key Bindings ---
+bindkey -e
 bindkey '^[[A' history-substring-search-up
 bindkey '^[[B' history-substring-search-down
 
@@ -56,21 +63,10 @@ setopt MENU_COMPLETE HASH_LIST_ALL COMPLETE_IN_WORD NO_BEEP
 # Completion styling
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' completer _complete _match _approximate _prefix _suffix
-# zstyle ':completion:*' format 'Completing %d'
 zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath' 
 
 autoload -U compinit && compinit
-
-# Add snippets
-zinit snippet OMZP::git
-zinit snippet OMZP::python
-zinit snippet OMZP::tmux
-zinit snippet OMZP::docker
-zinit snippet OMZP::kubectl
-zinit snippet OMZP::command-not-found
-
-zinit cdreplay -q
 
 # --- Aliases ---
 # Enhanced aliases
@@ -81,7 +77,6 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
-
 
 # System aliases
 alias h='history'
@@ -149,15 +144,10 @@ export WORKON_HOME=$HOME/.virtualenvs
 export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
 [ -f /usr/local/bin/virtualenvwrapper.sh ] && source /usr/local/bin/virtualenvwrapper.sh
 
-
 # --- Plugin Configs ---
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
 ZSH_AUTOSUGGEST_USE_ASYNC=1
 FAST_HIGHLIGHT_MAXLENGTH=300
-
-# --- Key Bindings ---
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
 
 # --- Welcome Message ---
 echo -e "\e[35mWelcome to your purple Zsh terminal!\e[0m"
@@ -171,5 +161,3 @@ help-zsh() {
     echo "  ls (exa), cat (bat)     - Enhanced tools if installed"
     echo "  Run 'p10k configure' to tweak your prompt"
 }
-
-# eval "$(fzf --zsh)"

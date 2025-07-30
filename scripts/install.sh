@@ -1,7 +1,16 @@
 #!/bin/bash
 
-export LANG=fr_FR.UTF-8
-export LC_ALL=fr_FR.UTF-8
+# Set locale with fallbacks for better compatibility
+if locale -a | grep -q "en_US.UTF-8"; then
+    export LANG="en_US.UTF-8"
+    export LC_ALL="en_US.UTF-8"
+elif locale -a | grep -q "C.UTF-8"; then
+    export LANG="C.UTF-8"
+    export LC_ALL="C.UTF-8"
+else
+    export LANG="C"
+    export LC_ALL="C"
+fi
 
 # Zsh Installation Script - Multi-OS Support
 # Supports: Ubuntu/Debian, CentOS/RHEL/Fedora, Alpine, macOS, and Docker containers
@@ -99,43 +108,6 @@ install_dependencies() {
     esac
 
     log_success "Dependencies installed successfully"
-}
-
-# Install Oh My Zsh for a specific user
-install_oh_my_zsh_for_user() {
-    local user_home="$1"
-    local user_name="$2"
-    
-    log_info "Installing Oh My Zsh for user: $user_name..."
-    
-    if [[ -d "$user_home/.oh-my-zsh" ]]; then
-        log_info "Removing existing Oh My Zsh installation for $user_name..."
-        if [[ "$user_name" == "$CURRENT_USER" && $EUID -ne 0 ]]; then
-            rm -rf "$user_home/.oh-my-zsh"
-        elif [[ "$user_name" == "root" && $EUID -eq 0 ]]; then
-            rm -rf "$user_home/.oh-my-zsh"
-        else
-            sudo rm -rf "$user_home/.oh-my-zsh"
-        fi
-    fi
-    
-    # Install Oh My Zsh non-interactively
-    if [[ "$user_name" == "root" ]]; then
-        if [[ $EUID -eq 0 ]]; then
-            HOME="$user_home" RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-        else
-            sudo HOME="$user_home" RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-        fi
-    else
-        sudo -u "$user_name" HOME="$user_home" RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-    fi
-    
-    log_success "Oh My Zsh installed successfully for $user_name"
-}
-
-# Install Oh My Zsh
-install_oh_my_zsh() {
-    install_oh_my_zsh_for_user "$HOME" "$CURRENT_USER"
 }
 
 # Install zinit for a specific user
@@ -422,14 +394,13 @@ install_nerdfont() {
 
 # Main installation function
 main() {
-    log_info "Starting Zsh installation..."
+    log_info "Starting Zsh installation with zinit..."
     
     detect_current_user
 
     setup_folder_structure
     detect_os
     install_dependencies
-    install_oh_my_zsh_for_user "$HOME" "$CURRENT_USER"
     install_zinit_for_user "$HOME" "$CURRENT_USER"
     setup_p10k_config
     setup_zshrc
@@ -447,5 +418,5 @@ main() {
 
 # Run installation
 main "$@"
-cp "$(dirname "$0")/../config/.zshrc" "$HOME/.zshrc"
-source "$HOME/.zshrc"
+
+exec zsh
