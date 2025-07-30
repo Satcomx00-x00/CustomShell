@@ -100,10 +100,7 @@ install_oh_my_zsh_for_user() {
     
     if [[ -d "$user_home/.oh-my-zsh" ]]; then
         log_info "Removing existing Oh My Zsh installation for $user_name..."
-        if [[ "$user_name" == "root" && $EUID -ne 0 ]]; then
-            sudo rm -rf "$user_home/.oh-my-zsh"
-        else
-            rm -rf "$user_home/.oh-my-zsh"
+        sudo rm -rf "$user_home/.oh-my-zsh"
         fi
     fi
     

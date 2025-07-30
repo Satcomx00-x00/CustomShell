@@ -1,4 +1,5 @@
 # --- Path and Environment ---
+
 export PATH="/usr/bin:$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
@@ -69,8 +70,8 @@ zinit snippet OMZP::docker
 zinit snippet OMZP::kubectl
 zinit snippet OMZP::command-not-found
 
-
 zinit cdreplay -q
+
 # --- Aliases ---
 # Enhanced aliases
 alias ll='ls -alF'
@@ -80,8 +81,6 @@ alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
-
-
 
 
 
