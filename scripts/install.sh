@@ -37,6 +37,16 @@ detect_os() {
     log_info "Detected OS: $OS"
 }
 
+# Detect current user reliably
+detect_current_user() {
+    if [[ -n "$USER" ]]; then
+        CURRENT_USER="$USER"
+    else
+        CURRENT_USER="$(whoami)"
+    fi
+    log_info "Detected user: $CURRENT_USER"
+}
+
 # Install dependencies based on OS
 install_dependencies() {
     log_info "Installing dependencies..."
@@ -100,7 +110,7 @@ install_oh_my_zsh_for_user() {
     
     if [[ -d "$user_home/.oh-my-zsh" ]]; then
         log_info "Removing existing Oh My Zsh installation for $user_name..."
-        if [[ "$user_name" == "$USER" && $EUID -ne 0 ]]; then
+        if [[ "$user_name" == "$CURRENT_USER" && $EUID -ne 0 ]]; then
             rm -rf "$user_home/.oh-my-zsh"
         elif [[ "$user_name" == "root" && $EUID -eq 0 ]]; then
             rm -rf "$user_home/.oh-my-zsh"
@@ -125,7 +135,7 @@ install_oh_my_zsh_for_user() {
 
 # Install Oh My Zsh
 install_oh_my_zsh() {
-    install_oh_my_zsh_for_user "$HOME" "$USER"
+    install_oh_my_zsh_for_user "$HOME" "$CURRENT_USER"
 }
 
 # Install zinit for a specific user
@@ -248,13 +258,13 @@ setup_config_for_user() {
 # Setup .zshrc configuration
 setup_zshrc() {
     # Setup for current user
-    setup_config_for_user "$HOME" "$USER" ".zshrc" ".zshrc"
+    setup_config_for_user "$HOME" "$CURRENT_USER" ".zshrc" ".zshrc"
 }
 
 # Install Powerlevel10k config
 setup_p10k_config() {
     # Setup for current user
-    setup_config_for_user "$HOME" "$USER" ".p10k.zsh" "Powerlevel10k"
+    setup_config_for_user "$HOME" "$CURRENT_USER" ".p10k.zsh" "Powerlevel10k"
 }
 
 # Setup tmux for a specific user
@@ -277,12 +287,12 @@ setup_tmux_for_user() {
 
 # Install tmux configuration and plugins
 install_tmux() {
-    setup_tmux_for_user "$HOME" "$USER"
+    setup_tmux_for_user "$HOME" "$CURRENT_USER"
 }
 
 # Change default shell to zsh
 change_shell() {
-    log_info "Changing default shell to zsh for $USER..."
+    log_info "Changing default shell to zsh for $CURRENT_USER..."
 
     local zsh_path=$(which zsh)
 
@@ -300,12 +310,12 @@ change_shell() {
     if [[ "$SHELL" != "$zsh_path" ]]; then
         if command -v chsh &> /dev/null; then
             chsh -s "$zsh_path"
-            log_success "Default shell changed to zsh for $USER"
+            log_success "Default shell changed to zsh for $CURRENT_USER"
         else
             log_warning "chsh not available. Please manually change shell to: $zsh_path"
         fi
     else
-        log_info "Zsh is already the default shell for $USER"
+        log_info "Zsh is already the default shell for $CURRENT_USER"
     fi
 }
 
@@ -405,7 +415,7 @@ install_nerdfont_for_user() {
 # Install Nerd Font for Alacritty
 install_nerdfont() {
     # Install for current user
-    install_nerdfont_for_user "$HOME" "$USER"
+    install_nerdfont_for_user "$HOME" "$CURRENT_USER"
     
     log_success "FiraCode Nerd Font installed. Set it in your Alacritty config."
 }
@@ -414,11 +424,13 @@ install_nerdfont() {
 main() {
     log_info "Starting Zsh installation..."
     
+    detect_current_user
+
     setup_folder_structure
     detect_os
     install_dependencies
-    install_oh_my_zsh
-    install_zinit_for_user "$HOME" "$USER"
+    install_oh_my_zsh_for_user "$HOME" "$CURRENT_USER"
+    install_zinit_for_user "$HOME" "$CURRENT_USER"
     setup_p10k_config
     setup_zshrc
     install_tmux
