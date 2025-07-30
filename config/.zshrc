@@ -70,13 +70,12 @@ autoload -U compinit && compinit
 
 # --- Aliases ---
 # Enhanced aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-alias ..='cd ..'
-alias ...='cd ../..'
-alias ....='cd ../../..'
-alias .....='cd ../../../..'
+alias ll='exa -alF'
+alias la='exa -a'
+alias l='exa -CF'
+
+alias reload='exec $SHELL -l'
+alias ::='sudo $(fc -ln -1)' # sexy alias, because '!!' 
 
 # System aliases
 alias h='history'
