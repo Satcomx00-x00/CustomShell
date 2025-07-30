@@ -101,7 +101,6 @@ install_oh_my_zsh_for_user() {
     if [[ -d "$user_home/.oh-my-zsh" ]]; then
         log_info "Removing existing Oh My Zsh installation for $user_name..."
         sudo rm -rf "$user_home/.oh-my-zsh"
-        fi
     fi
     
     # Install Oh My Zsh non-interactively
