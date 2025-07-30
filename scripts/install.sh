@@ -25,11 +25,11 @@ log_error() { echo -e "${RED}[ERROR]${NC} $1"; }
 detect_os() {
     if [[ "$OSTYPE" == "darwin"* ]]; then
         OS="macos"
-    elif [[ -f /etc/alpine-release ]]; then
+        elif [[ -f /etc/alpine-release ]]; then
         OS="alpine"
-    elif [[ -f /etc/debian_version ]]; then
+        elif [[ -f /etc/debian_version ]]; then
         OS="debian"
-    elif [[ -f /etc/redhat-release ]] || [[ -f /etc/centos-release ]] || [[ -f /etc/fedora-release ]]; then
+        elif [[ -f /etc/redhat-release ]] || [[ -f /etc/centos-release ]] || [[ -f /etc/fedora-release ]]; then
         OS="redhat"
     else
         OS="unknown"
@@ -45,29 +45,29 @@ install_dependencies() {
         "debian")
             apt-get update -y
             apt-get install -y zsh git curl wget vim nano sudo tmux
-            ;;
+        ;;
         "redhat")
             if command -v dnf &> /dev/null; then
                 dnf install -y zsh git curl wget vim nano sudo tmux
             else
                 yum install -y zsh git curl wget vim nano sudo tmux
             fi
-            ;;
+        ;;
         "alpine")
             apk update
             apk add --no-cache zsh git curl wget vim nano sudo shadow tmux
-            ;;
+        ;;
         "macos")
             if ! command -v brew &> /dev/null; then
                 log_warning "Homebrew not found. Installing..."
                 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
             fi
             brew install zsh git curl wget vim nano tmux
-            ;;
+        ;;
         *)
             log_error "Unsupported OS. Please install zsh, git, curl, wget, tmux manually."
             exit 1
-            ;;
+        ;;
     esac
     
     log_success "Dependencies installed successfully"
@@ -97,7 +97,7 @@ install_plugins() {
     # Essential plugins (removed zsh-autocomplete due to input duplication issues)
     local plugins=(
         "zsh-users/zsh-syntax-highlighting"
-        "zsh-users/zsh-autosuggestions" 
+        "zsh-users/zsh-autosuggestions"
         "zsh-users/zsh-history-substring-search"
         "zdharma-continuum/fast-syntax-highlighting"
         "zsh-users/zsh-completions"
@@ -151,14 +151,14 @@ install_plugins() {
 setup_folder_structure() {
     mkdir -p "$(dirname "$0")/../config"
     mkdir -p "$(dirname "$0")/../scripts"
-
+    
     # Move config files if not already in config/
     for f in .zshrc .p10k.zsh .tmux.conf; do
         if [[ -f "$(dirname "$0")/../$f" ]]; then
             mv "$(dirname "$0")/../$f" "$(dirname "$0")/../config/$f"
         fi
     done
-
+    
     # Move scripts if not already in scripts/
     for f in install.sh uninstall.sh update-p10k.sh; do
         if [[ -f "$(dirname "$0")/../$f" && "$(basename "$0")" != "$f" ]]; then
@@ -279,19 +279,19 @@ install_additional_tools() {
             apt-get install -y exa 2>/dev/null || {
                 log_warning "exa not available in repositories, skipping..."
             }
-            ;;
+        ;;
         "redhat")
             if command -v dnf &> /dev/null; then
                 dnf install -y exa 2>/dev/null || {
                     log_warning "exa not available in repositories, skipping..."
                 }
             fi
-            ;;
+        ;;
         "macos")
             brew install exa 2>/dev/null || {
                 log_warning "Failed to install exa, skipping..."
             }
-            ;;
+        ;;
     esac
     
     # Install bat (better cat)
@@ -300,19 +300,19 @@ install_additional_tools() {
             apt-get install -y bat 2>/dev/null || {
                 log_warning "bat not available in repositories, skipping..."
             }
-            ;;
+        ;;
         "redhat")
             if command -v dnf &> /dev/null; then
                 dnf install -y bat 2>/dev/null || {
                     log_warning "bat not available in repositories, skipping..."
                 }
             fi
-            ;;
+        ;;
         "macos")
             brew install bat 2>/dev/null || {
                 log_warning "Failed to install bat, skipping..."
             }
-            ;;
+        ;;
     esac
 }
 

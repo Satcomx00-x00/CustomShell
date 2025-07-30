@@ -2,33 +2,33 @@
 
 # --- Prompt Elements ---
 typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
-  project
-  os_icon
-  context
-  direnv
-  dir
-  dir_writable
-  vcs
-  newline
-  prompt_char
+    project
+    os_icon
+    context
+    direnv
+    dir
+    dir_writable
+    vcs
+    newline
+    prompt_char
 )
 typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
-  status
-  command_execution_time
-  background_jobs
-  virtualenv
-  node_version
-  python_version
-  rust_version
-  aws
-  gcloud
-  kubecontext
-  ram
-  load
-  disk_usage
-  battery
-  time
-  ip
+    status
+    command_execution_time
+    background_jobs
+    virtualenv
+    node_version
+    python_version
+    rust_version
+    aws
+    gcloud
+    kubecontext
+    ram
+    load
+    disk_usage
+    battery
+    time
+    ip
 )
 
 # --- Colors ---

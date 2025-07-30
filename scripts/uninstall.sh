@@ -62,12 +62,12 @@ restore_zshrc() {
         log_info "Backing up current .zshrc..."
         mv "$HOME/.zshrc" "$HOME/.zshrc.removed.$(date +%Y%m%d_%H%M%S)"
     fi
-
+    
     # Remove all .zshrc backups created by install.sh
     for backup in "$HOME"/.zshrc.backup.*; do
         [[ -e "$backup" ]] && rm -f "$backup"
     done
-
+    
     # Restore backup if exists (oldest backup, if any)
     local backup=$(ls -t "$HOME/.zshrc.removed."* 2>/dev/null | head -1)
     if [[ -n "$backup" ]]; then
@@ -80,27 +80,27 @@ restore_zshrc() {
 # Remove tmux configuration and logs
 remove_tmux_config() {
     log_info "Removing tmux configuration..."
-
+    
     # Remove tmux config
     if [[ -f "$HOME/.tmux.conf" ]]; then
         mv "$HOME/.tmux.conf" "$HOME/.tmux.conf.removed.$(date +%Y%m%d_%H%M%S)"
         log_success "Tmux configuration removed"
     fi
-
+    
     # Remove all .tmux.conf backups created by install.sh
     for backup in "$HOME"/.tmux.conf.backup.*; do
         [[ -e "$backup" ]] && rm -f "$backup"
     done
-
+    
     # Remove TPM and plugins
     if [[ -d "$HOME/.tmux" ]]; then
         mv "$HOME/.tmux" "$HOME/.tmux.removed.$(date +%Y%m%d_%H%M%S)"
         log_success "Tmux plugins removed"
     fi
-
+    
     # Remove tmux logs
     rm -f "$HOME"/tmux-*.log 2>/dev/null || true
-
+    
     # Restore backup if exists (oldest backup, if any)
     local backup=$(ls -t "$HOME/.tmux.conf.removed."* 2>/dev/null | head -1)
     if [[ -n "$backup" ]]; then
@@ -115,11 +115,11 @@ remove_additional_tools() {
     log_info "Attempting to remove exa and bat (if installed by package manager)..."
     if command -v apt-get &> /dev/null; then
         sudo apt-get remove -y exa bat 2>/dev/null || true
-    elif command -v dnf &> /dev/null; then
+        elif command -v dnf &> /dev/null; then
         sudo dnf remove -y exa bat 2>/dev/null || true
-    elif command -v brew &> /dev/null; then
+        elif command -v brew &> /dev/null; then
         brew uninstall --ignore-dependencies exa bat 2>/dev/null || true
-    elif command -v apk &> /dev/null; then
+        elif command -v apk &> /dev/null; then
         sudo apk del exa bat 2>/dev/null || true
     fi
 }
@@ -127,7 +127,7 @@ remove_additional_tools() {
 # Main uninstall function
 main() {
     log_info "Starting Zsh uninstallation..."
-
+    
     confirm_uninstall
     remove_oh_my_zsh
     remove_p10k_config
@@ -135,7 +135,7 @@ main() {
     remove_tmux_config
     remove_additional_tools
     restore_shell
-
+    
     log_success "Zsh uninstallation completed!"
     log_info "Please restart your terminal to use bash as default shell"
     log_info "Tmux configuration and plugins have been removed"
