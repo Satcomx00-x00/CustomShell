@@ -55,34 +55,34 @@ install_dependencies() {
         "debian")
             if [[ $EUID -eq 0 ]]; then
                 apt-get update -y
-                apt-get install -y zsh git curl wget vim nano sudo tmux fzf
+                apt-get install -y zsh git curl wget vim nano sudo tmux fzf unzip
             else
                 sudo apt-get update -y
-                sudo apt-get install -y zsh git curl wget vim nano sudo tmux fzf
+                sudo apt-get install -y zsh git curl wget vim nano sudo tmux fzf unzip
             fi
         ;;
         "redhat")
             if command -v dnf &> /dev/null; then
                 if [[ $EUID -eq 0 ]]; then
-                    dnf install -y zsh git curl wget vim nano sudo tmux fzf
+                    dnf install -y zsh git curl wget vim nano sudo tmux fzf unzip
                 else
-                    sudo dnf install -y zsh git curl wget vim nano sudo tmux fzf
+                    sudo dnf install -y zsh git curl wget vim nano sudo tmux fzf unzip
                 fi
             else
                 if [[ $EUID -eq 0 ]]; then
-                    yum install -y zsh git curl wget vim nano sudo tmux fzf
+                    yum install -y zsh git curl wget vim nano sudo tmux fzf unzip
                 else
-                    sudo yum install -y zsh git curl wget vim nano sudo tmux fzf
+                    sudo yum install -y zsh git curl wget vim nano sudo tmux fzf unzip
                 fi
             fi
         ;;
         "alpine")
             if [[ $EUID -eq 0 ]]; then
                 apk update
-                apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf
+                apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf unzip
             else
                 sudo apk update
-                sudo apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf
+                sudo apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf unzip
             fi
         ;;
         "macos")
@@ -90,10 +90,10 @@ install_dependencies() {
                 log_warning "Homebrew not found. Installing..."
                 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
             fi
-            brew install zsh git curl wget vim nano tmux fzf
+            brew install zsh git curl wget vim nano tmux fzf unzip
         ;;
         *)
-            log_error "Unsupported OS. Please install zsh, git, curl, wget, tmux manually."
+            log_error "Unsupported OS. Please install zsh, git, curl, wget, tmux, unzip manually."
             exit 1
         ;;
     esac
