@@ -45,6 +45,15 @@ remove_p10k_config() {
     fi
 }
 
+# Remove zinit plugin manager
+remove_zinit() {
+    if [[ -d "$HOME/.zinit" ]]; then
+        log_info "Removing zinit plugin manager..."
+        rm -rf "$HOME/.zinit"
+        log_success "zinit removed"
+    fi
+}
+
 # Restore shell
 restore_shell() {
     log_info "Restoring shell to bash..."
@@ -130,6 +139,7 @@ main() {
     
     confirm_uninstall
     remove_oh_my_zsh
+    remove_zinit
     remove_p10k_config
     restore_zshrc
     remove_tmux_config

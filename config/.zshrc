@@ -10,46 +10,68 @@ export BROWSER="firefox"
 export ZSH="$HOME/.oh-my-zsh"
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-# --- Plugins ---
-plugins=(
-    git
-    zsh-autosuggestions
-    zsh-syntax-highlighting
-    zsh-completions
-    history-substring-search
-    fast-syntax-highlighting
-    docker
-    tmux
-    python
-    node
-    rust
-    kubectl
-    aws
-    gh
-    bun
-    sudo
-    extract
-    colored-man-pages
-    command-not-found
-)
+# --- Zinit plugin manager ---
+if [[ ! -f "$HOME/.zinit/bin/zinit.zsh" ]]; then
+    echo "Installing zinit plugin manager..."
+    mkdir -p "$HOME/.zinit"
+    git clone https://github.com/zdharma-continuum/zinit.git "$HOME/.zinit/bin"
+fi
+source "$HOME/.zinit/bin/zinit.zsh"
 
-source $ZSH/oh-my-zsh.sh
+# --- Plugins (managed by zinit) ---
+zinit ice depth=1; zinit light zsh-users/zsh-autosuggestions
+zinit ice depth=1; zinit light zsh-users/zsh-syntax-highlighting
+zinit ice depth=1; zinit light zsh-users/zsh-completions
+zinit ice depth=1; zinit light zsh-users/zsh-history-substring-search
+zinit ice depth=1; zinit light zdharma-continuum/fast-syntax-highlighting
+zinit ice depth=1; zinit light romkatv/powerlevel10k
+zinit ice depth=1; zinit light Aloxaf/fzf-tab
 
 # --- Powerlevel10k config ---
-[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
+# Ensure this is after zinit loads powerlevel10k
+if [[ -f "$HOME/.p10k.zsh" ]]; then
+    source "$HOME/.p10k.zsh"
+else
+    echo "[WARNING] $HOME/.p10k.zsh not found or not readable"
+fi
+
+bindkey -e
+# --- Key Bindings ---
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
 
 # --- History ---
 HISTSIZE=10000
 SAVEHIST=10000
 HISTFILE=~/.zsh_history
+
 setopt HIST_IGNORE_DUPS HIST_IGNORE_ALL_DUPS HIST_IGNORE_SPACE HIST_FIND_NO_DUPS HIST_SAVE_NO_DUPS
-setopt SHARE_HISTORY APPEND_HISTORY INC_APPEND_HISTORY HIST_VERIFY
+setopt SHARE_HISTORY APPEND_HISTORY INC_APPEND_HISTORY HIST_VERIFY 
 
 # --- Zsh Options ---
 setopt AUTO_CD AUTO_LIST AUTO_MENU AUTO_PARAM_SLASH EXTENDED_GLOB
 setopt MENU_COMPLETE HASH_LIST_ALL COMPLETE_IN_WORD NO_BEEP
 
+# Completion styling
+zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+zstyle ':completion:*' completer _complete _match _approximate _prefix _suffix
+zstyle ':completion:*' format 'Completing %d'
+zstyle ':completion:*' menu no
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath' 
 
+autoload -U compinit && compinit
+
+# Add snippets
+zinit snippet OMZP::git
+zinit snippet OMZP::python
+zinit snippet OMZP::tmux
+zinit snippet OMZP::docker
+zinit snippet OMZP::kubernetes
+zinit snippet OMZP::command-not-found
+
+
+zinit cdreplay -q
+# --- Aliases ---
 # Enhanced aliases
 alias ll='ls -alF'
 alias la='ls -A'
@@ -59,63 +81,17 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
 
-# Git aliases
-alias gs='git status'
-alias ga='git add'
-alias gc='git commit'
-alias gp='git push'
-alias gl='git pull'
-alias gd='git diff'
-alias gb='git branch'
-alias gco='git checkout'
-alias gcb='git checkout -b'
-alias gm='git merge'
-alias gr='git rebase'
-alias glog='git log --oneline --graph --decorate'
-
-# Docker aliases
-alias dk='docker'
-alias dkc='docker-compose'
-alias dki='docker images'
-alias dkps='docker ps'
-alias dkpsa='docker ps -a'
-alias dkrm='docker rm'
-alias dkrmi='docker rmi'
-alias dkex='docker exec -it'
-alias dklogs='docker logs -f'
-
-# Python aliases
-alias py='python3'
-alias py2='python2'
-alias pip2='pip2'
-alias penv='python3 -m venv'
-alias pact='source venv/bin/activate'
-alias pdeact='deactivate'
-alias pipir='pip install -r requirements.txt'
-alias pipi='pip install'
-alias pfreeze='pip freeze > requirements.txt'
-alias plist='pip list'
-alias pshow='pip show'
 
 
 
-# Kubernetes aliases
-alias k='kubectl'
-alias kgp='kubectl get pods'
-alias kgs='kubectl get services'
-alias kgd='kubectl get deployments'
-alias kdp='kubectl describe pod'
-alias kds='kubectl describe service'
-alias kdd='kubectl describe deployment'
-alias kex='kubectl exec -it'
-alias klogs='kubectl logs -f'
 
-# Tmux aliases
-alias tm='tmux'
-alias tma='tmux attach -t'
-alias tms='tmux new-session -s'
-alias tml='tmux list-sessions'
-alias tmk='tmux kill-session -t'
+
+# # Tmux aliases
+# alias tm='tmux'
+# alias tma='tmux attach -t'
+# alias tms='tmux new-session -s'
+# alias tml='tmux list-sessions'
+# alias tmk='tmux kill-session -t'
 
 # System aliases
 alias h='history'
@@ -205,3 +181,4 @@ help-zsh() {
     echo "  ls (exa), cat (bat)     - Enhanced tools if installed"
     echo "  Run 'p10k configure' to tweak your prompt"
 }
+

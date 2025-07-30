@@ -40,111 +40,161 @@ detect_os() {
 # Install dependencies based on OS
 install_dependencies() {
     log_info "Installing dependencies..."
-    
+
     case $OS in
         "debian")
-            apt-get update -y
-            apt-get install -y zsh git curl wget vim nano sudo tmux
+            if [[ $EUID -eq 0 ]]; then
+                apt-get update -y
+                apt-get install -y zsh git curl wget vim nano sudo tmux fzf
+            else
+                sudo apt-get update -y
+                sudo apt-get install -y zsh git curl wget vim nano sudo tmux fzf
+            fi
         ;;
         "redhat")
             if command -v dnf &> /dev/null; then
-                dnf install -y zsh git curl wget vim nano sudo tmux
+                if [[ $EUID -eq 0 ]]; then
+                    dnf install -y zsh git curl wget vim nano sudo tmux fzf
+                else
+                    sudo dnf install -y zsh git curl wget vim nano sudo tmux fzf
+                fi
             else
-                yum install -y zsh git curl wget vim nano sudo tmux
+                if [[ $EUID -eq 0 ]]; then
+                    yum install -y zsh git curl wget vim nano sudo tmux fzf
+                else
+                    sudo yum install -y zsh git curl wget vim nano sudo tmux fzf
+                fi
             fi
         ;;
         "alpine")
-            apk update
-            apk add --no-cache zsh git curl wget vim nano sudo shadow tmux
+            if [[ $EUID -eq 0 ]]; then
+                apk update
+                apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf
+            else
+                sudo apk update
+                sudo apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf
+            fi
         ;;
         "macos")
             if ! command -v brew &> /dev/null; then
                 log_warning "Homebrew not found. Installing..."
                 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
             fi
-            brew install zsh git curl wget vim nano tmux
+            brew install zsh git curl wget vim nano tmux fzf
         ;;
         *)
             log_error "Unsupported OS. Please install zsh, git, curl, wget, tmux manually."
             exit 1
         ;;
     esac
-    
+
     log_success "Dependencies installed successfully"
+}
+
+# Install Oh My Zsh for a specific user
+install_oh_my_zsh_for_user() {
+    local user_home="$1"
+    local user_name="$2"
+    
+    log_info "Installing Oh My Zsh for user: $user_name..."
+    
+    if [[ -d "$user_home/.oh-my-zsh" ]]; then
+        log_info "Removing existing Oh My Zsh installation for $user_name..."
+        if [[ "$user_name" == "root" && $EUID -ne 0 ]]; then
+            sudo rm -rf "$user_home/.oh-my-zsh"
+        else
+            rm -rf "$user_home/.oh-my-zsh"
+        fi
+    fi
+    
+    # Install Oh My Zsh non-interactively
+    if [[ "$user_name" == "root" ]]; then
+        if [[ $EUID -eq 0 ]]; then
+            HOME="$user_home" RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+        else
+            sudo HOME="$user_home" RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+        fi
+    else
+        sudo -u "$user_name" HOME="$user_home" RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    fi
+    
+    log_success "Oh My Zsh installed successfully for $user_name"
 }
 
 # Install Oh My Zsh
 install_oh_my_zsh() {
-    log_info "Installing Oh My Zsh..."
-    
-    if [[ -d "$HOME/.oh-my-zsh" ]]; then
-        log_warning "Oh My Zsh already exists. Backing up..."
-        mv "$HOME/.oh-my-zsh" "$HOME/.oh-my-zsh.backup.$(date +%Y%m%d_%H%M%S)"
-    fi
-    
-    # Install Oh My Zsh non-interactively
-    RUNZSH=no CHSH=no sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-    
-    log_success "Oh My Zsh installed successfully"
+    install_oh_my_zsh_for_user "$HOME" "$USER"
 }
 
-# Install Zsh plugins
-install_plugins() {
-    log_info "Installing Zsh plugins..."
+# Install zinit for a specific user
+install_zinit_for_user() {
+    local user_home="$1"
+    local user_name="$2"
     
-    local custom_dir="$HOME/.oh-my-zsh/custom"
+    log_info "Installing zinit plugin manager for user: $user_name..."
     
-    # Essential plugins (removed zsh-autocomplete due to input duplication issues)
-    local plugins=(
-        "zsh-users/zsh-syntax-highlighting"
-        "zsh-users/zsh-autosuggestions"
-        "zsh-users/zsh-history-substring-search"
-        "zdharma-continuum/fast-syntax-highlighting"
-        "zsh-users/zsh-completions"
-    )
-    
-    # Function to clone or update a plugin
-    clone_plugin() {
-        local plugin="$1"
-        local plugin_name=$(basename "$plugin")
-        local plugin_dir="$custom_dir/plugins/$plugin_name"
+    if [[ -d "$user_home/.zinit/bin" ]]; then
+        # Check if it's a valid git repository
+        local is_git_repo=false
+        if [[ "$user_name" == "root" ]]; then
+            if [[ $EUID -eq 0 ]]; then
+                cd "$user_home/.zinit/bin" && git status &>/dev/null && is_git_repo=true
+            else
+                sudo bash -c "cd $user_home/.zinit/bin && git status" &>/dev/null && is_git_repo=true
+            fi
+        else
+            sudo -u "$user_name" bash -c "cd $user_home/.zinit/bin && git status" &>/dev/null && is_git_repo=true
+        fi
         
-        if [[ -d "$plugin_dir" ]]; then
-            log_warning "Plugin $plugin_name already exists. Updating..."
-            cd "$plugin_dir" && git pull
+        if [[ "$is_git_repo" == "true" ]]; then
+            log_info "zinit already installed for $user_name, updating..."
+            if [[ "$user_name" == "root" ]]; then
+                if [[ $EUID -eq 0 ]]; then
+                    cd "$user_home/.zinit/bin" && git pull
+                else
+                    sudo bash -c "cd $user_home/.zinit/bin && git pull"
+                fi
+            else
+                sudo -u "$user_name" bash -c "cd $user_home/.zinit/bin && git pull"
+            fi
         else
-            log_info "Installing plugin: $plugin_name"
-            git clone --depth 1 "https://github.com/$plugin.git" "$plugin_dir"
+            log_info "zinit directory exists but is not a valid git repository for $user_name, removing and reinstalling..."
+            if [[ "$user_name" == "root" && $EUID -ne 0 ]]; then
+                sudo rm -rf "$user_home/.zinit"
+            else
+                rm -rf "$user_home/.zinit"
+            fi
+            
+            # Install fresh copy
+            if [[ "$user_name" == "root" ]]; then
+                if [[ $EUID -eq 0 ]]; then
+                    mkdir -p "$user_home/.zinit"
+                    git clone https://github.com/zdharma-continuum/zinit.git "$user_home/.zinit/bin"
+                else
+                    sudo mkdir -p "$user_home/.zinit"
+                    sudo git clone https://github.com/zdharma-continuum/zinit.git "$user_home/.zinit/bin"
+                fi
+            else
+                sudo -u "$user_name" mkdir -p "$user_home/.zinit"
+                sudo -u "$user_name" git clone https://github.com/zdharma-continuum/zinit.git "$user_home/.zinit/bin"
+            fi
+            log_success "zinit installed successfully for $user_name"
         fi
-    }
-    
-    # Clone plugins in parallel
-    local pids=()
-    for plugin in "${plugins[@]}"; do
-        clone_plugin "$plugin" &
-        pids+=($!)
-    done
-    
-    # Install Powerlevel10k theme in parallel
-    {
-        local p10k_dir="$custom_dir/themes/powerlevel10k"
-        if [[ -d "$p10k_dir" ]]; then
-            log_warning "Powerlevel10k already exists. Updating..."
-            cd "$p10k_dir" && git pull
+    else
+        if [[ "$user_name" == "root" ]]; then
+            if [[ $EUID -eq 0 ]]; then
+                mkdir -p "$user_home/.zinit"
+                git clone https://github.com/zdharma-continuum/zinit.git "$user_home/.zinit/bin"
+            else
+                sudo mkdir -p "$user_home/.zinit"
+                sudo git clone https://github.com/zdharma-continuum/zinit.git "$user_home/.zinit/bin"
+            fi
         else
-            log_info "Installing Powerlevel10k theme..."
-            git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$p10k_dir"
+            sudo -u "$user_name" mkdir -p "$user_home/.zinit"
+            sudo -u "$user_name" git clone https://github.com/zdharma-continuum/zinit.git "$user_home/.zinit/bin"
         fi
-    } &
-    pids+=($!)
-    
-    # Wait for all background processes to complete
-    log_info "Waiting for all repositories to finish cloning..."
-    for pid in "${pids[@]}"; do
-        wait "$pid"
-    done
-    
-    log_success "All plugins installed successfully"
+        log_success "zinit installed successfully for $user_name"
+    fi
 }
 
 # --- Ensure clean folder structure ---
@@ -167,105 +217,93 @@ setup_folder_structure() {
     done
 }
 
+# Setup configuration for a specific user
+setup_config_for_user() {
+    local user_home="$1"
+    local user_name="$2"
+    local config_file="$3"
+    local config_name="$4"
+    
+    log_info "Setting up $config_name configuration for user: $user_name..."
+    local src="$(realpath "$(dirname "$0")/../config/$config_file")"
+    
+    if [[ -f "$src" ]]; then
+        if [[ "$user_name" == "root" && $EUID -ne 0 ]]; then
+            sudo cp "$src" "$user_home/$config_file"
+            sudo chown "$user_name":"$user_name" "$user_home/$config_file" 2>/dev/null || true
+            sudo chmod 644 "$user_home/$config_file" 2>/dev/null || true
+        else
+            cp "$src" "$user_home/$config_file"
+            chown "$user_name":"$user_name" "$user_home/$config_file" 2>/dev/null || true
+            chmod 644 "$user_home/$config_file" 2>/dev/null || true
+        fi
+        log_success "Custom $config_name configuration applied for $user_name"
+    else
+        log_warning "Custom $config_file not found at $src, skipping $config_name setup for $user_name"
+    fi
+}
+
 # Setup .zshrc configuration
 setup_zshrc() {
-    log_info "Setting up .zshrc configuration..."
-    
-    # Backup existing .zshrc
-    if [[ -f "$HOME/.zshrc" ]]; then
-        cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
-    fi
-    
-    # Copy our custom .zshrc
-    if [[ -f "$(dirname "$0")/../config/.zshrc" ]]; then
-        cp "$(dirname "$0")/../config/.zshrc" "$HOME/.zshrc"
-        log_success "Custom .zshrc configuration applied"
-    else
-        log_warning "Custom .zshrc not found, using default Oh My Zsh configuration"
-    fi
+    # Setup for current user
+    setup_config_for_user "$HOME" "$USER" ".zshrc" ".zshrc"
 }
 
 # Install Powerlevel10k config
 setup_p10k_config() {
-    log_info "Setting up Powerlevel10k configuration..."
-    if [[ -f "$HOME/.p10k.zsh" ]]; then
-        cp "$HOME/.p10k.zsh" "$HOME/.p10k.zsh.backup.$(date +%Y%m%d_%H%M%S)"
-        log_warning "Existing .p10k.zsh backed up"
-    fi
-    if [[ -f "$(dirname "$0")/../config/.p10k.zsh" ]]; then
-        cp "$(dirname "$0")/../config/.p10k.zsh" "$HOME/.p10k.zsh"
-        log_success "Custom .p10k.zsh configuration applied"
+    # Setup for current user
+    setup_config_for_user "$HOME" "$USER" ".p10k.zsh" "Powerlevel10k"
+}
+
+# Setup tmux for a specific user
+setup_tmux_for_user() {
+    local user_home="$1"
+    local user_name="$2"
+
+    log_info "Setting up Tmux configuration for user: $user_name..."
+    local src="$(realpath "$(dirname "$0")/../config/.tmux.conf")"
+
+    if [[ -f "$src" ]]; then
+        cp "$src" "$user_home/.tmux.conf"
+        chown "$user_name":"$user_name" "$user_home/.tmux.conf" 2>/dev/null || true
+        log_success "Custom .tmux.conf configuration applied for $user_name"
     else
-        log_warning "Custom .p10k.zsh not found, skipping Powerlevel10k config"
+        log_warning "Custom .tmux.conf not found at $src, skipping tmux configuration for $user_name"
     fi
+    # No plugin manager or plugin install here; zinit will handle plugins
 }
 
 # Install tmux configuration and plugins
 install_tmux() {
-    log_info "Setting up Tmux configuration..."
-    
-    # Backup existing tmux config
-    if [[ -f "$HOME/.tmux.conf" ]]; then
-        cp "$HOME/.tmux.conf" "$HOME/.tmux.conf.backup.$(date +%Y%m%d_%H%M%S)"
-        log_warning "Existing .tmux.conf backed up"
-    fi
-    
-    # Copy our custom tmux config
-    if [[ -f "$(dirname "$0")/../config/.tmux.conf" ]]; then
-        cp "$(dirname "$0")/../config/.tmux.conf" "$HOME/.tmux.conf"
-        log_success "Custom .tmux.conf configuration applied"
-    else
-        log_warning "Custom .tmux.conf not found, skipping tmux configuration"
-        return
-    fi
-    
-    # Install TPM (Tmux Plugin Manager)
-    if [[ ! -d "$HOME/.tmux/plugins/tpm" ]]; then
-        log_info "Installing Tmux Plugin Manager (TPM)..."
-        git clone --depth 1 https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
-        log_success "TPM installed successfully"
-    else
-        log_info "TPM already installed, updating..."
-        cd "$HOME/.tmux/plugins/tpm" && git pull
-    fi
-    
-    # Install tmux plugins
-    log_info "Installing tmux plugins..."
-    if command -v tmux &> /dev/null; then
-        # Start tmux server in detached mode and install plugins
-        tmux new-session -d -s plugin_install 2>/dev/null || true
-        tmux send-keys -t plugin_install 'source ~/.tmux.conf' Enter 2>/dev/null || true
-        tmux send-keys -t plugin_install '~/.tmux/plugins/tpm/bin/install_plugins' Enter 2>/dev/null || true
-        sleep 3
-        tmux kill-session -t plugin_install 2>/dev/null || true
-        log_success "Tmux plugins installed"
-    else
-        log_warning "Tmux not available, plugins will be installed on first tmux startup"
-    fi
+    setup_tmux_for_user "$HOME" "$USER"
 }
 
 # Change default shell to zsh
 change_shell() {
-    log_info "Changing default shell to zsh..."
-    
+    log_info "Changing default shell to zsh for $USER..."
+
     local zsh_path=$(which zsh)
-    
+
     # Add zsh to valid shells if not present
     if ! grep -q "$zsh_path" /etc/shells 2>/dev/null; then
         log_info "Adding zsh to /etc/shells..."
-        echo "$zsh_path" | sudo tee -a /etc/shells
+        if [[ $EUID -eq 0 ]]; then
+            echo "$zsh_path" >> /etc/shells
+        else
+            echo "$zsh_path" | sudo tee -a /etc/shells
+        fi
     fi
-    
+
     # Change shell for current user
     if [[ "$SHELL" != "$zsh_path" ]]; then
         if command -v chsh &> /dev/null; then
             chsh -s "$zsh_path"
-            log_success "Default shell changed to zsh"
+            log_success "Default shell changed to zsh for $USER"
         else
             log_warning "chsh not available. Please manually change shell to: $zsh_path"
         fi
     else
-        log_info "Zsh is already the default shell"
+        log_info "Zsh is already the default shell for $USER"
     fi
 }
 
@@ -316,6 +354,60 @@ install_additional_tools() {
     esac
 }
 
+# Install Nerd Font for a specific user
+install_nerdfont_for_user() {
+    local user_home="$1"
+    local user_name="$2"
+    
+    log_info "Installing FiraCode Nerd Font for user: $user_name..."
+    local font_dir="$user_home/.local/share/fonts"
+    
+    if [[ "$user_name" == "root" ]]; then
+        if [[ $EUID -eq 0 ]]; then
+            mkdir -p "$font_dir"
+        else
+            sudo mkdir -p "$font_dir"
+        fi
+    else
+        sudo -u "$user_name" mkdir -p "$font_dir"
+    fi
+    
+    local font_url="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/FiraCode.zip"
+    local tmp_zip="/tmp/FiraCodeNerdFont_${user_name}.zip"
+    
+    curl -fLo "$tmp_zip" --create-dirs "$font_url"
+    unzip -o "$tmp_zip" -d "$font_dir"
+    rm -f "$tmp_zip"
+    
+    if [[ "$user_name" == "root" && $EUID -ne 0 ]]; then
+        sudo chown -R "$user_name":"$user_name" "$font_dir" 2>/dev/null || true
+    else
+        chown -R "$user_name":"$user_name" "$font_dir" 2>/dev/null || true
+    fi
+    
+    if command -v fc-cache &> /dev/null; then
+        if [[ "$user_name" == "root" ]]; then
+            if [[ $EUID -eq 0 ]]; then
+                fc-cache -fv "$font_dir"
+            else
+                sudo fc-cache -fv "$font_dir"
+            fi
+        else
+            sudo -u "$user_name" fc-cache -fv "$font_dir"
+        fi
+    fi
+    
+    log_success "FiraCode Nerd Font installed for $user_name"
+}
+
+# Install Nerd Font for Alacritty
+install_nerdfont() {
+    # Install for current user
+    install_nerdfont_for_user "$HOME" "$USER"
+    
+    log_success "FiraCode Nerd Font installed. Set it in your Alacritty config."
+}
+
 # Main installation function
 main() {
     log_info "Starting Zsh installation..."
@@ -324,13 +416,14 @@ main() {
     detect_os
     install_dependencies
     install_oh_my_zsh
-    install_plugins
+    install_zinit
     setup_p10k_config
     setup_zshrc
     install_tmux
     change_shell
     install_additional_tools
-    
+    install_nerdfont
+
     log_success "Zsh installation completed successfully!"
     log_info "Please restart your terminal or run 'exec zsh' to start using zsh"
     log_info "Run 'p10k configure' to configure Powerlevel10k theme"
@@ -340,5 +433,5 @@ main() {
 
 # Run installation
 main "$@"
-# If running in a Docker container, exec zsh to start the shell
+
 exec zsh
