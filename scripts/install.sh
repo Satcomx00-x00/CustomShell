@@ -447,6 +447,5 @@ main() {
 
 # Run installation
 main "$@"
-
-source "$(dirname "$0")/../config/.zshrc"
-exec zsh
+cp "$(dirname "$0")/../config/.zshrc" "$HOME/.zshrc"
+source "$HOME/.zshrc"

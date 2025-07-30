@@ -56,7 +56,7 @@ setopt MENU_COMPLETE HASH_LIST_ALL COMPLETE_IN_WORD NO_BEEP
 # Completion styling
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
 zstyle ':completion:*' completer _complete _match _approximate _prefix _suffix
-zstyle ':completion:*' format 'Completing %d'
+# zstyle ':completion:*' format 'Completing %d'
 zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath' 
 
@@ -82,15 +82,6 @@ alias ...='cd ../..'
 alias ....='cd ../../..'
 alias .....='cd ../../../..'
 
-
-
-
-# # Tmux aliases
-# alias tm='tmux'
-# alias tma='tmux attach -t'
-# alias tms='tmux new-session -s'
-# alias tml='tmux list-sessions'
-# alias tmk='tmux kill-session -t'
 
 # System aliases
 alias h='history'
@@ -181,3 +172,4 @@ help-zsh() {
     echo "  Run 'p10k configure' to tweak your prompt"
 }
 
+# eval "$(fzf --zsh)"
