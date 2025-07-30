@@ -84,6 +84,21 @@ alias dkrmi='docker rmi'
 alias dkex='docker exec -it'
 alias dklogs='docker logs -f'
 
+# Python aliases
+alias py='python3'
+alias py2='python2'
+alias pip2='pip2'
+alias penv='python3 -m venv'
+alias pact='source venv/bin/activate'
+alias pdeact='deactivate'
+alias pipir='pip install -r requirements.txt'
+alias pipi='pip install'
+alias pfreeze='pip freeze > requirements.txt'
+alias plist='pip list'
+alias pshow='pip show'
+
+
+
 # Kubernetes aliases
 alias k='kubectl'
 alias kgp='kubectl get pods'
