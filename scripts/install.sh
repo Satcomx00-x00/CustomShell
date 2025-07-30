@@ -416,7 +416,7 @@ main() {
     detect_os
     install_dependencies
     install_oh_my_zsh
-    install_zinit
+    install_zinit_for_user "$HOME" "$USER"
     setup_p10k_config
     setup_zshrc
     install_tmux
