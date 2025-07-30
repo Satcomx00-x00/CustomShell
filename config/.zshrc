@@ -66,7 +66,7 @@ zinit snippet OMZP::git
 zinit snippet OMZP::python
 zinit snippet OMZP::tmux
 zinit snippet OMZP::docker
-zinit snippet OMZP::kubernetes
+zinit snippet OMZP::kubectl
 zinit snippet OMZP::command-not-found
 
 
