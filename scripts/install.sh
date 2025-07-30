@@ -268,15 +268,15 @@ change_shell() {
 
     local zsh_path=$(which zsh)
 
-    # Add zsh to valid shells if not present
-    if ! grep -q "$zsh_path" /etc/shells 2>/dev/null; then
-        log_info "Adding zsh to /etc/shells..."
-        if [[ $EUID -eq 0 ]]; then
-            echo "$zsh_path" >> /etc/shells
-        else
-            echo "$zsh_path" | sudo tee -a /etc/shells
-        fi
-    fi
+    # # Add zsh to valid shells if not present
+    # if ! grep -q "$zsh_path" /etc/shells 2>/dev/null; then
+    #     log_info "Adding zsh to /etc/shells..."
+    #     if [[ $EUID -eq 0 ]]; then
+    #         echo "$zsh_path" >> /etc/shells
+    #     else
+    #         echo "$zsh_path" | sudo tee -a /etc/shells
+    #     fi
+    # fi
 
     # Change shell for current user
     if [[ "$SHELL" != "$zsh_path" ]]; then

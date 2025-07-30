@@ -15,6 +15,9 @@ if [[ ! -f "$HOME/.zinit/bin/zinit.zsh" ]]; then
 fi
 source "$HOME/.zinit/bin/zinit.zsh"
 
+# Initialize completion system BEFORE loading plugins
+autoload -U compinit && compinit
+
 # --- Plugins (managed by zinit) ---
 zinit ice depth=1; zinit light zsh-users/zsh-autosuggestions
 zinit ice depth=1; zinit light zsh-users/zsh-syntax-highlighting
@@ -32,7 +35,7 @@ zinit snippet OMZP::docker
 zinit snippet OMZP::kubectl
 zinit snippet OMZP::command-not-found
 
-# Load zinit completions
+# Load zinit completions (now compinit is already loaded)
 zinit cdreplay -q
 
 # --- Powerlevel10k config ---
@@ -66,8 +69,6 @@ zstyle ':completion:*' completer _complete _match _approximate _prefix _suffix
 zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath' 
 
-autoload -U compinit && compinit
-
 # --- Aliases ---
 # Enhanced aliases
 alias ll='exa -alF'
@@ -76,6 +77,68 @@ alias l='exa -CF'
 
 alias reload='exec $SHELL -l'
 alias ::='sudo $(fc -ln -1)' # sexy alias, because '!!' 
+
+# --- Python Aliases ---
+alias py='python3'
+alias pip='pip3'
+alias pipi='pip3 install'
+alias pipu='pip3 uninstall'
+alias pipir='pip3 install -r requirements.txt'
+
+
+# --- Tmux Aliases ---
+alias tmux='tmux -2'
+alias tma='tmux attach -t'
+alias tms='tmux new-session -s'
+alias tmk='tmux kill-session -t'
+
+# --- Docker Aliases ---
+alias dk='docker'
+alias dkc='docker-compose'
+alias dki='docker images'
+alias dkr='docker run'
+alias dkl='docker logs'
+alias dkp='docker ps'
+alias dke='docker exec -it'
+alias dkb='docker build'
+
+# --- Git Aliases ---
+alias gs='git status'
+alias ga='git add'
+alias gc='git commit -m'
+alias gp='git push'
+alias gl='git log --oneline --graph --decorate --all'
+alias gpl='git pull'
+alias gco='git checkout'
+alias gcm='git checkout master'
+alias gcb='git checkout -b'
+alias gup='git pull --rebase'
+alias gcl='git clone'
+alias gpf='git push --force-with-lease'
+alias gbr='git branch'
+alias gbrd='git branch -d'
+alias gbrm='git branch -m'
+alias gpr='git pull --rebase'
+
+# --- Directory Navigation Aliases ---
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+# --- System Aliases ---
+alias h='history'
+alias j='jobs -l'
+alias df='df -h'
+alias du='du -h'
+alias free='free -h'
+alias ps='ps aux'
+alias top='htop'
+
+# Mounting and network aliases
+alias mount='mount | column -t'
+alias ping='ping -c 5'
+alias wget='wget -c'
+
 
 # System aliases
 alias h='history'
@@ -88,6 +151,14 @@ alias top='htop'
 alias mount='mount | column -t'
 alias ping='ping -c 5'
 alias wget='wget -c'
+
+
+
+
+
+
+
+
 
 # Better tools aliases (if available)
 if command -v exa &> /dev/null; then
@@ -126,6 +197,12 @@ extract() {
         echo "'$1' is not a valid file"
     fi
 }
+
+# --- Environment Variables ---
+# Set default editor
+export EDITOR="nano"
+export VISUAL="nano"
+
 
 # Development environment setup
 export GOPATH=$HOME/go
