@@ -222,6 +222,27 @@ tmux-start() {
     fi
 }
 
+extract() {
+    if [ -f $1 ] ; then
+        case $1 in
+            *.tar.bz2)   tar xjf $1     ;;
+            *.tar.gz)    tar xzf $1     ;;
+            *.bz2)       bunzip2 $1     ;;
+            *.rar)       unrar e $1     ;;
+            *.gz)        gunzip $1      ;;
+            *.tar)       tar xf $1      ;;
+            *.tbz2)      tar xjf $1     ;;
+            *.tgz)       tar xzf $1     ;;
+            *.zip)       unzip $1       ;;
+            *.Z)         uncompress $1  ;;
+            *.7z)        7z x $1        ;;
+            *)     echo "'$1' cannot be extracted via extract()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
+
 # --- Environment Variables ---
 # Set default editor
 export EDITOR="nano"
@@ -271,8 +292,7 @@ help-zsh() {
     echo "  lt              - Tree view of directory"
     echo "  cat             - Enhanced cat (using bat if available)"
     echo "  extract <file>  - Extract various archive formats"
-    echo
-    
+    echo    
     echo -e "\e[36m🔧 System Commands:\e[0m"
     echo "  reload          - Restart current shell"
     echo "  ::              - Run last command with sudo"
@@ -374,4 +394,14 @@ help-zsh() {
 }
 
 alias help='help-zsh'
-tmux source-file ~/.tmux.conf
+
+# Set zsh as default shell for current user
+if [[ "$SHELL" != *"zsh"* ]]; then
+    ZSH_PATH=$(which zsh)
+    if [[ -n "$ZSH_PATH" ]]; then
+        echo -e "\e[33mSetting zsh as default shell...\e[0m"
+        chsh -s "$ZSH_PATH" 2>/dev/null || {
+            echo -e "\e[31mFailed to set zsh as default shell. Run manually: chsh -s $ZSH_PATH\e[0m"
+        }
+    fi
+fi
