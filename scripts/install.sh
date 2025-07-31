@@ -1,25 +1,39 @@
 #!/bin/bash
 
-# Set locale with fallbacks for better compatibility
-if command -v locale &> /dev/null; then
-    if locale -a 2>/dev/null | grep -q "en_US.UTF-8"; then
-        export LANG="en_US.UTF-8"
-        export LC_ALL="en_US.UTF-8"
-    elif locale -a 2>/dev/null | grep -q "C.UTF-8"; then
-        export LANG="C.UTF-8"
-        export LC_ALL="C.UTF-8"
-    elif locale -a 2>/dev/null | grep -q "en_US.utf8"; then
-        export LANG="en_US.utf8"
-        export LC_ALL="en_US.utf8"
+# Set locale with improved detection and fallbacks
+unset LC_ALL LANG  # Clear any problematic locale settings first
+
+# Function to safely set locale
+set_safe_locale() {
+    if command -v locale &> /dev/null; then
+        # Try different locale variations
+        local available_locales=$(locale -a 2>/dev/null | tr '\n' ' ')
+        
+        if echo "$available_locales" | grep -q "en_US\.UTF-8"; then
+            export LANG="en_US.UTF-8"
+            export LC_ALL="en_US.UTF-8"
+        elif echo "$available_locales" | grep -q "en_US\.utf8"; then
+            export LANG="en_US.utf8"
+            export LC_ALL="en_US.utf8"
+        elif echo "$available_locales" | grep -q "C\.UTF-8"; then
+            export LANG="C.UTF-8"
+            export LC_ALL="C.UTF-8"
+        elif echo "$available_locales" | grep -q "POSIX"; then
+            export LANG="POSIX"
+            export LC_ALL="POSIX"
+        else
+            export LANG="C"
+            export LC_ALL="C"
+        fi
     else
+        # Fallback if locale command is not available
         export LANG="C"
         export LC_ALL="C"
     fi
-else
-    # Fallback if locale command is not available
-    export LANG="C"
-    export LC_ALL="C"
-fi
+}
+
+# Set locale safely
+set_safe_locale
 
 # Zsh Installation Script - Multi-OS Support
 # Supports: Ubuntu/Debian, CentOS/RHEL/Fedora, Alpine, macOS, and Docker containers
@@ -69,20 +83,21 @@ detect_current_user() {
 install_dependencies() {
     log_info "Installing dependencies..."
 
-    # Install locales package first to fix locale issues
     case $OS in
         "debian")
             if [[ $EUID -eq 0 ]]; then
                 apt-get update -y
+                # Install locales package and generate UTF-8 locale
                 apt-get install -y locales
-                # Generate common locales
-                locale-gen en_US.UTF-8 2>/dev/null || true
+                echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen 2>/dev/null || true
+                locale-gen 2>/dev/null || true
                 update-locale LANG=en_US.UTF-8 2>/dev/null || true
                 apt-get install -y zsh git curl wget vim nano sudo tmux fzf unzip
             else
                 sudo apt-get update -y
                 sudo apt-get install -y locales
-                sudo locale-gen en_US.UTF-8 2>/dev/null || true
+                echo "en_US.UTF-8 UTF-8" | sudo tee -a /etc/locale.gen 2>/dev/null || true
+                sudo locale-gen 2>/dev/null || true
                 sudo update-locale LANG=en_US.UTF-8 2>/dev/null || true
                 sudo apt-get install -y zsh git curl wget vim nano sudo tmux fzf unzip
             fi
@@ -109,11 +124,14 @@ install_dependencies() {
         "alpine")
             if [[ $EUID -eq 0 ]]; then
                 apk update
-                apk add --no-cache musl-locales musl-locales-lang 2>/dev/null || true
+                # Alpine uses musl, different locale setup
+                export LANG="C.UTF-8"
+                export LC_ALL="C.UTF-8"
                 apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf unzip
             else
                 sudo apk update
-                sudo apk add --no-cache musl-locales musl-locales-lang 2>/dev/null || true
+                export LANG="C.UTF-8"
+                export LC_ALL="C.UTF-8"
                 sudo apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf unzip
             fi
         ;;
@@ -131,6 +149,9 @@ install_dependencies() {
     esac
 
     log_success "Dependencies installed successfully"
+    
+    # Reset locale after package installation
+    set_safe_locale
 }
 
 # Install zinit for a specific user
