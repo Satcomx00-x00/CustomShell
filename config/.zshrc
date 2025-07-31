@@ -77,6 +77,7 @@ alias l='exa -CF'
 
 alias reload='exec $SHELL -l'
 alias ::='sudo $(fc -ln -1)' # sexy alias, because '!!' 
+alias update-zshrc='bash $HOME/.update-zshrc.sh'
 
 # --- Python Aliases ---
 alias py3='python3'

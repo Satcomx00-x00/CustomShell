@@ -409,11 +409,23 @@ main() {
     install_additional_tools
     install_nerdfont
 
+    # Copy update scripts to home directory
+    log_info "Installing update scripts..."
+    local script_dir="$(dirname "$0")"
+    if [[ -f "$script_dir/update-zshrc.sh" ]]; then
+        cp "$script_dir/update-zshrc.sh" "$HOME/.update-zshrc.sh"
+        chmod +x "$HOME/.update-zshrc.sh"
+        log_success "Installed .update-zshrc.sh to home directory"
+    else
+        log_warning "update-zshrc.sh not found, skipping installation"
+    fi
+
     log_success "Zsh installation completed successfully!"
     log_info "Please restart your terminal or run 'exec zsh' to start using zsh"
     log_info "Run 'p10k configure' to configure Powerlevel10k theme"
     log_info "Run 'tmux' to start tmux with the enhanced configuration"
     log_info "Use 'prefix + I' (Ctrl-a + I) to install tmux plugins"
+    log_info "Use 'update-zshrc' command to update your .zshrc from GitHub"
 }
 
 # Run installation
