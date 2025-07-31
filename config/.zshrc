@@ -92,10 +92,16 @@ alias pipir3='pip3 install -r requirements.txt'
 
 # --- Tmux Aliases ---
 alias tmux='tmux -2'
-alias tma='tmux attach -t'
+alias tma='tmux attach -t 2>/dev/null || echo "No session found. Use tms <name> to create one."'
 alias tms='tmux new-session -s'
 alias tmk='tmux kill-session -t'
 alias ts='[[ -n "$TMUX" ]] && unset TMUX; tmux new-session -s'
+alias tl='tmux list-sessions 2>/dev/null || echo "No tmux sessions running."'
+alias tat='tmux attach 2>/dev/null || tmux new-session -s main'
+alias tk='tmux kill-server'  # Kill all tmux sessions
+
+# Smart tmux starter - creates or attaches to default session
+alias tx='tmux-start'
 
 # --- Docker Aliases ---
 alias dk='docker'
@@ -182,24 +188,37 @@ mkcd() {
     mkdir -p "$1" && cd "$1"
 }
 
-extract() {
-    if [ -f $1 ] ; then
-        case $1 in
-            *.tar.bz2)   tar xjf $1     ;;
-            *.tar.gz)    tar xzf $1     ;;
-            *.bz2)       bunzip2 $1     ;;
-            *.rar)       unrar e $1     ;;
-            *.gz)        gunzip $1      ;;
-            *.tar)       tar xf $1      ;;
-            *.tbz2)      tar xjf $1     ;;
-            *.tgz)       tar xzf $1     ;;
-            *.zip)       unzip $1       ;;
-            *.Z)         uncompress $1  ;;
-            *.7z)        7z x $1        ;;
-            *)     echo "'$1' cannot be extracted via extract()" ;;
-        esac
+# Smart tmux session management
+tmux-smart() {
+    if tmux list-sessions &>/dev/null; then
+        echo -e "\e[36mExisting tmux sessions:\e[0m"
+        tmux list-sessions
+        echo
+        read -p "Attach to session (or press Enter for new): " session
+        if [[ -n "$session" ]]; then
+            tmux attach -t "$session" 2>/dev/null || echo -e "\e[31mSession '$session' not found.\e[0m"
+        else
+            tmux new-session
+        fi
     else
-        echo "'$1' is not a valid file"
+        echo -e "\e[33mNo existing sessions. Creating new session...\e[0m"
+        tmux new-session
+    fi
+}
+
+# Smart tmux starter function
+tmux-start() {
+    if [[ -n "$TMUX" ]]; then
+        echo -e "\e[33mAlready inside tmux session.\e[0m"
+        return 1
+    fi
+    
+    if tmux has-session -t main 2>/dev/null; then
+        echo -e "\e[36mAttaching to existing 'main' session...\e[0m"
+        tmux attach -t main
+    else
+        echo -e "\e[36mCreating new 'main' session...\e[0m"
+        tmux new-session -s main
     fi
 }
 
@@ -274,10 +293,15 @@ help-zsh() {
     echo    
     echo -e "\e[36m🖥️ Tmux Session Management:\e[0m"
     echo "  tmux            - Start tmux with 256 color support"
-    echo "  tma <session>   - Attach to tmux session"
+    echo "  tx              - Smart tmux start (main session)"
+    echo "  tma <session>   - Attach to tmux session (with error handling)"
     echo "  tms <session>   - Create new tmux session"
     echo "  tmk <session>   - Kill tmux session"
+    echo "  tk              - Kill tmux server (all sessions)"
     echo "  ts <session>    - Force new session (unsets TMUX)"
+    echo "  tl              - List all tmux sessions (safe)"
+    echo "  tat             - Attach to session or create 'main'"
+    echo "  tmux-smart      - Interactive session management"
     echo    
     echo -e "\e[36m🐳 Docker Management:\e[0m"
     echo "  dk              - Docker command shortcut"
@@ -338,6 +362,9 @@ help-zsh() {
     echo "  • Run 'p10k configure' to customize your prompt"
     echo "  • Use 'update-zshrc' to get latest configuration"
     echo "  • Tmux prefix key is Ctrl+A (not Ctrl+B)"
+    echo "  • Use 'tx' for quick tmux start with main session"
+    echo "  • Use 'tmux-smart' for interactive session management"
+    echo "  • Use 'tk' to kill all tmux sessions if stuck"
     echo    
     echo -e "\e[32m🔗 Quick Reference:\e[0m"
     echo "  Configuration: ~/.zshrc, ~/.p10k.zsh, ~/.tmux.conf"
