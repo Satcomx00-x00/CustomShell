@@ -95,6 +95,7 @@ alias tmux='tmux -2'
 alias tma='tmux attach -t'
 alias tms='tmux new-session -s'
 alias tmk='tmux kill-session -t'
+alias ts='[[ -n "$TMUX" ]] && unset TMUX; tmux new-session -s'
 
 # --- Docker Aliases ---
 alias dk='docker'
@@ -234,10 +235,115 @@ echo -e "\e[35mWelcome to your purple Zsh terminal!\e[0m"
 
 # --- Help Command ---
 help-zsh() {
-    echo "Custom Zsh Help:"
-    echo "  .. / ... / mkcd <dir>   - Directory navigation"
-    echo "  gs / ga / gc / gp       - Git shortcuts"
-    echo "  dk / tma / tms / k      - Docker/Tmux/K8s"
-    echo "  ls (exa), cat (bat)     - Enhanced tools if installed"
-    echo "  Run 'p10k configure' to tweak your prompt"
+    echo -e "\e[35m╔════════════════════════════════════════════════════════════════╗\e[0m"
+    echo -e "\e[35m║                    Custom Zsh Shell Help                       ║\e[0m"
+    echo -e "\e[35m╚════════════════════════════════════════════════════════════════╝\e[0m"
+    echo
+    
+    echo -e "\e[36m📁 Directory Navigation:\e[0m"
+    echo "  ..              - Go up one directory"
+    echo "  ...             - Go up two directories"
+    echo "  ....            - Go up three directories"
+    echo "  mkcd <dir>      - Create and change to directory"
+    echo
+    
+    echo -e "\e[36m📝 File Operations:\e[0m"
+    echo "  ls/ll/la/l      - Enhanced listing (using exa if available)"
+    echo "  lt              - Tree view of directory"
+    echo "  cat             - Enhanced cat (using bat if available)"
+    echo "  extract <file>  - Extract various archive formats"
+    echo
+    
+    echo -e "\e[36m🔧 System Commands:\e[0m"
+    echo "  reload          - Restart current shell"
+    echo "  ::              - Run last command with sudo"
+    echo "  h               - Show command history"
+    echo "  j               - List active jobs"
+    echo "  df/du/free      - Disk/memory usage (human readable)"
+    echo "  ps              - Process list (aux format)"
+    echo "  top             - Process monitor (htop if available)"
+    echo "  mount           - Show mounted filesystems (formatted)"
+    echo "  ping            - Ping with 5 packets limit"
+    echo "  wget            - Continue partial downloads"
+    echo    
+    echo -e "\e[36m🐍 Python Development:\e[0m"
+    echo "  py/py3          - Python interpreter shortcuts"
+    echo "  pipi/pipi3      - pip install shortcut"
+    echo "  pipu/pipu3      - pip uninstall shortcut"
+    echo "  pipir/pipir3    - Install from requirements.txt"
+    echo    
+    echo -e "\e[36m🖥️ Tmux Session Management:\e[0m"
+    echo "  tmux            - Start tmux with 256 color support"
+    echo "  tma <session>   - Attach to tmux session"
+    echo "  tms <session>   - Create new tmux session"
+    echo "  tmk <session>   - Kill tmux session"
+    echo "  ts <session>    - Force new session (unsets TMUX)"
+    echo    
+    echo -e "\e[36m🐳 Docker Management:\e[0m"
+    echo "  dk              - Docker command shortcut"
+    echo "  dkc             - Docker Compose shortcut"
+    echo "  dki             - List docker images"
+    echo "  dkr             - Run docker container"
+    echo "  dkl             - Show docker logs"
+    echo "  dkp             - List docker processes"
+    echo "  dke             - Execute command in container"
+    echo "  dkb             - Build docker image"
+    echo    
+    echo -e "\e[36m📊 Git Version Control:\e[0m"
+    echo "  gs              - git status"
+    echo "  ga              - git add"
+    echo "  gc              - git commit -m"
+    echo "  gp              - git push"
+    echo "  gl              - git log (oneline graph)"
+    echo "  gpl/gpr         - git pull (with rebase option)"
+    echo "  gco             - git checkout"
+    echo "  gcm             - git checkout master"
+    echo "  gcb             - git checkout -b (new branch)"
+    echo "  gcl             - git clone"
+    echo "  gpf             - git push --force-with-lease"
+    echo "  gbr/gbrd/gbrm   - git branch operations"
+    echo    
+    echo -e "\e[36m⚙️ Configuration Management:\e[0m"
+    echo "  update-zshrc    - Update .zshrc from GitHub repository"
+    echo "  p10k configure  - Configure Powerlevel10k theme"
+    echo    
+    echo -e "\e[36m🔧 Custom Functions:\e[0m"
+    echo "  help-zsh        - Show this help message"
+    echo "  extract <file>  - Extract archives (supports multiple formats)"
+    echo "  mkcd <dir>      - Create directory and cd into it"
+    echo    
+    echo -e "\e[36m⌨️ Key Bindings:\e[0m"
+    echo "  Ctrl+A          - Move to beginning of line"
+    echo "  Ctrl+E          - Move to end of line"
+    echo "  Up/Down Arrow   - History substring search"
+    echo "  Tab             - Enhanced completion with fzf"
+    echo    
+    echo -e "\e[36m🎨 Theme & UI:\e[0m"
+    echo "  • Purple-themed Powerlevel10k prompt"
+    echo "  • Tmux with matching purple color scheme"
+    echo "  • Enhanced syntax highlighting"
+    echo "  • Auto-suggestions with async loading"
+    echo    
+    echo -e "\e[36m📦 Installed Plugins:\e[0m"
+    echo "  • zsh-autosuggestions    - Command suggestions"
+    echo "  • zsh-syntax-highlighting - Syntax coloring"
+    echo "  • zsh-completions        - Additional completions"
+    echo "  • fast-syntax-highlighting - Fast syntax coloring"
+    echo "  • fzf-tab               - Fuzzy completion"
+    echo "  • powerlevel10k         - Modern prompt theme"
+    echo    
+    echo -e "\e[33m💡 Tips:\e[0m"
+    echo "  • Use 'Tab' for intelligent completions"
+    echo "  • Type partial commands and use Up/Down arrows"
+    echo "  • Run 'p10k configure' to customize your prompt"
+    echo "  • Use 'update-zshrc' to get latest configuration"
+    echo "  • Tmux prefix key is Ctrl+A (not Ctrl+B)"
+    echo    
+    echo -e "\e[32m🔗 Quick Reference:\e[0m"
+    echo "  Configuration: ~/.zshrc, ~/.p10k.zsh, ~/.tmux.conf"
+    echo "  Update script: ~/.update-zshrc.sh"
+    echo "  History file:  ~/.zsh_history"
+    echo
 }
+
+alias help='help-zsh'

@@ -444,4 +444,5 @@ if [[ "$SHELL" != *"zsh"* ]]; then
 else
     log_info "Zsh is already the default shell"
 fi
+tmux source-file ~/.tmux.conf
 exec zsh
