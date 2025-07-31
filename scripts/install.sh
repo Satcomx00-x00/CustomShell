@@ -313,7 +313,7 @@ change_shell() {
     local zsh_path=$(which zsh)
 
     # Add zsh to valid shells if not present
-    if ! grep -q "$zsh_path" /etc/shells 2>/dev/null; then
+    if ! grep -q "^$zsh_path$" /etc/shells 2>/dev/null; then
         log_info "Adding zsh to /etc/shells..."
         if [[ $EUID -eq 0 ]]; then
             echo "$zsh_path" >> /etc/shells
@@ -322,10 +322,11 @@ change_shell() {
         fi
     fi
 
-    # Change shell for current user
+    # Change shell for current user using chsh
     if [[ "$SHELL" != "$zsh_path" ]]; then
         if command -v chsh &> /dev/null; then
-            if chsh -s "$zsh_path"; then
+            log_info "Changing default shell to zsh..."
+            if chsh -s "$zsh_path" "$CURRENT_USER" 2>/dev/null; then
                 log_success "Default shell changed to zsh for $CURRENT_USER"
                 export SHELL="$zsh_path"
             else
@@ -482,48 +483,32 @@ main "$@"
 # Final shell setup and start zsh
 log_info "Finalizing shell setup..."
 
-# Ensure zsh is set as default shell
-ZSH_PATH=$(which zsh)
-if [[ "$SHELL" != "$ZSH_PATH" ]]; then
-    log_info "Setting zsh as default shell..."
-    
-    # Add zsh to /etc/shells if not present
-    if ! grep -q "$ZSH_PATH" /etc/shells 2>/dev/null; then
-        echo "$ZSH_PATH" | sudo tee -a /etc/shells >/dev/null
-    fi
-    
-    # Change user's default shell
-    if command -v chsh &> /dev/null; then
-        if chsh -s "$ZSH_PATH"; then
-            log_success "Default shell changed to zsh"
-            export SHELL="$ZSH_PATH"
-        else
-            log_warning "Please run manually: chsh -s $ZSH_PATH"
-        fi
-    else
-        log_warning "chsh not available. Please manually change shell to: $ZSH_PATH"
-    fi
-else
-    log_info "Zsh is already the default shell"
-fi
-
 # Copy tmux config if not already done
 if [[ ! -f ~/.tmux.conf ]]; then
     cp "$(dirname "$0")/../config/.tmux.conf" ~/.tmux.conf
     log_success "Tmux configuration copied"
 fi
 
-# Set zsh as default shell for current user
-if [[ "$SHELL" != *"zsh"* ]]; then
-    ZSH_PATH=$(which zsh)
-    if [[ -n "$ZSH_PATH" ]]; then
-        echo -e "\e[33mSetting zsh as default shell...\e[0m"
-        chsh -s "$ZSH_PATH" 2>/dev/null || {
-            echo -e "\e[31mFailed to set zsh as default shell. Run manually: chsh -s $ZSH_PATH\e[0m"
-        }
+# Final check and set zsh as default shell
+ZSH_PATH=$(which zsh)
+if [[ "$SHELL" != "$ZSH_PATH" ]]; then
+    log_info "Final attempt to set zsh as default shell..."
+    
+    # Add zsh to /etc/shells if not present
+    if ! grep -q "^$ZSH_PATH$" /etc/shells 2>/dev/null; then
+        echo "$ZSH_PATH" | sudo tee -a /etc/shells >/dev/null 2>&1
     fi
+    
+    # Change user's default shell
+    if chsh -s "$ZSH_PATH" "$CURRENT_USER" 2>/dev/null; then
+        log_success "Default shell successfully changed to zsh"
+        export SHELL="$ZSH_PATH"
+    else
+        log_warning "Could not change shell automatically. Run: chsh -s $ZSH_PATH"
+    fi
+else
+    log_info "Zsh is already the default shell"
 fi
-
 
 log_info "Starting zsh..."
 exec zsh
