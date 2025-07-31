@@ -445,5 +445,4 @@ else
     log_info "Zsh is already the default shell"
 fi
 cp $(dirname "$0")/../config/.tmux.conf ~/.tmux.conf
-tmux source-file ~/.tmux.conf
 exec zsh

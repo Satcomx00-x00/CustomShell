@@ -15,9 +15,10 @@ It includes themes, plugins, aliases, and an enhanced terminal experience (RAM, 
 ## Quick Install
 
 ```bash
+apt update && apt install git -y
 git clone https://github.com/Satcomx00-x00/CustomShell
-cd CustomShell
-./scripts/install.sh
+cd CustomShell/scripts
+./install.sh
 ```
 
 > **Tip:** To update the Powerlevel10k configuration after modification:

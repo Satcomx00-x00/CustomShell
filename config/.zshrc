@@ -374,3 +374,4 @@ help-zsh() {
 }
 
 alias help='help-zsh'
+tmux source-file ~/.tmux.conf
