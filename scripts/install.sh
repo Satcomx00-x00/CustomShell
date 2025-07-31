@@ -1,13 +1,22 @@
 #!/bin/bash
 
 # Set locale with fallbacks for better compatibility
-if locale -a | grep -q "en_US.UTF-8"; then
-    export LANG="en_US.UTF-8"
-    export LC_ALL="en_US.UTF-8"
-elif locale -a | grep -q "C.UTF-8"; then
-    export LANG="C.UTF-8"
-    export LC_ALL="C.UTF-8"
+if command -v locale &> /dev/null; then
+    if locale -a 2>/dev/null | grep -q "en_US.UTF-8"; then
+        export LANG="en_US.UTF-8"
+        export LC_ALL="en_US.UTF-8"
+    elif locale -a 2>/dev/null | grep -q "C.UTF-8"; then
+        export LANG="C.UTF-8"
+        export LC_ALL="C.UTF-8"
+    elif locale -a 2>/dev/null | grep -q "en_US.utf8"; then
+        export LANG="en_US.utf8"
+        export LC_ALL="en_US.utf8"
+    else
+        export LANG="C"
+        export LC_ALL="C"
+    fi
 else
+    # Fallback if locale command is not available
     export LANG="C"
     export LC_ALL="C"
 fi
@@ -60,27 +69,39 @@ detect_current_user() {
 install_dependencies() {
     log_info "Installing dependencies..."
 
+    # Install locales package first to fix locale issues
     case $OS in
         "debian")
             if [[ $EUID -eq 0 ]]; then
                 apt-get update -y
+                apt-get install -y locales
+                # Generate common locales
+                locale-gen en_US.UTF-8 2>/dev/null || true
+                update-locale LANG=en_US.UTF-8 2>/dev/null || true
                 apt-get install -y zsh git curl wget vim nano sudo tmux fzf unzip
             else
                 sudo apt-get update -y
+                sudo apt-get install -y locales
+                sudo locale-gen en_US.UTF-8 2>/dev/null || true
+                sudo update-locale LANG=en_US.UTF-8 2>/dev/null || true
                 sudo apt-get install -y zsh git curl wget vim nano sudo tmux fzf unzip
             fi
         ;;
         "redhat")
             if command -v dnf &> /dev/null; then
                 if [[ $EUID -eq 0 ]]; then
+                    dnf install -y glibc-locale-source glibc-langpack-en 2>/dev/null || true
                     dnf install -y zsh git curl wget vim nano sudo tmux fzf unzip
                 else
+                    sudo dnf install -y glibc-locale-source glibc-langpack-en 2>/dev/null || true
                     sudo dnf install -y zsh git curl wget vim nano sudo tmux fzf unzip
                 fi
             else
                 if [[ $EUID -eq 0 ]]; then
+                    yum install -y glibc-common 2>/dev/null || true
                     yum install -y zsh git curl wget vim nano sudo tmux fzf unzip
                 else
+                    sudo yum install -y glibc-common 2>/dev/null || true
                     sudo yum install -y zsh git curl wget vim nano sudo tmux fzf unzip
                 fi
             fi
@@ -88,9 +109,11 @@ install_dependencies() {
         "alpine")
             if [[ $EUID -eq 0 ]]; then
                 apk update
+                apk add --no-cache musl-locales musl-locales-lang 2>/dev/null || true
                 apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf unzip
             else
                 sudo apk update
+                sudo apk add --no-cache musl-locales musl-locales-lang 2>/dev/null || true
                 sudo apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf unzip
             fi
         ;;
