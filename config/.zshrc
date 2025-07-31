@@ -79,12 +79,15 @@ alias reload='exec $SHELL -l'
 alias ::='sudo $(fc -ln -1)' # sexy alias, because '!!' 
 
 # --- Python Aliases ---
-alias py='python3'
-alias pip='pip3'
-alias pipi='pip3 install'
-alias pipu='pip3 uninstall'
-alias pipir='pip3 install -r requirements.txt'
+alias py3='python3'
+alias pipi='pip install'
+alias pipu='pip uninstall'
+alias pipir='pip install -r requirements.txt'
 
+alias py='python'
+alias pipi3='pip3 install'
+alias pipu3='pip3 uninstall'
+alias pipir3='pip3 install -r requirements.txt'
 
 # --- Tmux Aliases ---
 alias tmux='tmux -2'
