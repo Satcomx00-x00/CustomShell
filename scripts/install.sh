@@ -513,5 +513,17 @@ if [[ ! -f ~/.tmux.conf ]]; then
     log_success "Tmux configuration copied"
 fi
 
+# Set zsh as default shell for current user
+if [[ "$SHELL" != *"zsh"* ]]; then
+    ZSH_PATH=$(which zsh)
+    if [[ -n "$ZSH_PATH" ]]; then
+        echo -e "\e[33mSetting zsh as default shell...\e[0m"
+        chsh -s "$ZSH_PATH" 2>/dev/null || {
+            echo -e "\e[31mFailed to set zsh as default shell. Run manually: chsh -s $ZSH_PATH\e[0m"
+        }
+    fi
+fi
+
+
 log_info "Starting zsh..."
 exec zsh
