@@ -54,7 +54,6 @@ typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
     # Development Environment
     virtualenv           # Python virtual environment
     python_version      # Python version in Python projects
-    command_execution_time  # Show execution time for commands
     # node_version        # Node.js version in Node projects
     # rust_version       # Rust version in Rust projects
     # go_version         # Go version in Go projects
@@ -74,6 +73,8 @@ typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
     
     # Time & Date
     time           # Current time with seconds
+    newline        # Clean line break
+    newline        # Clean line break
 )
 
 # 3. COLOR PALETTE DEFINITION
