@@ -1,0 +1,159 @@
+# Powerlevel10k configuration: Modern purple UI/UX with DroidSansMono Nerd Font
+
+POWERLEVEL9K_MODE='nerdfont-complete'
+ZSH_THEME='powerlevel9k/powerlevel9k'
+
+# --- Font Configuration ---
+# Optimized for DroidSansMono Nerd Font
+typeset -g POWERLEVEL9K_ICON_BEFORE_CONTENT=true
+
+# --- Prompt Elements ---
+typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
+    project
+    os_icon
+    context
+    direnv
+    dir
+    dir_writable
+    vcs
+    newline
+    prompt_char
+)
+typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
+    status
+    command_execution_time
+    background_jobs
+    virtualenv
+    python_version
+    rust_version
+    aws
+    gcloud
+    kubecontext
+    ram
+    load
+    disk_usage
+    battery
+    time
+    ip
+)
+
+# --- Colors ---
+typeset -g POWERLEVEL9K_COLOR_SCHEME='dark'
+typeset -g P10K_PURPLE='#a259f7'
+typeset -g P10K_PURPLE_DARK='#7c3aed'
+typeset -g P10K_GREY='#232136'
+typeset -g P10K_WHITE='#ffffff'
+typeset -g P10K_ACCENT='#f6c177'
+
+# --- Segment Colors ---
+typeset -g POWERLEVEL9K_OS_ICON_FOREGROUND=$P10K_WHITE
+typeset -g POWERLEVEL9K_OS_ICON_BACKGROUND=$P10K_PURPLE
+
+typeset -g POWERLEVEL9K_DIR_FOREGROUND=$P10K_WHITE
+typeset -g POWERLEVEL9K_DIR_BACKGROUND=$P10K_PURPLE_DARK
+typeset -g POWERLEVEL9K_DIR_ANCHOR_FOREGROUND=$P10K_ACCENT
+typeset -g POWERLEVEL9K_DIR_ANCHOR_BACKGROUND=$P10K_PURPLE_DARK
+
+typeset -g POWERLEVEL9K_VCS_FOREGROUND=$P10K_WHITE
+typeset -g POWERLEVEL9K_VCS_BACKGROUND=$P10K_PURPLE
+
+typeset -g POWERLEVEL9K_STATUS_FOREGROUND=$P10K_WHITE
+typeset -g POWERLEVEL9K_STATUS_BACKGROUND=$P10K_GREY
+
+typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND=$P10K_ACCENT
+typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND=$P10K_GREY
+
+typeset -g POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND=$P10K_PURPLE
+typeset -g POWERLEVEL9K_BACKGROUND_JOBS_BACKGROUND=$P10K_GREY
+
+typeset -g POWERLEVEL9K_TIME_FOREGROUND=$P10K_ACCENT
+typeset -g POWERLEVEL9K_TIME_BACKGROUND=$P10K_GREY
+typeset -g POWERLEVEL9K_TIME_FORMAT='%D{%H:%M:%S}'
+
+typeset -g POWERLEVEL9K_DATE_FOREGROUND=$P10K_PURPLE
+typeset -g POWERLEVEL9K_DATE_BACKGROUND=$P10K_GREY
+typeset -g POWERLEVEL9K_DATE_FORMAT='%D{%a %d %b}'
+
+# --- Prompt Layout & Spacing ---
+typeset -g POWERLEVEL9K_PROMPT_ADD_NEWLINE=true
+typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_CHAR=' '
+typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_FOREGROUND=244
+typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_GAP_CHAR=' '
+typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_GAP_FOREGROUND=244
+
+# --- Separators & Symbols (ASCII/Unicode) ---
+typeset -g POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=''
+typeset -g POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=''
+typeset -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR='|'
+typeset -g POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR='|'
+typeset -g POWERLEVEL9K_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL=''  
+typeset -g POWERLEVEL9K_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL=''     
+typeset -g POWERLEVEL9K_RIGHT_PROMPT_FIRST_SEGMENT_START_SYMBOL=''
+typeset -g POWERLEVEL9K_RIGHT_PROMPT_LAST_SEGMENT_END_SYMBOL=''
+
+# --- Prompt Char ---
+typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_VIVIS_FOREGROUND=$P10K_PURPLE
+typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_VIVIS_FOREGROUND=red
+typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_VIVIS_CONTENT='❯'
+typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_VIVIS_CONTENT='❯'
+typeset -g POWERLEVEL9K_PROMPT_CHAR_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL=''
+
+# --- OS Icon (with DroidSansMono Nerd Font symbol) ---
+typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION=''
+
+# --- VCS Icons (Nerd Font symbols) ---
+typeset -g POWERLEVEL9K_VCS_BRANCH_ICON=''
+typeset -g POWERLEVEL9K_VCS_STAGED_ICON='✚'
+typeset -g POWERLEVEL9K_VCS_UNSTAGED_ICON='●'
+typeset -g POWERLEVEL9K_VCS_UNTRACKED_ICON='?'
+typeset -g POWERLEVEL9K_VCS_INCOMING_CHANGES_ICON='⇣'
+typeset -g POWERLEVEL9K_VCS_OUTGOING_CHANGES_ICON='⇡'
+typeset -g POWERLEVEL9K_VCS_CLEAN_ICON='✔'
+typeset -g POWERLEVEL9K_VCS_CONFLICTED_ICON='✖'
+typeset -g POWERLEVEL9K_VCS_TAG_ICON=''
+
+# --- Additional segment icons optimized for DroidSansMono Nerd Font ---
+typeset -g POWERLEVEL9K_PYTHON_ICON=''
+typeset -g POWERLEVEL9K_RUST_ICON=''
+typeset -g POWERLEVEL9K_VIRTUALENV_ICON=''
+typeset -g POWERLEVEL9K_BACKGROUND_JOBS_ICON=''
+typeset -g POWERLEVEL9K_TIME_ICON=''
+typeset -g POWERLEVEL9K_LOAD_ICON=''
+typeset -g POWERLEVEL9K_RAM_ICON=''
+typeset -g POWERLEVEL9K_DISK_USAGE_ICON=''
+typeset -g POWERLEVEL9K_BATTERY_ICON=''
+
+# --- Segment separators optimized for DroidSansMono Nerd Font ---
+# typeset -g POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=$'\uE0C6 '
+# typeset -g POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=$' \uE0C7'
+# typeset -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR='|'
+# typeset -g POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR='|'
+
+# --- Prompt Char with Nerd Font ---
+typeset -g POWERLEVEL9K_PROMPT_CHAR_OK_VIVIS_CONTENT='❯'
+typeset -g POWERLEVEL9K_PROMPT_CHAR_ERROR_VIVIS_CONTENT='❯'
+
+# --- Misc ---
+typeset -g POWERLEVEL9K_SHOW_RULER=false
+typeset -g POWERLEVEL9K_DISABLE_HOT_RELOAD=true
+typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+typeset -g POWERLEVEL9K_ICON_PADDING=none
+
+# --- UI/UX Touches ---
+typeset -g POWERLEVEL9K_DIR_SHOW_WRITABLE=true
+typeset -g POWERLEVEL9K_DIR_SHOW_FULL_PATH=true
+typeset -g POWERLEVEL9K_SHORTEN_DIR_LENGTH=0
+typeset -g POWERLEVEL9K_SHORTEN_DELIMITER=''
+typeset -g POWERLEVEL9K_STATUS_OK=true
+typeset -g POWERLEVEL9K_STATUS_ERROR=true
+typeset -g POWERLEVEL9K_STATUS_VERBOSE=false
+
+# --- Project Segment with DroidSansMono Nerd Font icon ---
+typeset -g POWERLEVEL9K_PROJECT_FOREGROUND=$P10K_WHITE
+typeset -g POWERLEVEL9K_PROJECT_BACKGROUND=$P10K_PURPLE
+typeset -g POWERLEVEL9K_PROJECT_ICON=''
+typeset -g POWERLEVEL9K_PROJECT_SHOW_ON_COMMAND='git rev-parse --is-inside-work-tree &>/dev/null'
+typeset -g POWERLEVEL9K_PROJECT_NAME_ONLY=true
+
+# End of ~/.p10k.zsh
+# End of ~/.p10k.zsh

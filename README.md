@@ -14,6 +14,15 @@ It includes themes, plugins, aliases, and an enhanced terminal experience (RAM, 
 
 ## Quick Install
 
+## VSCode
+
+Settings: 
+
+```json
+{ "editor.fontfamily" : "DroidSansM Nerd Font,Symbols Nerd Font,Courier New,monospace" }
+```
+
+
 ```bash
 apt update && apt install git -y
 git clone https://github.com/Satcomx00-x00/CustomShell

@@ -392,7 +392,7 @@ install_nerdfont_for_user() {
     local user_home="$1"
     local user_name="$2"
     
-    log_info "Installing FiraCode Nerd Font for user: $user_name..."
+    log_info "Installing DroidSansMono Nerd Font, Font Awesome 7.0.0, Nerd Fonts Symbols Only v3.4.0, and Extra Powerline Symbols for user: $user_name..."
     local font_dir="$user_home/.local/share/fonts"
     
     if [[ "$user_name" == "root" ]]; then
@@ -405,20 +405,36 @@ install_nerdfont_for_user() {
         sudo -u "$user_name" mkdir -p "$font_dir"
     fi
     
-    local font_url="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/FiraCode.zip"
-    local tmp_zip="/tmp/FiraCodeNerdFont_${user_name}.zip"
-    
-    curl -fLo "$tmp_zip" --create-dirs "$font_url"
-    unzip -o "$tmp_zip" -d "$font_dir"
-    rm -f "$tmp_zip"
-    
+    # DroidSansMono Nerd Font
+    local droid_url="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/DroidSansMono.zip"
+    local droid_zip="/tmp/DroidSansMonoNerdFont_${user_name}.zip"
+    log_info "Downloading DroidSansMono Nerd Font..."
+    curl -fLo "$droid_zip" --create-dirs "$droid_url"
+    unzip -o "$droid_zip" -d "$font_dir"
+    rm -f "$droid_zip"
+
+    # Nerd Fonts Symbols Only v3.4.0
+    local symbols_url="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/NerdFontsSymbolsOnly.zip"
+    local symbols_zip="/tmp/NerdFontsSymbolsOnly_${user_name}.zip"
+    log_info "Downloading Nerd Fonts Symbols Only v3.4.0..."
+    curl -fLo "$symbols_zip" --create-dirs "$symbols_url"
+    unzip -o "$symbols_zip" -d "$font_dir"
+    rm -f "$symbols_zip"
+
+    # Extra Powerline Symbols
+    local powerline_url="https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf"
+    local powerline_font="$font_dir/PowerlineSymbols.otf"
+    log_info "Downloading Extra Powerline Symbols font..."
+    curl -fLo "$powerline_font" --create-dirs "$powerline_url"
+
     if [[ "$user_name" == "root" && $EUID -ne 0 ]]; then
         sudo chown -R "$user_name":"$user_name" "$font_dir" 2>/dev/null || true
     else
         chown -R "$user_name":"$user_name" "$font_dir" 2>/dev/null || true
     fi
-    
+
     if command -v fc-cache &> /dev/null; then
+        log_info "Updating font cache..."
         if [[ "$user_name" == "root" ]]; then
             if [[ $EUID -eq 0 ]]; then
                 fc-cache -fv "$font_dir"
@@ -429,16 +445,17 @@ install_nerdfont_for_user() {
             sudo -u "$user_name" fc-cache -fv "$font_dir"
         fi
     fi
-    
-    log_success "FiraCode Nerd Font installed for $user_name"
+
+    log_success "DroidSansMono Nerd Font, Font Awesome 7.0.0, Nerd Fonts Symbols Only v3.4.0, and Extra Powerline Symbols installed for $user_name"
 }
 
-# Install Nerd Font for Alacritty
+# Install Nerd Font for terminal
 install_nerdfont() {
     # Install for current user
     install_nerdfont_for_user "$HOME" "$CURRENT_USER"
     
-    log_success "FiraCode Nerd Font installed. Set it in your Alacritty config."
+    log_success "DroidSansMono Nerd Font and Font Awesome 7.0.0 installed."
+    log_info "Set 'DroidSansMono Nerd Font' in your terminal configuration."
 }
 
 # Main installation function

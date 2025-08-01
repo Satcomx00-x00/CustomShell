@@ -365,8 +365,9 @@ help-zsh() {
     echo -e "\e[36m🎨 Theme & UI:\e[0m"
     echo "  • Purple-themed Powerlevel10k prompt"
     echo "  • Tmux with matching purple color scheme"
-    echo "  • Enhanced syntax highlighting"
+    echo "  • Enhanced syntax highlighting with DroidSansMono Nerd Font icons"
     echo "  • Auto-suggestions with async loading"
+    echo "  • DroidSansMono Nerd Font with comprehensive icon support"
     echo    
     echo -e "\e[36m📦 Installed Plugins:\e[0m"
     echo "  • zsh-autosuggestions    - Command suggestions"
@@ -385,7 +386,9 @@ help-zsh() {
     echo "  • Use 'tx' for quick tmux start with main session"
     echo "  • Use 'tmux-smart' for interactive session management"
     echo "  • Use 'tk' to kill all tmux sessions if stuck"
-    echo    
+    echo "  • Set terminal font to 'DroidSansMono Nerd Font' for best experience"
+    echo "  • DroidSansMono Nerd Font provides comprehensive icon and symbol support"
+
     echo -e "\e[32m🔗 Quick Reference:\e[0m"
     echo "  Configuration: ~/.zshrc, ~/.p10k.zsh, ~/.tmux.conf"
     echo "  Update script: ~/.update-zshrc.sh"

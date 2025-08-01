@@ -18,10 +18,6 @@ fi
 cp "$P10K_SRC" "$P10K_DEST"
 echo "Updated $P10K_DEST with the latest .p10k.zsh"
 
-# Reload theme in current shell if running interactively
-if [[ $- == *i* ]]; then
-    source "$P10K_DEST"
-    echo "Reloaded theme in current shell."
-else
-    echo "To apply the new theme, run: source ~/.p10k.zsh"
-fi
+
+exec zsh
+
