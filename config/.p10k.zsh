@@ -74,7 +74,6 @@ typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
     # Time & Date
     time           # Current time with seconds
     newline        # Clean line break
-    newline        # Clean line break
 )
 
 # 3. COLOR PALETTE DEFINITION
