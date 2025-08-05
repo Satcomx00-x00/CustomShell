@@ -277,9 +277,9 @@ banner() {
     # Get system information
     local hostname=$(hostname)
     local username=$(whoami)
-    local uptime=$(uptime | sed 's/.*up \([^,]*\).*/\1/' | xargs)
-    local kernel=$(uname -r)
-    local os=$(uname -s)
+    local uptime=$(uptime 2>/dev/null | sed 's/.*up \([^,]*\).*/\1/' | xargs || echo "Unknown")
+    local kernel=$(uname -r 2>/dev/null || echo "Unknown")
+    local os=$(uname -s 2>/dev/null || echo "Unknown")
     
     # Get IP addresses
     local local_ip=$(ip route get 1.1.1.1 2>/dev/null | grep -oP 'src \K\S+' || echo "No connection")
@@ -288,42 +288,53 @@ banner() {
     # Get memory info
     local mem_info=""
     if [[ "$os" == "Linux" ]]; then
-        local mem_total=$(free -h | awk '/^Mem:/ {print $2}')
-        local mem_used=$(free -h | awk '/^Mem:/ {print $3}')
-        mem_info="$mem_used / $mem_total"
+        if command -v free &> /dev/null; then
+            local mem_total=$(free -h 2>/dev/null | awk '/^Mem:/ {print $2}' || echo "N/A")
+            local mem_used=$(free -h 2>/dev/null | awk '/^Mem:/ {print $3}' || echo "N/A")
+            mem_info="$mem_used / $mem_total"
+        else
+            mem_info="N/A"
+        fi
     elif [[ "$os" == "Darwin" ]]; then
-        local mem_total=$(sysctl -n hw.memsize | awk '{print int($1/1024/1024/1024)"GB"}')
+        local mem_total=$(sysctl -n hw.memsize 2>/dev/null | awk '{print int($1/1024/1024/1024)"GB"}' || echo "N/A")
         mem_info="Total: $mem_total"
+    else
+        mem_info="N/A"
     fi
     
     # Get load average
-    local load_avg=$(uptime | grep -oP 'load average: \K.*' || echo "N/A")
+    local load_avg=""
+    if command -v uptime &> /dev/null; then
+        load_avg=$(uptime 2>/dev/null | grep -oP 'load average: \K.*' || echo "N/A")
+    else
+        load_avg="N/A"
+    fi
     
     # Get current time
-    local current_time=$(date '+%Y-%m-%d %H:%M:%S')
-    local timezone=$(date '+%Z')
+    local current_time=$(date '+%Y-%m-%d %H:%M:%S' 2>/dev/null || echo "Unknown")
+    local timezone=$(date '+%Z' 2>/dev/null || echo "Unknown")
     
     # Get shell info
-    local shell_version=$(zsh --version | cut -d' ' -f2)
+    local shell_version=$(zsh --version 2>/dev/null | cut -d' ' -f2 || echo "Unknown")
     
     # Get terminal size
     local term_size="${COLUMNS}x${LINES}"
     
     # Print the banner
     echo -e "\e[35m╔════════════════════════════════════════════════════════════════════════════╗\e[0m"
-    echo -e "\e[35m║\e[0m                          \e[1;35m🚀 Satcom Zsh Shell\e[0m                               \e[35m║\e[0m"
-    echo -e "\e[35m╚════════════════════════════════════════════════════════════════════════════╝\e[0m"
+    echo -e "\e[35m║\e[0m                          \e[1;35m🚀 Custom Zsh Shell\e[0m                             \e[35m║\e[0m"
+    echo -e "\e[35m╠════════════════════════════════════════════════════════════════════════════╣\e[0m"
     
     # Dynamic information without vertical borders
-    printf "  \e[36m👤 User:\e[0m %-18s \e[36m  🖥️  Host:\e[0m %s\n" "$username" "$hostname"
-    printf "  \e[36m🌐 Local IP:\e[0m %-14s \e[36m  🌍 Public IP:\e[0m %s\n" "$local_ip" "$public_ip"
-    printf "  \e[36m⏰ Time:\e[0m %-19s \e[36m \e[0m %s\n" "$current_time" 
-    printf "  \e[36m⏱️  Uptime:\e[0m %-16s \e[36m  🧠 Memory:\e[0m %s\n" "$uptime" "$mem_info"
-    printf "  \e[36m📊 Load:\e[0m %-18s \e[36m  🖥️  Terminal:\e[0m %s\n" "$load_avg" "$term_size"
-    printf "  \e[36m🐧 Kernel:\e[0m %-15s \e[36m   🐚 Zsh:\e[0m %s\n" "$kernel" "$shell_version"
+    printf "  \e[36m👤 User:\e[0m %-18s \e[36m🖥️  Host:\e[0m %s\n" "$username" "$hostname"
+    printf "  \e[36m🌐 Local IP:\e[0m %-14s \e[36m🌍 Public IP:\e[0m %s\n" "$local_ip" "$public_ip"
+    printf "  \e[36m⏰ Time:\e[0m %-19s \e[36m🌎 Zone:\e[0m %s\n" "$current_time" "$timezone"
+    printf "  \e[36m⏱️  Uptime:\e[0m %-16s \e[36m🧠 Memory:\e[0m %s\n" "$uptime" "$mem_info"
+    printf "  \e[36m📊 Load:\e[0m %-18s \e[36m🖥️  Terminal:\e[0m %s\n" "$load_avg" "$term_size"
+    printf "  \e[36m🐧 Kernel:\e[0m %-15s \e[36m🐚 Zsh:\e[0m %s\n" "$kernel" "$shell_version"
     
-    echo -e "\e[35m╔════════════════════════════════════════════════════════════════════════════╗\e[0m"
-    echo -e "\e[35m║\e[0m                    \e[33m💡 Type 'help' for available commands\e[0m                   \e[35m║\e[0m"
+    echo -e "\e[35m╠════════════════════════════════════════════════════════════════════════════╣\e[0m"
+    echo -e "\e[35m║\e[0m                    \e[33m💡 Type 'help' for available commands\e[0m                    \e[35m║\e[0m"
     echo -e "\e[35m╚════════════════════════════════════════════════════════════════════════════╝\e[0m"
     echo
 }

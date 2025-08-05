@@ -92,32 +92,38 @@ install_dependencies() {
                 echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen 2>/dev/null || true
                 locale-gen 2>/dev/null || true
                 update-locale LANG=en_US.UTF-8 2>/dev/null || true
-                apt-get install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat
+                # Install essential system monitoring tools
+                apt-get install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat procps util-linux coreutils
             else
                 sudo apt-get update -y
                 sudo apt-get install -y locales
                 echo "en_US.UTF-8 UTF-8" | sudo tee -a /etc/locale.gen 2>/dev/null || true
                 sudo locale-gen 2>/dev/null || true
                 sudo update-locale LANG=en_US.UTF-8 2>/dev/null || true
-                sudo apt-get install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat
+                # Install essential system monitoring tools
+                sudo apt-get install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat procps util-linux coreutils
             fi
         ;;
         "redhat")
             if command -v dnf &> /dev/null; then
                 if [[ $EUID -eq 0 ]]; then
                     dnf install -y glibc-locale-source glibc-langpack-en 2>/dev/null || true
-                    dnf install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat
+                    # Install essential system monitoring tools
+                    dnf install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat procps-ng util-linux coreutils
                 else
                     sudo dnf install -y glibc-locale-source glibc-langpack-en 2>/dev/null || true
-                    sudo dnf install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat
+                    # Install essential system monitoring tools
+                    sudo dnf install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat procps-ng util-linux coreutils
                 fi
             else
                 if [[ $EUID -eq 0 ]]; then
                     yum install -y glibc-common 2>/dev/null || true
-                    yum install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat
+                    # Install essential system monitoring tools
+                    yum install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat procps-ng util-linux coreutils
                 else
                     sudo yum install -y glibc-common 2>/dev/null || true
-                    sudo yum install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat
+                    # Install essential system monitoring tools
+                    sudo yum install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat procps-ng util-linux coreutils
                 fi
             fi
         ;;
@@ -127,12 +133,14 @@ install_dependencies() {
                 # Alpine uses musl, different locale setup
                 export LANG="C.UTF-8"
                 export LC_ALL="C.UTF-8"
-                apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf unzip exa bat
+                # Install essential system monitoring tools
+                apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf unzip exa bat procps util-linux coreutils
             else
                 sudo apk update
                 export LANG="C.UTF-8"
                 export LC_ALL="C.UTF-8"
-                sudo apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf unzip exa bat
+                # Install essential system monitoring tools
+                sudo apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf unzip exa bat procps util-linux coreutils
             fi
         ;;
         "macos")
@@ -140,10 +148,11 @@ install_dependencies() {
                 log_warning "Homebrew not found. Installing..."
                 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
             fi
-            brew install zsh git curl wget vim nano tmux fzf unzip exa bat
+            # macOS already has these tools built-in, but install additional ones
+            brew install zsh git curl wget vim nano tmux fzf unzip exa bat coreutils
         ;;
         *)
-            log_error "Unsupported OS. Please install zsh, git, curl, wget, tmux, unzip manually."
+            log_error "Unsupported OS. Please install zsh, git, curl, wget, tmux, unzip, procps, util-linux, coreutils manually."
             exit 1
         ;;
     esac
