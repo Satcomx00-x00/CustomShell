@@ -396,6 +396,74 @@ install_additional_tools() {
     esac
 }
 
+# Install Python tools (ruff, rope) using pip
+install_python_tools() {
+    log_info "Checking for pip and installing Python tools (ruff, rope)..."
+
+    # Try to find pip (pip3 preferred)
+    if command -v pip3 &> /dev/null; then
+        PIP_CMD="pip3"
+    elif command -v pip &> /dev/null; then
+        PIP_CMD="pip"
+    else
+        log_info "pip not found, attempting to install pip..."
+        case $OS in
+            "debian")
+                if [[ $EUID -eq 0 ]]; then
+                    apt-get install -y python3-pip
+                else
+                    sudo apt-get install -y python3-pip
+                fi
+            ;;
+            "redhat")
+                if command -v dnf &> /dev/null; then
+                    if [[ $EUID -eq 0 ]]; then
+                        dnf install -y python3-pip
+                    else
+                        sudo dnf install -y python3-pip
+                    fi
+                else
+                    if [[ $EUID -eq 0 ]]; then
+                        yum install -y python3-pip
+                    else
+                        sudo yum install -y python3-pip
+                    fi
+                fi
+            ;;
+            "alpine")
+                if [[ $EUID -eq 0 ]]; then
+                    apk add --no-cache py3-pip
+                else
+                    sudo apk add --no-cache py3-pip
+                fi
+            ;;
+            "macos")
+                if command -v brew &> /dev/null; then
+                    brew install python
+                fi
+            ;;
+            *)
+                log_warning "Automatic pip installation not supported for this OS. Please install pip manually."
+                return
+            ;;
+        esac
+
+        # Re-check for pip after install
+        if command -v pip3 &> /dev/null; then
+            PIP_CMD="pip3"
+        elif command -v pip &> /dev/null; then
+            PIP_CMD="pip"
+        else
+            log_error "pip installation failed or not found. Skipping Python tool installation."
+            return
+        fi
+    fi
+
+    # Install ruff and rope
+    $PIP_CMD install --user --upgrade ruff rope
+    log_success "Python tools (ruff, rope) installed successfully."
+}
+
 # Install Nerd Font for a specific user
 install_nerdfont_for_user() {
     local user_home="$1"
@@ -467,6 +535,17 @@ install_nerdfont() {
     log_info "Set 'DroidSansMono Nerd Font' in your terminal configuration."
 }
 
+# Print usage/help
+print_help() {
+    echo "Usage: $(basename "$0") [options]"
+    echo ""
+    echo "Options:"
+    echo "  -py        Install Python tools (ruff, rope) only"
+    echo "  -h, --help Show this help message"
+    echo ""
+    echo "If no options are given, performs the full Zsh environment installation."
+}
+
 # Main installation function
 main() {
     log_info "Starting Zsh installation with zinit..."
@@ -484,17 +563,6 @@ main() {
     install_additional_tools
     install_nerdfont
 
-    # Copy update scripts to home directory
-    log_info "Installing update scripts..."
-    local script_dir="$(dirname "$0")"
-    if [[ -f "$script_dir/update-zshrc.sh" ]]; then
-        cp "$script_dir/update-zshrc.sh" "$HOME/.update-zshrc.sh"
-        chmod +x "$HOME/.update-zshrc.sh"
-        log_success "Installed .update-zshrc.sh to home directory"
-    else
-        log_warning "update-zshrc.sh not found, skipping installation"
-    fi
-
     log_success "Zsh installation completed successfully!"
     log_info "Please restart your terminal or run 'exec zsh' to start using zsh"
     log_info "Run 'p10k configure' to configure Powerlevel10k theme"
@@ -503,8 +571,17 @@ main() {
     log_info "Use 'update-zshrc' command to update your .zshrc from GitHub"
 }
 
-# Run installation
-main "$@"
+# --- Argument parsing and entrypoint ---
+if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    print_help
+    exit 0
+elif [[ "$1" == "-py" ]]; then
+    detect_os
+    install_python_tools
+    exit 0
+else
+    main "$@"
+fi
 
 # Final cleanup and start zsh
 log_info "Finalizing installation..."
