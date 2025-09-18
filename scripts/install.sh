@@ -43,7 +43,7 @@ set -e  # Exit on any error
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
+YIGHLLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
@@ -93,7 +93,7 @@ install_dependencies() {
                 locale-gen 2>/dev/null || true
                 update-locale LANG=en_US.UTF-8 2>/dev/null || true
                 # Install essential system monitoring tools
-                apt-get install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat procps util-linux coreutils
+                apt-get install -y zsh git curl wget vim nano sudo tmux fzf unzip eza bat procps util-linux coreutils
             else
                 sudo apt-get update -y
                 sudo apt-get install -y locales
@@ -101,7 +101,7 @@ install_dependencies() {
                 sudo locale-gen 2>/dev/null || true
                 sudo update-locale LANG=en_US.UTF-8 2>/dev/null || true
                 # Install essential system monitoring tools
-                sudo apt-get install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat procps util-linux coreutils
+                sudo apt-get install -y zsh git curl wget vim nano sudo tmux fzf unzip eza bat procps util-linux coreutils
             fi
         ;;
         "redhat")
@@ -109,21 +109,21 @@ install_dependencies() {
                 if [[ $EUID -eq 0 ]]; then
                     dnf install -y glibc-locale-source glibc-langpack-en 2>/dev/null || true
                     # Install essential system monitoring tools
-                    dnf install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat procps-ng util-linux coreutils
+                    dnf install -y zsh git curl wget vim nano sudo tmux fzf unzip eza bat procps-ng util-linux coreutils
                 else
                     sudo dnf install -y glibc-locale-source glibc-langpack-en 2>/dev/null || true
                     # Install essential system monitoring tools
-                    sudo dnf install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat procps-ng util-linux coreutils
+                    sudo dnf install -y zsh git curl wget vim nano sudo tmux fzf unzip eza bat procps-ng util-linux coreutils
                 fi
             else
                 if [[ $EUID -eq 0 ]]; then
                     yum install -y glibc-common 2>/dev/null || true
                     # Install essential system monitoring tools
-                    yum install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat procps-ng util-linux coreutils
+                    yum install -y zsh git curl wget vim nano sudo tmux fzf unzip eza bat procps-ng util-linux coreutils
                 else
                     sudo yum install -y glibc-common 2>/dev/null || true
                     # Install essential system monitoring tools
-                    sudo yum install -y zsh git curl wget vim nano sudo tmux fzf unzip exa bat procps-ng util-linux coreutils
+                    sudo yum install -y zsh git curl wget vim nano sudo tmux fzf unzip eza bat procps-ng util-linux coreutils
                 fi
             fi
         ;;
@@ -134,13 +134,13 @@ install_dependencies() {
                 export LANG="C.UTF-8"
                 export LC_ALL="C.UTF-8"
                 # Install essential system monitoring tools
-                apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf unzip exa bat procps util-linux coreutils
+                apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf unzip eza bat procps util-linux coreutils
             else
                 sudo apk update
                 export LANG="C.UTF-8"
                 export LC_ALL="C.UTF-8"
                 # Install essential system monitoring tools
-                sudo apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf unzip exa bat procps util-linux coreutils
+                sudo apk add --no-cache zsh git curl wget vim nano sudo shadow tmux fzf unzip eza bat procps util-linux coreutils
             fi
         ;;
         "macos")
@@ -149,7 +149,7 @@ install_dependencies() {
                 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
             fi
             # macOS already has these tools built-in, but install additional ones
-            brew install zsh git curl wget vim nano tmux fzf unzip exa bat coreutils
+            brew install zsh git curl wget vim nano tmux fzf unzip eza bat coreutils
         ;;
         *)
             log_error "Unsupported OS. Please install zsh, git, curl, wget, tmux, unzip, procps, util-linux, coreutils manually."
@@ -353,23 +353,23 @@ change_shell() {
 install_additional_tools() {
     log_info "Installing additional development tools..."
     
-    # Install exa (better ls)
+    # Install eza/eza (better ls)
     case $OS in
         "debian")
-            apt-get install -y exa 2>/dev/null || {
-                log_warning "exa not available in repositories, skipping..."
+            apt-get install -y eza 2>/dev/null || apt-get install -y eza 2>/dev/null || {
+                log_warning "eza/eza not available in repositories, skipping..."
             }
         ;;
         "redhat")
             if command -v dnf &> /dev/null; then
-                dnf install -y exa 2>/dev/null || {
-                    log_warning "exa not available in repositories, skipping..."
+                dnf install -y eza 2>/dev/null || dnf install -y eza 2>/dev/null || {
+                    log_warning "eza/eza not available in repositories, skipping..."
                 }
             fi
         ;;
         "macos")
-            brew install exa 2>/dev/null || {
-                log_warning "Failed to install exa, skipping..."
+            brew install eza 2>/dev/null || brew install eza 2>/dev/null || {
+                log_warning "Failed to install eza/eza, skipping..."
             }
         ;;
     esac
@@ -469,7 +469,18 @@ install_nerdfont_for_user() {
     local user_home="$1"
     local user_name="$2"
     
-    log_info "Installing DroidSansMono Nerd Font, Font Awesome 7.0.0, Nerd Fonts Symbols Only v3.4.0, and Extra Powerline Symbols for user: $user_name..."
+    # Detect if GUI is available
+    local gui_available=false
+    if [[ -n "$DISPLAY" || -n "$WAYLAND_DISPLAY" ]]; then
+        gui_available=true
+    fi
+    
+    if [[ "$gui_available" == "true" ]]; then
+        log_info "GUI detected. Installing DroidSansMono Nerd Font, Nerd Fonts Symbols Only v3.4.0, and Extra Powerline Symbols for user: $user_name..."
+    else
+        log_info "No GUI detected. Installing Nerd Fonts Symbols Only v3.4.0 and Extra Powerline Symbols for user: $user_name..."
+    fi
+    
     local font_dir="$user_home/.local/share/fonts"
     
     if [[ "$user_name" == "root" ]]; then
@@ -482,15 +493,17 @@ install_nerdfont_for_user() {
         sudo -u "$user_name" mkdir -p "$font_dir"
     fi
     
-    # DroidSansMono Nerd Font
-    local droid_url="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/DroidSansMono.zip"
-    local droid_zip="/tmp/DroidSansMonoNerdFont_${user_name}.zip"
-    log_info "Downloading DroidSansMono Nerd Font..."
-    curl -fLo "$droid_zip" --create-dirs "$droid_url"
-    unzip -o "$droid_zip" -d "$font_dir"
-    rm -f "$droid_zip"
+    if [[ "$gui_available" == "true" ]]; then
+        # DroidSansMono Nerd Font
+        local droid_url="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.1.1/DroidSansMono.zip"
+        local droid_zip="/tmp/DroidSansMonoNerdFont_${user_name}.zip"
+        log_info "Downloading DroidSansMono Nerd Font..."
+        curl -fLo "$droid_zip" --create-dirs "$droid_url"
+        unzip -o "$droid_zip" -d "$font_dir"
+        rm -f "$droid_zip"
+    fi
 
-    # Nerd Fonts Symbols Only v3.4.0
+    # Nerd Fonts Symbols Only v3.4.0 (always install)
     local symbols_url="https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/NerdFontsSymbolsOnly.zip"
     local symbols_zip="/tmp/NerdFontsSymbolsOnly_${user_name}.zip"
     log_info "Downloading Nerd Fonts Symbols Only v3.4.0..."
@@ -498,7 +511,7 @@ install_nerdfont_for_user() {
     unzip -o "$symbols_zip" -d "$font_dir"
     rm -f "$symbols_zip"
 
-    # Extra Powerline Symbols
+    # Extra Powerline Symbols (always install)
     local powerline_url="https://github.com/powerline/powerline/raw/develop/font/PowerlineSymbols.otf"
     local powerline_font="$font_dir/PowerlineSymbols.otf"
     log_info "Downloading Extra Powerline Symbols font..."
@@ -523,7 +536,11 @@ install_nerdfont_for_user() {
         fi
     fi
 
-    log_success "DroidSansMono Nerd Font, Font Awesome 7.0.0, Nerd Fonts Symbols Only v3.4.0, and Extra Powerline Symbols installed for $user_name"
+    if [[ "$gui_available" == "true" ]]; then
+        log_success "DroidSansMono Nerd Font, Nerd Fonts Symbols Only v3.4.0, and Extra Powerline Symbols installed for $user_name"
+    else
+        log_success "Nerd Fonts Symbols Only v3.4.0 and Extra Powerline Symbols installed for $user_name"
+    fi
 }
 
 # Install Nerd Font for terminal
@@ -531,8 +548,48 @@ install_nerdfont() {
     # Install for current user
     install_nerdfont_for_user "$HOME" "$CURRENT_USER"
     
-    log_success "DroidSansMono Nerd Font and Font Awesome 7.0.0 installed."
-    log_info "Set 'DroidSansMono Nerd Font' in your terminal configuration."
+    # Detect if GUI is available for conditional messaging
+    local gui_available=false
+    if [[ -n "$DISPLAY" || -n "$WAYLAND_DISPLAY" ]]; then
+        gui_available=true
+    fi
+    
+    if [[ "$gui_available" == "true" ]]; then
+        log_info "Set 'DroidSansMono Nerd Font' in your terminal configuration."
+    fi
+}
+
+# Configure git user.name and user.email
+configure_git() {
+    log_info "Configuring Git user settings..."
+    
+    # Check if user.name is set
+    if ! git config --global user.name >/dev/null 2>&1; then
+        echo -n "Enter your Git user name: "
+        read -r git_name
+        if [[ -n "$git_name" ]]; then
+            git config --global user.name "$git_name"
+            log_success "Git user.name set to: $git_name"
+        else
+            log_warning "Git user.name not set. You can set it later with: git config --global user.name 'Your Name'"
+        fi
+    else
+        log_info "Git user.name is already configured."
+    fi
+    
+    # Check if user.email is set
+    if ! git config --global user.email >/dev/null 2>&1; then
+        echo -n "Enter your Git user email: "
+        read -r git_email
+        if [[ -n "$git_email" ]]; then
+            git config --global user.email "$git_email"
+            log_success "Git user.email set to: $git_email"
+        else
+            log_warning "Git user.email not set. You can set it later with: git config --global user.email 'your.email@example.com'"
+        fi
+    else
+        log_info "Git user.email is already configured."
+    fi
 }
 
 # Print usage/help
@@ -561,6 +618,7 @@ main() {
     install_tmux
     change_shell
     install_additional_tools
+    configure_git
     install_nerdfont
 
     log_success "Zsh installation completed successfully!"

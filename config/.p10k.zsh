@@ -67,9 +67,8 @@ typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
     # Hardware & Network
     battery           # Battery status (laptops)
     wifi             # WiFi connection status
-    # ip
+    ip
     # vpn_ip              # Current IP address
-    public_ip
     
     # Time & Date
     time           # Current time with seconds
@@ -181,8 +180,8 @@ typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_GAP_FOREGROUND=244
 # Configure segment separators with Nerd Font characters for smooth color transitions
 # 
 # 
-typeset -g POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=''            # Beautiful powerline separator
-typeset -g POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=''           # Right-to-left color transition
+typeset -g POWERLEVEL9K_LEFT_SEGMENT_SEPARATOR=''            # Beautiful powerline separator
+typeset -g POWERLEVEL9K_RIGHT_SEGMENT_SEPARATOR=''           # Right-to-left color transition
 typeset -g POWERLEVEL9K_LEFT_SUBSEGMENT_SEPARATOR='│'        # Elegant subsegment separator
 typeset -g POWERLEVEL9K_RIGHT_SUBSEGMENT_SEPARATOR='│'       # Right subsegment separator
 typeset -g POWERLEVEL9K_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL=''    # Rounded start
