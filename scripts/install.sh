@@ -1,15 +1,15 @@
 #!/bin/bash
 
 # Custom Starship Zsh Shell Installer
-# Main entry point - delegates to scripts/install.sh
+# This script installs Zsh with Starship prompt, oh-my-zsh, and useful plugins
+# Uses Dracula theme for Starship
 
 set -e
 
-# Get the directory where this script is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# Default settings
+INSTALL_PLUGINS=true
 
-# Execute the actual install script
-exec "$SCRIPT_DIR/scripts/install.sh" "$@"
+# Parse command line arguments
 while [[ $# -gt 0 ]]; do
     case $1 in
         --no-plugins)
@@ -302,12 +302,15 @@ EOF
 
 # Create .zshrc
 log_info "Creating .zshrc configuration..."
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+CONFIG_DIR="$SCRIPT_DIR/../config"
+
 if [[ "$INSTALL_PLUGINS" == "true" ]]; then
     # With plugins
-    cp ".zshrc" "$HOME/.zshrc"
+    cp "$CONFIG_DIR/.zshrc" "$HOME/.zshrc"
 else
     # Without plugins
-    cp ".zshrc.minimal" "$HOME/.zshrc"
+    cp "$CONFIG_DIR/.zshrc.minimal" "$HOME/.zshrc"
 fi
 
 # Set Zsh as default shell

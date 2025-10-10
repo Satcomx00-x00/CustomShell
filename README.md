@@ -2,16 +2,45 @@
 
 Custom Starship Zsh Shell provides a modern, professional configuration for Zsh with Starship prompt, oh-my-zsh, and useful plugins. It features the Dracula theme for a sleek, dark terminal experience optimized for development on Linux.
 
-## Main Features
+## 📁 Project Structure
 
-- Zsh with Oh My Zsh and essential plugins (autosuggestions, syntax highlighting, completions)
-- Starship prompt with Dracula theme
-- Professional installer script for Linux
-- Docker container based on Debian:latest
-- Custom aliases and functions
-- Optimized for development workflows
+```
+CustomShell/
+├── config/           # Configuration files
+│   ├── .zshrc       # Full Zsh configuration
+│   └── .zshrc.minimal # Minimal Zsh configuration
+├── scripts/          # Installation and utility scripts
+│   ├── install.sh   # Main installer
+│   ├── install_packages.sh # Multi-distro package installer
+│   └── update-zsh.sh # Configuration updater
+├── docker/           # Container setup
+│   ├── Dockerfile   # Debian-based container
+│   └── docker-compose.yml
+├── install.sh       # Root-level installer (convenience)
+├── README.md
+└── LICENSE
+```
 
-## Installation
+## ✨ Main Features
+
+- **Multi-Distro Support**: Works on Debian/Ubuntu, RHEL/CentOS/Fedora, Arch, openSUSE, Alpine, Gentoo
+- **Zsh with Oh My Zsh**: Essential plugins (autosuggestions, syntax highlighting, completions)
+- **Starship Prompt**: Dracula theme with comprehensive tool support
+- **Docker Integration**: Container based on Debian:latest
+- **Extensive Tool Support**:
+  - **Git**: Complete workflow aliases and functions
+  - **Python**: Virtual environments, pip, development shortcuts
+  - **Docker**: Container lifecycle, compose, cleanup utilities
+  - **Kubernetes**: Pod/service/deployment management, context switching
+  - **Helm**: Chart management and repository operations
+  - **Go**: Build, run, test, module management
+  - **Rust**: Cargo operations and project management
+  - **Terraform**: Infrastructure as code operations
+  - **Bun**: JavaScript runtime and package management
+- **Smart Helper Functions**: `pyenv`, `dshell`, `kctx`, `gacp`, etc.
+- **Optimized Workflow**: Tailored for Python, Bun, Docker, and Kubernetes development
+
+## 🚀 Installation
 
 ### Linux Installer
 
@@ -23,27 +52,31 @@ Custom Starship Zsh Shell provides a modern, professional configuration for Zsh 
 
 2. Run the installer:
    ```bash
-   ./install.sh
+   ./install.sh              # Full installation with plugins
+   ./install.sh --no-plugins # Minimal installation
    ```
 
    **Options:**
    - `--no-plugins`: Skip installation of Zsh plugins (zsh-autosuggestions, zsh-syntax-highlighting, zsh-completions)
    - `--help`, `-h`: Show help message
 
-   **Examples:**
-   ```bash
-   ./install.sh                    # Install everything (default)
-   ./install.sh --no-plugins       # Install without plugins
-   ./install.sh --help             # Show help
-   ```
-
 3. Restart your terminal or run `exec zsh` to apply changes.
+
+### Update Configuration
+
+To update your Zsh configuration without reinstalling everything:
+```bash
+./scripts/update-zsh.sh          # Update to latest full config
+./scripts/update-zsh.sh --minimal # Update to minimal config
+./scripts/update-zsh.sh --no-backup # Update without backup
+./scripts/update-zsh.sh --help   # Show help
+```
 
 ### Docker Container
 
 1. Build the container:
    ```bash
-   docker build -t custom-starship-zsh .
+   docker build -f docker/Dockerfile -t custom-starship-zsh .
    ```
 
 2. Run the container:
@@ -51,14 +84,9 @@ Custom Starship Zsh Shell provides a modern, professional configuration for Zsh 
    docker run -it --rm custom-starship-zsh
    ```
 
-   Or with volume mounting for persistent data:
-   ```bash
-   docker run -it --rm -v $(pwd):/workspace custom-starship-zsh
-   ```
-
 3. Using Docker Compose (recommended):
    ```bash
-   docker-compose up --build
+   docker-compose -f docker/docker-compose.yml up --build
    ```
 
 ## Configuration
@@ -67,11 +95,76 @@ Custom Starship Zsh Shell provides a modern, professional configuration for Zsh 
 - **Zsh config**: `~/.zshrc`
 - **Oh My Zsh**: `~/.oh-my-zsh/`
 
-## Customization
+## Available Aliases & Functions
 
-- Edit `~/.config/starship/starship.toml` to modify the Starship prompt
-- Add custom aliases or functions to `~/.zshrc`
-- Install additional plugins in `~/.oh-my-zsh/custom/plugins/`
+### Git Aliases
+- `gs` - git status
+- `ga` - git add
+- `gc` - git commit
+- `gp` - git push
+- `gl` - git log --oneline
+- `gd` - git diff
+- `gco` - git checkout
+- `gb` - git branch
+- `gpl` - git pull
+
+### Python Aliases
+- `py` - python3
+- `pip` - python3 -m pip
+- `venv` - python3 -m venv
+- `act` - source venv/bin/activate
+- `deact` - deactivate
+
+### Docker Aliases
+- `d` - docker
+- `dc` - docker-compose
+- `dcu` - docker-compose up
+- `dcd` - docker-compose down
+- `dcb` - docker-compose build
+- `dcl` - docker-compose logs
+- `dps` - docker ps
+- `di` - docker images
+- `dex` - docker exec -it
+- `dlf` - docker logs -f
+
+### Kubernetes Aliases
+- `k` - kubectl
+- `kg` - kubectl get
+- `kgp` - kubectl get pods
+- `kgs` - kubectl get services
+- `kgd` - kubectl get deployments
+- `kga` - kubectl get all
+- `kdp` - kubectl describe pod
+- `kl` - kubectl logs
+- `klf` - kubectl logs -f
+- `kex` - kubectl exec -it
+
+### Helper Functions
+- `pyenv <name>` - Create and activate Python virtual environment
+- `pyact` - Activate existing virtual environment
+- `dshell <container>` - Shell into running Docker container
+- `dclean` - Clean up Docker resources
+- `kctx [context]` - Switch/list Kubernetes contexts
+- `kns [namespace]` - Switch/list Kubernetes namespaces
+- `klogs <pod> [container]` - View pod logs
+- `gacp <message>` - Git add all, commit, push
+- `gbranch <name>` - Create and switch to new branch
+- `serve [port]` - Start HTTP server (default port 8000)
+
+## 📁 Configuration Files
+
+- **`config/.zshrc`** - Full Zsh configuration with all plugins and aliases
+- **`config/.zshrc.minimal`** - Minimal Zsh configuration (used with `--no-plugins`)
+- **`scripts/install_packages.sh`** - Multi-distro package installation script
+- **`scripts/update-zsh.sh`** - Configuration update utility
+
+## ⚙️ Customization
+
+- **Starship Prompt**: Edit `~/.config/starship/starship.toml`
+- **Zsh Config**: Modify `config/.zshrc` or `config/.zshrc.minimal`
+- **Add Plugins**: Install to `~/.oh-my-zsh/custom/plugins/`
+- **Local Config**: Add customizations to `~/.zshrc.local` (auto-sourced)
+- **Update Config**: Use `scripts/update-zsh.sh` to apply changes
 
 ## VS Code Settings
 
