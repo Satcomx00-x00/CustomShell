@@ -6,10 +6,11 @@ Custom Starship Zsh Shell provides a modern, professional configuration for Zsh 
 
 ```
 CustomShell/
-├── config/           # Configuration files
+├── config/           # 📂 Configuration files
 │   ├── .zshrc       # Full Zsh configuration
-│   └── .zshrc.minimal # Minimal Zsh configuration
-├── scripts/          # Installation and utility scripts
+│   ├── .zshrc.minimal # Minimal Zsh configuration
+│   └── starship.toml # Starship prompt configuration
+├── scripts/          # 🛠️ Installation and utility scripts
 │   ├── install.sh   # Main installer
 │   ├── install_packages.sh # Multi-distro package installer
 │   └── update-zsh.sh # Configuration updater
@@ -35,12 +36,11 @@ CustomShell/
   - **Helm**: Chart management and repository operations
   - **Go**: Build, run, test, module management
   - **Rust**: Cargo operations and project management
-  - **Terraform**: Infrastructure as code operations
-  - **Bun**: JavaScript runtime and package management
-- **Smart Helper Functions**: `pyenv`, `dshell`, `kctx`, `gacp`, etc.
-- **Optimized Workflow**: Tailored for Python, Bun, Docker, and Kubernetes development
-
-## 🚀 Installation
+- **Terraform**: Infrastructure as code operations
+- **Bun**: JavaScript runtime and package management
+- **fzf Integration**: Fuzzy finder with syntax highlighting and custom functions
+- **Smart Helper Functions**: `pyenv`, `dshell`, `kctx`, `gacp`, `fh`, `fe`, `fd`, etc.
+- **Optimized Workflow**: Tailored for Python, Bun, Docker, and Kubernetes development## 🚀 Installation
 
 ### Linux Installer
 
@@ -91,7 +91,7 @@ To update your Zsh configuration without reinstalling everything:
 
 ## Configuration
 
-- **Starship config**: `~/.config/starship/starship.toml`
+- **Starship config**: `~/.config/starship.toml`
 - **Zsh config**: `~/.zshrc`
 - **Oh My Zsh**: `~/.oh-my-zsh/`
 
@@ -155,13 +155,14 @@ To update your Zsh configuration without reinstalling everything:
 
 - **`config/.zshrc`** - Full Zsh configuration with all plugins and aliases
 - **`config/.zshrc.minimal`** - Minimal Zsh configuration (used with `--no-plugins`)
+- **`config/starship.toml`** - Starship prompt configuration with Dracula theme
 - **`scripts/install_packages.sh`** - Multi-distro package installation script
 - **`scripts/update-zsh.sh`** - Configuration update utility
 
 ## ⚙️ Customization
 
-- **Starship Prompt**: Edit `~/.config/starship/starship.toml`
-- **Zsh Config**: Modify `config/.zshrc` or `config/.zshrc.minimal`
+- **Starship Prompt**: Edit `config/starship.toml` (template) or `~/.config/starship.toml` (installed)
+- **Zsh Config**: Modify `config/.zshrc` or `config/.zshrc.minimal` (templates)
 - **Add Plugins**: Install to `~/.oh-my-zsh/custom/plugins/`
 - **Local Config**: Add customizations to `~/.zshrc.local` (auto-sourced)
 - **Update Config**: Use `scripts/update-zsh.sh` to apply changes

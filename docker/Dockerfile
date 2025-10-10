@@ -16,6 +16,7 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     sudo \
     locales \
+    fzf \
     && rm -rf /var/lib/apt/lists/*
 
 # Set locale
@@ -47,6 +48,9 @@ RUN git clone https://github.com/ohmyzsh/ohmyzsh.git ~/.oh-my-zsh
 RUN git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions && \
     git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting && \
     git clone https://github.com/zsh-users/zsh-completions ~/.oh-my-zsh/custom/plugins/zsh-completions
+
+# Install fzf zsh integration
+RUN /usr/bin/fzf --zsh > ~/.fzf.zsh
 
 # Create Starship config directory
 RUN mkdir -p ~/.config/starship

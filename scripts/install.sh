@@ -81,17 +81,17 @@ fi
 if [[ $EUID -eq 0 ]]; then
     log_warning "Running as root. Installing system-wide."
     INSTALL_PREFIX="/usr/local"
-    CONFIG_DIR="/etc"
+    INSTALL_CONFIG_DIR="/etc"
 else
     log_info "Running as user. Installing locally."
     INSTALL_PREFIX="$HOME/.local"
-    CONFIG_DIR="$HOME/.config"
+    INSTALL_CONFIG_DIR="$HOME/.config"
 fi
 
 # Install system dependencies
 log_info "Installing system dependencies..."
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-"$SCRIPT_DIR/scripts/install_packages.sh"
+"$SCRIPT_DIR/install_packages.sh"
 
 # Install Starship
 log_info "Installing Starship..."
@@ -141,176 +141,21 @@ else
     log_info "Skipping Zsh plugins installation (--no-plugins specified)"
 fi
 
-# Create Starship config directory
-mkdir -p "$CONFIG_DIR/starship"
-
-# Create Starship config with Dracula theme
-log_info "Configuring Starship with Dracula theme..."
-cat > "$CONFIG_DIR/starship/starship.toml" << 'EOF'
-# Starship configuration with Dracula theme
-
-# Dracula color palette
-[palettes.dracula]
-background = "#282a36"
-current_line = "#44475a"
-foreground = "#f8f8f2"
-comment = "#6272a4"
-cyan = "#8be9fd"
-green = "#50fa7b"
-orange = "#ffb86c"
-pink = "#ff79c6"
-purple = "#bd93f9"
-red = "#ff5555"
-yellow = "#f1fa8c"
-
-[palette]
-use = "dracula"
-
-[character]
-success_symbol = "[❯](green)"
-error_symbol = "[❯](red)"
-vimcmd_symbol = "[❮](green)"
-
-[git_branch]
-symbol = "🌱 "
-truncation_length = 4
-truncation_symbol = ""
-
-[git_commit]
-commit_hash_length = 4
-tag_symbol = "🔖 "
-
-[git_state]
-format = '[\($state( $progress_current of $progress_total)\)]($style) '
-cherry_pick = "[🍒 PICKING](bold red)"
-
-[git_status]
-conflicted = "🏳"
-ahead = "🏎💨"
-behind = "😰"
-diverged = "😵"
-untracked = "🤷"
-stashed = "📦"
-modified = "📝"
-staged = '[++\($count\)](green)'
-renamed = "👅"
-deleted = "🗑"
-
-[hostname]
-ssh_only = false
-format = "[$hostname](bold red) "
-trim_at = ".local"
-disabled = false
-
-[username]
-style_user = "white bold"
-style_root = "black bold"
-format = "user: [$user]($style) "
-disabled = false
-show_always = true
-
-[directory]
-truncation_length = 10
-truncation_symbol = "…/"
-home_symbol = "🏠"
-read_only_style = "197"
-read_only = " 🔒"
-format = "[$path]($style)[$read_only]($read_only_style) "
-
-[cmd_duration]
-min_time = 4_000
-format = "[$duration]($style) "
-
-[battery]
-full_symbol = "🔋"
-charging_symbol = "🔌"
-discharging_symbol = "💀"
-disabled = false
-
-[[battery.display]]
-threshold = 10
-style = "bold red"
-
-[time]
-disabled = false
-format = "🕙[$time]($style) "
-time_format = "%T"
-utc_time_offset = "local"
-
-[package]
-symbol = "📦 "
-style = "208"
-format = "[$symbol$version]($style) "
-disabled = false
-
-[nodejs]
-symbol = "⬢ "
-style = "bold green"
-format = "[$symbol($version )]($style)"
-
-[rust]
-symbol = "🦀 "
-style = "bold red"
-format = "[$symbol($version )]($style)"
-
-[golang]
-symbol = "🐹 "
-style = "bold cyan"
-format = "[$symbol($version )]($style)"
-
-[php]
-symbol = "🐘 "
-style = "bold magenta"
-format = "[$symbol($version )]($style)"
-
-[python]
-symbol = "🐍 "
-style = "bold yellow"
-format = "[$symbol($version )]($style)"
-
-[docker_context]
-symbol = "🐳 "
-style = "blue bold"
-format = "[$symbol$context]($style) "
-
-[kubernetes]
-symbol = "☸️ "
-style = "cyan bold"
-format = "[$symbol$context \($namespace\)]($style) "
-
-[terraform]
-symbol = "🏗️ "
-style = "bold 105"
-format = "[$symbol$workspace]($style) "
-
-[bun]
-symbol = "🥟 "
-style = "bold red"
-format = "[$symbol($version )]($style)"
-
-[helm]
-symbol = "⎈ "
-style = "bold blue"
-format = "[$symbol($version )]($style)"
-
-[sudo]
-symbol = "👑 "
-style = "bold red"
-format = "[$symbol]($style)"
-disabled = false
-EOF
-
 # Create .zshrc
 log_info "Creating .zshrc configuration..."
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-CONFIG_DIR="$SCRIPT_DIR/../config"
+PROJECT_CONFIG_DIR="$SCRIPT_DIR/../config"
+
+# Copy Starship config with Dracula theme
+log_info "Configuring Starship with Dracula theme..."
+cp "$PROJECT_CONFIG_DIR/starship.toml" "$INSTALL_CONFIG_DIR/starship.toml"
 
 if [[ "$INSTALL_PLUGINS" == "true" ]]; then
     # With plugins
-    cp "$CONFIG_DIR/.zshrc" "$HOME/.zshrc"
+    cp "$PROJECT_CONFIG_DIR/.zshrc" "$HOME/.zshrc"
 else
     # Without plugins
-    cp "$CONFIG_DIR/.zshrc.minimal" "$HOME/.zshrc"
+    cp "$PROJECT_CONFIG_DIR/.zshrc.minimal" "$HOME/.zshrc"
 fi
 
 # Set Zsh as default shell
@@ -332,5 +177,5 @@ fi
 
 log_success "Installation completed successfully!"
 log_info "Please restart your terminal or run 'exec zsh' to start using the new shell."
-log_info "Starship configuration is located at: $CONFIG_DIR/starship/starship.toml"
+log_info "Starship configuration is located at: $INSTALL_CONFIG_DIR/starship.toml"
 log_info "Zsh configuration is located at: $HOME/.zshrc"

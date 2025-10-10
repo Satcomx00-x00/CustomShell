@@ -140,25 +140,25 @@ get_packages() {
     # Common packages with distro-specific names
     case $pm in
         apt)
-            packages=(curl wget git zsh build-essential)
+            packages=(curl wget git zsh build-essential fzf)
             ;;
         yum)
-            packages=(curl wget git zsh gcc gcc-c++ make)
+            packages=(curl wget git zsh gcc gcc-c++ make fzf)
             ;;
         dnf)
-            packages=(curl wget git zsh gcc gcc-c++ make)
+            packages=(curl wget git zsh gcc gcc-c++ make fzf)
             ;;
         pacman)
-            packages=(curl wget git zsh base-devel)
+            packages=(curl wget git zsh base-devel fzf)
             ;;
         zypper)
-            packages=(curl wget git zsh gcc gcc-c++ make)
+            packages=(curl wget git zsh gcc gcc-c++ make fzf)
             ;;
         apk)
-            packages=(curl wget git zsh build-base)
+            packages=(curl wget git zsh build-base fzf)
             ;;
         emerge)
-            packages=(net-misc/curl net-misc/wget dev-vcs/git app-shells/zsh sys-devel/gcc)
+            packages=(net-misc/curl net-misc/wget dev-vcs/git app-shells/zsh sys-devel/gcc app-misc/fzf)
             ;;
         *)
             log_error "Unsupported package manager: $pm"
