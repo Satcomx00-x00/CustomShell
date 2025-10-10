@@ -1,51 +1,96 @@
-# CustomShell
+# Custom Starship Zsh Shell
 
-CustomShell provides a modern configuration for Zsh, Powerlevel10k, and tmux, optimized for development on Linux and macOS.  
-It includes themes, plugins, aliases, and an enhanced terminal experience (RAM, load, IP display, etc).
+Custom Starship Zsh Shell provides a modern, professional configuration for Zsh with Starship prompt, oh-my-zsh, and useful plugins. It features the Dracula theme for a sleek, dark terminal experience optimized for development on Linux.
 
 ## Main Features
 
-- Zsh with Oh My Zsh and many useful plugins
-- Modern, purple, ASCII-friendly Powerlevel10k theme
-- Advanced tmux configuration with plugin manager
-- Handy aliases for git, docker, tmux, and more
-- Automatic detection of modern tools (`exa`, `bat`, etc.)
-- French locale support (`fr_FR.UTF-8`)
+- Zsh with Oh My Zsh and essential plugins (autosuggestions, syntax highlighting, completions)
+- Starship prompt with Dracula theme
+- Professional installer script for Linux
+- Docker container based on Debian:latest
+- Custom aliases and functions
+- Optimized for development workflows
 
-## Quick Install
+## Installation
 
-## VSCode
+### Linux Installer
 
-Settings: 
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Satcomx00-x00/CustomShell.git
+   cd CustomShell
+   ```
 
-```json
-{ "editor.fontfamily" : "DroidSansM Nerd Font,Symbols Nerd Font,Courier New,monospace" }
-```
+2. Run the installer:
+   ```bash
+   ./install.sh
+   ```
 
+   **Options:**
+   - `--no-plugins`: Skip installation of Zsh plugins (zsh-autosuggestions, zsh-syntax-highlighting, zsh-completions)
+   - `--help`, `-h`: Show help message
 
-```bash
-apt update && apt install git -y
-git clone https://github.com/Satcomx00-x00/CustomShell
-cd CustomShell/scripts
-./install.sh
-```
+   **Examples:**
+   ```bash
+   ./install.sh                    # Install everything (default)
+   ./install.sh --no-plugins       # Install without plugins
+   ./install.sh --help             # Show help
+   ```
 
-> **Tip:** To update the Powerlevel10k configuration after modification:
-> ```bash
-> ./scripts/update-p10k.sh
-> ```
+3. Restart your terminal or run `exec zsh` to apply changes.
 
-## Uninstall
+### Docker Container
 
-```bash
-./scripts/uninstall.sh
-```
+1. Build the container:
+   ```bash
+   docker build -t custom-starship-zsh .
+   ```
+
+2. Run the container:
+   ```bash
+   docker run -it --rm custom-starship-zsh
+   ```
+
+   Or with volume mounting for persistent data:
+   ```bash
+   docker run -it --rm -v $(pwd):/workspace custom-starship-zsh
+   ```
+
+3. Using Docker Compose (recommended):
+   ```bash
+   docker-compose up --build
+   ```
+
+## Configuration
+
+- **Starship config**: `~/.config/starship/starship.toml`
+- **Zsh config**: `~/.zshrc`
+- **Oh My Zsh**: `~/.oh-my-zsh/`
 
 ## Customization
 
-- Edit files in `config/` to adapt aliases, prompt, or tmux to your needs.
-- Restart your terminal or run `exec zsh` to apply changes.
+- Edit `~/.config/starship/starship.toml` to modify the Starship prompt
+- Add custom aliases or functions to `~/.zshrc`
+- Install additional plugins in `~/.oh-my-zsh/custom/plugins/`
 
----
+## VS Code Settings
 
-License: Apache 2.0
+For optimal experience in VS Code, add to your settings:
+
+```json
+{
+  "terminal.integrated.fontFamily": "Fira Code, DroidSansMono Nerd Font, monospace",
+  "terminal.integrated.shell.linux": "/bin/zsh"
+}
+```
+
+## Requirements
+
+- Linux (Debian/Ubuntu, RHEL/CentOS/Fedora, Arch, openSUSE, Alpine, Gentoo)
+- curl, wget, git
+- Internet connection for downloads
+- Supported package managers: apt, dnf, yum, pacman, zypper, apk, emerge
+
+## License
+
+Apache 2.0
