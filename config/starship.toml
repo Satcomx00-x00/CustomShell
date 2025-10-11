@@ -1,26 +1,27 @@
 # ~/.config/starship.toml
-# Theme: Dracula (dark), rounded segments, subtle fades
+# Theme: Dracula Dark — Rounded, Layered, Faded
 
 add_newline = true
 command_timeout = 1500
 palette = "dracula"
 
-# -------- Palette --------
+# -------- Dracula Palette --------
 [palettes.dracula]
-bg         = "#282A36"
-bg2        = "#44475A"
-fg         = "#F8F8F2"
-muted      = "#6272A4"
-cyan       = "#8BE9FD"
-green      = "#50FA7B"
-orange     = "#FFB86C"
-pink       = "#FF79C6"
-purple     = "#BD93F9"
-red        = "#FF5555"
-yellow     = "#F1FA8C"
+bg      = "#1E1F29"
+bg2     = "#282A36"
+bg3     = "#44475A"
+fg      = "#F8F8F2"
+muted   = "#6272A4"
+cyan    = "#8BE9FD"
+green   = "#50FA7B"
+orange  = "#FFB86C"
+pink    = "#FF79C6"
+purple  = "#BD93F9"
+red     = "#FF5555"
+yellow  = "#F1FA8C"
+blue    = "#6272A4"
 
 # -------- Layout --------
-# Line 1: dir → git → k8s → docker → terraform → helm
 format = """
 $directory\
 $git_branch$git_status\
@@ -29,171 +30,119 @@ $docker_context\
 $terraform\
 $helm\
 $line_break\
-$python$bun$go$rust$sudo$cmd_duration$status$time\
+$python$bun$go$rust$sudo$cmd_duration$status\
 $character
 """
 
-# Optional content on the right (kept minimal to stay clean)
-right_format = """$username"""
+right_format = """$time"""
 
-# -------- Prompt Character --------
+# -------- Character --------
 [character]
-success_symbol = "[](fg:purple)[$symbol](fg:bg bg:purple)[](fg:purple)"
-error_symbol   = "[](fg:red)[$symbol](fg:bg bg:red)[](fg:red)"
-vicmd_symbol   = "[](fg:cyan)[](fg:bg bg:cyan)[](fg:cyan)"
-format = "$symbol "
-# Use a soft arrow
+success_symbol = "[](fg:green)[$symbol](fg:bg bg:green)[](fg:green) "
+error_symbol   = "[](fg:red)[$symbol](fg:bg bg:red)[](fg:red) "
+vicmd_symbol   = "[](fg:purple)[](fg:bg bg:purple)[](fg:purple) "
 symbol = "❯"
+format = "$symbol "
 
-[continuation_prompt]
-symbol = "⋯ "
-style = "fg:muted"
-
-# -------- Directory (big, first) --------
+# -------- Directory --------
 [directory]
-style = "fg:fg bg:purple dimmed"
-format = "[](fg:purple)[$path]($style)[](fg:purple) "
+style = "fg:fg bg:bg3 bold"
+format = "[](fg:bg3)[$path]($style)[](fg:bg3) "
 truncation_length = 3
 truncate_to_repo = true
-repo_root_style = "fg:bg bg:purple"
 read_only = " "
-fish_style_pwd_dir_length = 1
 
 # -------- Git --------
 [git_branch]
 symbol = " "
-style = "fg:bg bg:pink dimmed"
+style = "fg:bg bg:pink"
 format = "[](fg:pink)[$symbol$branch]($style)[](fg:pink)"
 
 [git_status]
-style = "fg:bg bg:pink"
+style = "fg:bg bg:pink dimmed"
 format = "[$all_status$ahead_behind]($style) "
 conflicted = " "
 ahead = " ⇡${count}"
 behind = " ⇣${count}"
-deleted = " ${count}"
 modified = " ${count}"
 staged = " ${count}"
-stashed = " ${count}"
-renamed = " ${count}"
 untracked = " ${count}"
 
-# -------- Kubernetes (highlighted) --------
+# -------- Kubernetes --------
 [kubernetes]
 symbol = "⎈ "
-style = "fg:bg bg:cyan dimmed"
+style = "fg:bg bg:cyan bold"
 format = "[](fg:cyan)[$symbol$context(::$namespace)]($style)[](fg:cyan) "
-# Show only when relevant
 disabled = false
-detect_extensions = ["yaml", "yml", "json"]
-detect_files = ["kubernetes.yaml","k8s.yaml",".kube/config"]
-contexts = [
-  { context_pattern = ".*", style = "fg:bg bg:cyan dimmed", symbol = "⎈ " }
-]
 
 # -------- Docker --------
 [docker_context]
 symbol = " "
-style = "fg:bg bg:blue dimmed"
+style = "fg:bg bg:blue bold"
 format = "[](fg:blue)[$symbol$context]($style)[](fg:blue) "
 only_with_files = false
 
 # -------- Terraform --------
 [terraform]
 symbol = " "
-style = "fg:bg bg:purple dimmed"
+style = "fg:bg bg:purple bold"
 format = "[](fg:purple)[$symbol$workspace]($style)[](fg:purple) "
-detect_extensions = ["tf", "tfvars"]
-detect_files = ["terraform.tf", ".terraform", "terragrunt.hcl"]
 
 # -------- Helm --------
 [helm]
 symbol = "󱃾 "
-style = "fg:bg bg:yellow dimmed"
+style = "fg:bg bg:yellow bold"
 format = "[](fg:yellow)[$symbol$version]($style)[](fg:yellow) "
-detect_files = ["Chart.yaml", "values.yaml"]
 
-# -------- Python (highlighted) --------
+# -------- Python --------
 [python]
 symbol = " "
-style = "fg:bg bg:green"
-python_binary = ["python", "python3", "py"]
-format = "[](fg:green)[$symbol$virtualenv]($style)[](fg:green) "
-# Show version subtly after the segment
-version_format = " v${raw}"
-pyenv_version_name = true
-detect_extensions = ["py"]
-detect_files = ["pyproject.toml", "requirements.txt", "Pipfile", ".python-version", "poetry.lock"]
+style = "fg:bg bg:green bold"
+format = "[](fg:green)[$symbol$version( $virtualenv)]($style)[](fg:green) "
+python_binary = ["python3", "python"]
 
-# -------- Bun (highlighted) --------
+# -------- Bun --------
 [bun]
 symbol = " "
-style = "fg:bg bg:orange"
+style = "fg:bg bg:orange bold"
 format = "[](fg:orange)[$symbol$version]($style)[](fg:orange) "
-detect_files = ["bun.lockb", "bunfig.toml", "package.json"]
+detect_files = ["bun.lockb", "package.json"]
 
 # -------- Go --------
 [golang]
 symbol = " "
-style = "fg:bg bg:cyan dimmed"
+style = "fg:bg bg:cyan bold"
 format = "[](fg:cyan)[$symbol$version]($style)[](fg:cyan) "
-detect_extensions = ["go"]
-detect_files = ["go.mod", "go.sum"]
 
 # -------- Rust --------
 [rust]
 symbol = " "
-style = "fg:bg bg:red dimmed"
+style = "fg:bg bg:red bold"
 format = "[](fg:red)[$symbol$version]($style)[](fg:red) "
-detect_extensions = ["rs"]
-detect_files = ["Cargo.toml"]
 
-# -------- Sudo (privileged indicator) --------
+# -------- Sudo --------
 [sudo]
 symbol = " "
-style = "fg:bg bg:red"
+style = "fg:bg bg:red bold"
 format = "[](fg:red)[$symbol as root]($style)[](fg:red) "
-disabled = false
 
-# -------- Time & Status --------
+# -------- Time --------
 [time]
 disabled = false
 time_format = "%H:%M"
-style = "fg:muted"
-format = " [$time]($style)"
+style = "fg:muted bg:bg2"
+format = "[](fg:bg2)[$time]($style)[](fg:bg2) "
 
+# -------- Command Duration --------
+[cmd_duration]
+min_time = 700
+style = "fg:muted bg:bg3 italic"
+format = "[](fg:bg3)[$duration]($style)[](fg:bg3) "
+
+# -------- Status --------
 [status]
 style = "fg:bg bg:red"
 symbol = "✖ "
 format = "[](fg:red)[$symbol$status]($style)[](fg:red) "
 disabled = false
-map_symbol = true
 pipestatus = true
-
-[cmd_duration]
-min_time = 750
-format = "  [$duration]($style)"
-style = "fg:muted"
-
-# -------- Username (right side, muted) --------
-[username]
-format = " [$user]($style)"
-style_root = "fg:yellow"
-style_user = "fg:muted"
-show_always = false
-
-# -------- Misc cleanups --------
-[battery]
-disabled = true
-
-[package]
-disabled = true
-
-[nodejs]
-disabled = true  # You said Bun is primary
-
-[aws]
-disabled = true
-
-[gcloud]
-disabled = true

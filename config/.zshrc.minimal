@@ -12,6 +12,13 @@ plugins=(git)
 # Source oh-my-zsh
 source $ZSH/oh-my-zsh.sh
 
+# Starship configuration
+# You can change the default config location with STARSHIP_CONFIG:
+# export STARSHIP_CONFIG=~/example/non/default/path/starship.toml
+#
+# You can change the cache location with STARSHIP_CACHE:
+# export STARSHIP_CACHE=~/.starship/cache
+
 # Initialize Starship
 eval "$(starship init zsh)"
 
@@ -71,6 +78,24 @@ alias kcg='kubectl config get-contexts'
 alias kl='kubectl logs'
 alias klf='kubectl logs -f'
 alias kex='kubectl exec -it'
+
+# Talos aliases
+alias t='talosctl'
+alias tc='talosctl config'
+alias tci='talosctl config info'
+alias tcc='talosctl config contexts'
+alias tcu='talosctl config context'
+alias tcn='talosctl config nodes'
+alias tg='talosctl get'
+alias tgm='talosctl get members'
+alias tgn='talosctl get nodes'
+alias tk='talosctl kubeconfig'
+alias tl='talosctl logs'
+alias tr='talosctl restart'
+alias ts='talosctl service'
+alias tv='talosctl version'
+alias td='talosctl dashboard'
+alias te='talosctl etcd'
 
 # Helm aliases
 alias h='helm'

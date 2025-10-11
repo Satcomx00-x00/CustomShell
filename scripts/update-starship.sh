@@ -72,12 +72,8 @@ done
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_CONFIG_DIR="$SCRIPT_DIR/../config"
 
-# Determine installation config directory (same logic as install.sh)
-if [[ $EUID -eq 0 ]]; then
-    INSTALL_CONFIG_DIR="/etc"
-else
-    INSTALL_CONFIG_DIR="$HOME/.config"
-fi
+# Starship config is always user-specific (same logic as install.sh)
+INSTALL_CONFIG_DIR="$HOME/.config"
 
 # Check if project starship config exists
 if [[ ! -f "$PROJECT_CONFIG_DIR/starship.toml" ]]; then

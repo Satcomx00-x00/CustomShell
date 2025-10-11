@@ -11,9 +11,10 @@ CustomShell/
 │   ├── .zshrc.minimal # Minimal Zsh configuration
 │   └── starship.toml # Starship prompt configuration
 ├── scripts/          # 🛠️ Installation and utility scripts
-│   ├── install.sh   # Main installer
+│   ├── install.sh         # Main installer
 │   ├── install_packages.sh # Multi-distro package installer
-│   └── update-zsh.sh # Configuration updater
+│   ├── update-zsh.sh      # Configuration updater
+│   └── uninstall.sh       # Complete uninstaller
 ├── docker/           # Container setup
 │   ├── Dockerfile   # Debian-based container
 │   └── docker-compose.yml
@@ -26,7 +27,7 @@ CustomShell/
 
 - **Multi-Distro Support**: Works on Debian/Ubuntu, RHEL/CentOS/Fedora, Arch, openSUSE, Alpine, Gentoo
 - **Zsh with Oh My Zsh**: Essential plugins (autosuggestions, syntax highlighting, completions)
-- **Starship Prompt**: Dracula theme with comprehensive tool support
+- **Starship Prompt**: P10K-style minimal prompt with comprehensive tool support
 - **Docker Integration**: Container based on Debian:latest
 - **Extensive Tool Support**:
   - **Git**: Complete workflow aliases and functions
@@ -42,7 +43,15 @@ CustomShell/
 - **Smart Helper Functions**: `pyenv`, `dshell`, `kctx`, `gacp`, `fh`, `fe`, `fd`, etc.
 - **Optimized Workflow**: Tailored for Python, Bun, Docker, and Kubernetes development## 🚀 Installation
 
-### Linux Installer
+### Quick Install (Recommended)
+
+Install CustomShell with a single command:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Satcomx00-x00/CustomShell/main/install.sh | bash
+```
+
+### Manual Installation
 
 1. Clone the repository:
    ```bash
@@ -70,6 +79,16 @@ To update your Zsh configuration without reinstalling everything:
 ./scripts/update-zsh.sh --minimal # Update to minimal config
 ./scripts/update-zsh.sh --no-backup # Update without backup
 ./scripts/update-zsh.sh --help   # Show help
+```
+
+### Uninstall
+
+To completely remove the Custom Starship Zsh Shell:
+```bash
+./scripts/uninstall.sh                    # Full uninstall
+./scripts/uninstall.sh --keep-zsh        # Keep Zsh, remove everything else
+./scripts/uninstall.sh --restore-backups # Restore original configurations
+./scripts/uninstall.sh --help            # Show help
 ```
 
 ### Docker Container
@@ -158,14 +177,29 @@ To update your Zsh configuration without reinstalling everything:
 - **`config/starship.toml`** - Starship prompt configuration with Dracula theme
 - **`scripts/install_packages.sh`** - Multi-distro package installation script
 - **`scripts/update-zsh.sh`** - Configuration update utility
+- **`scripts/uninstall.sh`** - Complete uninstallation script
 
 ## ⚙️ Customization
 
-- **Starship Prompt**: Edit `config/starship.toml` (template) or `~/.config/starship.toml` (installed)
+- **Starship Prompt**: Edit `config/starship.toml` (P10K-style template) or `~/.config/starship.toml` (installed)
 - **Zsh Config**: Modify `config/.zshrc` or `config/.zshrc.minimal` (templates)
 - **Add Plugins**: Install to `~/.oh-my-zsh/custom/plugins/`
 - **Local Config**: Add customizations to `~/.zshrc.local` (auto-sourced)
 - **Update Config**: Use `scripts/update-zsh.sh` to apply changes
+
+### Starship Configuration Options
+
+You can customize Starship's behavior using environment variables:
+
+```bash
+# Change config file location (uncomment and modify in ~/.zshrc)
+export STARSHIP_CONFIG=~/custom/path/starship.toml
+
+# Change cache directory location (uncomment and modify in ~/.zshrc)
+export STARSHIP_CACHE=~/.starship/cache
+```
+
+**Note**: Starship config is always installed to `~/.config/starship.toml` (user-specific) and caches logs in `~/.cache/starship/`.
 
 ## VS Code Settings
 
