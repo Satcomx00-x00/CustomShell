@@ -6,6 +6,7 @@ export LC_ALL="en_US.UTF-8"
 export EDITOR="vim"
 export VISUAL="vim"
 export BROWSER="firefox"
+export NODE_OPTIONS="--max-old-space-size=16384 --max-semi-space-size=64 --optimize-for-size=false"
 
 # --- Zinit plugin manager ---
 if [[ ! -f "$HOME/.zinit/bin/zinit.zsh" ]]; then
@@ -70,6 +71,10 @@ zstyle ':completion:*' menu no
 zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath' 
 
 # --- Aliases ---
+
+alias cleanfd='find . -type d -empty -delete'
+
+
 # Enhanced aliases
 alias ll='exa -alF'
 alias la='exa -a'
