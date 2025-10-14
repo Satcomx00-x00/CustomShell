@@ -1,51 +1,29 @@
-# CustomShell
+# CustomShell - Dracula Theme Setup
 
-CustomShell provides a modern configuration for Zsh, Powerlevel10k, and tmux, optimized for development on Linux and macOS.  
-It includes themes, plugins, aliases, and an enhanced terminal experience (RAM, load, IP display, etc).
+This repository contains configuration files for Starship and Oh My Zsh with the Dracula theme.
 
-## Main Features
+## Starship Configuration
 
-- Zsh with Oh My Zsh and many useful plugins
-- Modern, purple, ASCII-friendly Powerlevel10k theme
-- Advanced tmux configuration with plugin manager
-- Handy aliases for git, docker, tmux, and more
-- Automatic detection of modern tools (`exa`, `bat`, etc.)
-- French locale support (`fr_FR.UTF-8`)
+The Starship prompt is configured with a Dracula-themed color palette and powerline-style segments.
 
-## Quick Install
+### Installation
 
-## VSCode
+1. Install Starship: https://starship.rs/
+2. Copy the `.config/starship/starship.toml` file to `~/.config/starship/starship.toml`
+3. Add `eval "$(starship init zsh)"` to your `~/.zshrc`
 
-Settings: 
+## Oh My Zsh Configuration
 
-```json
-{ "editor.fontfamily" : "DroidSansM Nerd Font,Symbols Nerd Font,Courier New,monospace" }
-```
+The Dracula theme for Oh My Zsh provides a clean, colorful prompt with Git status indicators.
 
+### Installation
 
-```bash
-apt update && apt install git -y
-git clone https://github.com/Satcomx00-x00/CustomShell
-cd CustomShell/scripts
-./install.sh
-```
+1. Install Oh My Zsh: https://ohmyzsh.sh/
+2. Copy the `.oh-my-zsh/themes/dracula.zsh-theme` file to `~/.oh-my-zsh/themes/dracula.zsh-theme`
+3. Set `ZSH_THEME="dracula"` in your `~/.zshrc`
 
-> **Tip:** To update the Powerlevel10k configuration after modification:
-> ```bash
-> ./scripts/update-p10k.sh
-> ```
+## Usage
 
-## Uninstall
+After installation, your shell will use the Dracula theme for both Starship and Oh My Zsh.
 
-```bash
-./scripts/uninstall.sh
-```
-
-## Customization
-
-- Edit files in `config/` to adapt aliases, prompt, or tmux to your needs.
-- Restart your terminal or run `exec zsh` to apply changes.
-
----
-
-License: Apache 2.0
+Note: Ensure you have a Nerd Font installed for proper icon display in Starship.
