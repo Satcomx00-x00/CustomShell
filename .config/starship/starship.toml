@@ -1,88 +1,64 @@
 format = """
-[](color_orange)\
-$os\
-$username\
-[](bg:color_orange fg:color_purple)\
+[░▒▓](#a3aed2)\
+[  ](bg:#a3aed2 fg:#090c0c)\
+[](bg:#769ff0 fg:#a3aed2)\
 $directory\
-[](fg:color_purple bg:color_blue)\
+[](fg:#769ff0 bg:#394260)\
 $git_branch\
 $git_status\
-[](fg:color_blue bg:color_green)\
+[](fg:#394260 bg:#212736)\
 $nodejs\
 $rust\
 $golang\
 $php\
-[](fg:color_green bg:color_yellow)\
-$docker\
-[](fg:color_yellow)\
-$cmd_duration\
-$line_break\
-$character"""
-
-[os]
-style = "bg:color_orange fg:color_fg0"
-
-[username]
-style_user = "bg:color_orange fg:color_fg0"
-style_root = "bg:color_orange fg:color_fg0"
-format = "[$user]($style) "
+[](fg:#212736 bg:#1d2230)\
+$time\
+[ ](fg:#1d2230)\
+\n$character"""
 
 [directory]
-style = "bg:color_purple fg:color_fg0"
-format = "[$path]($style)"
+style = "fg:#e3e5e5 bg:#769ff0"
+format = "[ $path ]($style)"
 truncation_length = 3
 truncation_symbol = "…/"
 
+[directory.substitutions]
+"Documents" = "󰈙 "
+"Downloads" = " "
+"Music" = " "
+"Pictures" = " "
+
 [git_branch]
 symbol = ""
-style = "bg:color_blue fg:color_fg0"
-format = "[$symbol $branch]($style)"
+style = "bg:#394260"
+format = '[[ $symbol $branch ](fg:#769ff0 bg:#394260)]($style)'
 
 [git_status]
-style = "bg:color_blue fg:color_fg0"
-format = "$all_status$ahead_behind "
+style = "bg:#394260"
+format = '[[($all_status$ahead_behind )](fg:#769ff0 bg:#394260)]($style)'
 
 [nodejs]
-symbol = ""
-style = "bg:color_green fg:color_fg0"
-format = "[$symbol ($version)]($style)"
+symbol = ""
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
 
 [rust]
 symbol = ""
-style = "bg:color_green fg:color_fg0"
-format = "[$symbol ($version)]($style)"
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
 
 [golang]
-symbol = "ﳑ"
-style = "bg:color_green fg:color_fg0"
-format = "[$symbol ($version)]($style)"
+symbol = ""
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
 
 [php]
 symbol = ""
-style = "bg:color_green fg:color_fg0"
-format = "[$symbol ($version)]($style)"
+style = "bg:#212736"
+format = '[[ $symbol ($version) ](fg:#769ff0 bg:#212736)]($style)'
 
-[docker]
-symbol = ""
-style = "bg:color_yellow fg:color_fg0"
-format = "[$symbol ($version)]($style)"
-
-[cmd_duration]
-style = "bg:color_yellow fg:color_fg0"
-format = "[$duration]($style)"
-
-[character]
-success_symbol = "[](bold fg:color_green)"
-error_symbol = "[](bold fg:color_red)"
-vimcmd_symbol = "[](bold fg:color_green)"
-
-[palette]
-color_fg0 = "#f8f8f2"
-color_fg1 = "#6272a4"
-color_bg1 = "#44475a"
-color_orange = "#ffb86c"
-color_purple = "#bd93f9"
-color_green = "#50fa7b"
-color_blue = "#8be9fd"
-color_red = "#ff5555"
-color_yellow = "#f1fa8c"
+[time]
+disabled = false
+time_format = "%R" # Hour:Minute Format
+style = "bg:#1d2230"
+format = '[[  $time ](fg:#a0a9cb bg:#1d2230)]($style)'
