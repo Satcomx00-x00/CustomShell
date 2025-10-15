@@ -1,117 +1,111 @@
-# CustomShell - Enhanced Zsh Configuration
+# Talos Kubernetes Admin Container
 
-This repository contains a comprehensive Zsh configuration with Oh My Zsh, custom aliases, functions, and dependency management.
+This repository provides a Docker container with all essential tools for administering Talos OS Kubernetes clusters.
 
 ## Features
 
-- **Modern Tools Integration**: Conditional aliases for exa, bat, and other modern CLI tools
-- **Dependency Management**: Automatic installation of optional tools via the install script
-- **Tmux Integration**: Smart session management with aliases
-- **Docker Support**: Convenient aliases for container management
-- **Git Workflow**: Extensive git aliases for efficient version control
-- **System Monitoring**: Enhanced system information display with banner
-- **Python Development**: Aliases for Python and pip operations
+- **Talos OS Management**: Complete talosctl installation for cluster operations
+- **Kubernetes CLI**: kubectl with bash completion and aliases
+- **Package Management**: Helm for deploying applications
+- **Terminal UI**: k9s for interactive Kubernetes management
+- **Context Switching**: kubectx and kubens for easy cluster/namespace switching
+- **Log Tailing**: stern for multi-pod log streaming
+- **Enhanced Prompt**: kube-ps1 for Kubernetes-aware shell prompt
+- **Useful Aliases**: Shortcuts for common kubectl operations
 
-## Installation Scripts
+## Docker Container
 
-### Bash Install Script (Linux/macOS)
-```bash
-./install.sh
-```
-
-### PowerShell Install Script (Cross-platform)
-```powershell
-# Windows PowerShell
-.\install.ps1
-
-# PowerShell Core (cross-platform)
-pwsh -ExecutionPolicy Bypass -File install.ps1
-
-# With options
-.\install.ps1 -Force -SkipConfirmation
-```
-
-The PowerShell script supports:
-- **Cross-platform**: Windows, Linux, and macOS
-- **Automatic detection**: Platform and architecture detection
-- **PATH management**: Automatically adds tools to system PATH on Windows
-- **Confirmation prompts**: Optional skip with `-SkipConfirmation`
-- **Force reinstall**: Use `-Force` to reinstall existing tools
-
-## Included Tools and Aliases
-
-### Modern CLI Tools
-- **exa**: Modern replacement for `ls` (aliases: `ls`, `ll`, `la`, `l`, `lt`)
-- **bat**: Modern replacement for `cat` (alias: `cat`)
-
-### Development Tools
-- **Git**: Comprehensive aliases (`gs`, `ga`, `gc`, `gp`, `gl`, etc.)
-- **Docker**: Container management (`dk`, `dkc`, `dki`, `dkr`, etc.)
-- **Python**: Package management (`py3`, `pipi`, `pipu`, etc.)
-
-### System Tools
-- **Tmux**: Session management (`tmux`, `tma`, `tms`, `tx`, etc.)
-- **System Monitoring**: Enhanced commands (`top` → `htop`, `df -h`, etc.)
-
-### Custom Functions
-- `mkcd`: Create directory and cd into it
-- `extract`: Extract various archive formats
-- `tmux-start`: Smart tmux session starter
-- `banner`: Display system information on shell start
-
-## Configuration Structure
-
-The `.zshrc` is organized into:
-- **Utility Functions**: Package manager detection, dependency installation
-- **Alias Setup Functions**: Modular alias definitions
-- **Custom Functions**: Enhanced shell operations
-- **Environment Setup**: Development tool configurations
-- **Plugin Configurations**: Oh My Zsh plugin settings
-- **Welcome Banner**: System information display
-
-## Customization
-
-Edit the alias functions in `.oh-my-zsh/.zshrc` to add or modify aliases. The modular structure makes it easy to enable/disable specific tool integrations.
-
-## Requirements
-
-- Zsh shell
-- Oh My Zsh
-- Supported package manager (apt, brew, yum, dnf, pacman)
-
-## Docker Environment
-
-A Dockerfile is provided to create a containerized environment with all Kubernetes tools pre-installed.
-
-### Build and Run
+### Build the Image
 
 ```bash
-# Build the image
-docker build -t k8s-tools .
+docker build -t talos-admin .
+```
 
-# Run the container
-docker run -it --rm k8s-tools
+### Run the Container
 
-# Run with kubeconfig mounted
-docker run -it --rm -v ~/.kube:/root/.kube k8s-tools
+```bash
+# Basic run
+docker run -it --rm talos-admin
+
+# With kubeconfig and talos config mounted
+docker run -it --rm \
+  -v ~/.kube:/root/.kube \
+  -v ~/.talos:/root/.talos \
+  talos-admin
 ```
 
 ### Included Tools
 
-The Docker image includes:
-
-- **kubectl**: Kubernetes CLI
-- **talosctl**: Talos OS management
+- **talosctl**: Talos OS cluster management
+- **kubectl**: Kubernetes command-line tool
 - **helm**: Kubernetes package manager
-- **k9s**: Terminal UI for Kubernetes
-- **kubectx/kubens**: Context and namespace switching
+- **k9s**: Terminal-based UI for Kubernetes
+- **kubectx**: Switch between Kubernetes contexts
+- **kubens**: Switch between Kubernetes namespaces
 - **stern**: Multi-pod log tailing
-- **kustomize**: Kubernetes manifest customization
-- **flux**: GitOps continuous delivery
-- **argocd**: GitOps continuous delivery
-- **velero**: Kubernetes backup/restore
-- **kubeconform**: Kubernetes manifest validation
-- **kubeseal**: Sealed Secrets CLI
-- **krew**: kubectl plugin manager with plugins (ctx, ns, view-secret, get-all, tree)
+- **kube-ps1**: Kubernetes-aware shell prompt
 
-Plus bash completion and useful aliases for common kubectl commands.
+### Useful Aliases
+
+- `k` → `kubectl`
+- `kg` → `kubectl get`
+- `kgp` → `kubectl get pods`
+- `kgn` → `kubectl get nodes`
+- `kgs` → `kubectl get svc`
+- `kga` → `kubectl get all`
+- `kd` → `kubectl describe`
+- `kl` → `kubectl logs`
+- `ke` → `kubectl exec -it`
+- `kx` → `kubectx`
+- `kn` → `kubens`
+- `ks` → `stern`
+
+## Usage Examples
+
+### Talos Operations
+```bash
+# Check cluster health
+talosctl health
+
+# Get cluster info
+talosctl cluster info
+
+# Access Talos dashboard
+talosctl dashboard
+```
+
+### Kubernetes Operations
+```bash
+# Get cluster status
+kubectl cluster-info
+
+# List nodes
+kubectl get nodes
+
+# Use k9s for interactive management
+k9s
+```
+
+### Context Management
+```bash
+# List available contexts
+kubectx
+
+# Switch context
+kubectx my-cluster
+
+# List namespaces
+kubens
+
+# Switch namespace
+kubens kube-system
+```
+
+## Configuration
+
+Mount your local configuration directories to persist settings:
+
+- `~/.kube`: Kubernetes configuration
+- `~/.talos`: Talos configuration
+
+The container includes bash completion for all tools and an enhanced prompt showing the current Kubernetes context.

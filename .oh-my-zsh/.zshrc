@@ -32,55 +32,6 @@ zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
 
 # --- Utility Functions ---
 
-# Detect package manager
-detect_package_manager() {
-    if command -v apt &> /dev/null; then
-        echo "apt"
-    elif command -v brew &> /dev/null; then
-        echo "brew"
-    elif command -v yum &> /dev/null; then
-        echo "yum"
-    elif command -v dnf &> /dev/null; then
-        echo "dnf"
-    elif command -v pacman &> /dev/null; then
-        echo "pacman"
-    else
-        echo "unknown"
-    fi
-}
-
-# Ensure command is available, install if not
-ensure_command() {
-    local cmd="$1"
-    local package="$2"
-    if ! command -v "$cmd" &> /dev/null; then
-        echo "$cmd not found. Attempting to install $package..."
-        local pm
-        pm=$(detect_package_manager)
-        case "$pm" in
-            apt)
-                sudo apt update && sudo apt install -y "$package"
-                ;;
-            brew)
-                brew install "$package"
-                ;;
-            yum)
-                sudo yum install -y "$package"
-                ;;
-            dnf)
-                sudo dnf install -y "$package"
-                ;;
-            pacman)
-                sudo pacman -S --noconfirm "$package"
-                ;;
-            *)
-                echo "Package manager not supported. Please install $cmd manually."
-                return 1
-                ;;
-        esac
-    fi
-}
-
 # Set alias if command exists
 set_alias_if_exists() {
     local cmd="$1"
@@ -95,7 +46,6 @@ set_tool_aliases() {
     local tool="$1"
     local package="$2"
     shift 2
-    ensure_command "$tool" "$package"
     if command -v "$tool" &> /dev/null; then
         for alias_def in "$@"; do
             alias "$alias_def"
@@ -195,10 +145,6 @@ utility_aliases() {
 
 # Enhanced tools aliases
 enhanced_tools_aliases() {
-    # Ensure better tools are available
-    ensure_command exa exa
-    ensure_command bat bat
-
     # Enhanced listing aliases
     if command -v exa &> /dev/null; then
         alias ls='exa --color=auto'
@@ -213,7 +159,7 @@ enhanced_tools_aliases() {
     fi
 
     # Better cat if bat is available
-    set_aliases_if_exists bat cat='bat'
+    set_alias_if_exists bat cat='bat'
 }
 
 # --- Setup Aliases ---
