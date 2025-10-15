@@ -15,6 +15,14 @@ This repository provides a Docker container with all essential tools for adminis
 
 ## Docker Container
 
+### Create Persistent Volumes
+
+```bash
+# Create named volumes for persistent storage
+docker volume create talos-kubeconfig
+docker volume create talos-config
+```
+
 ### Build the Image
 
 ```bash
@@ -24,14 +32,33 @@ docker build -t talos-admin .
 ### Run the Container
 
 ```bash
-# Basic run
-docker run -it --rm talos-admin
+# Run with persistent named volumes
+docker run -it --rm \
+  -v talos-kubeconfig:/root/.kube \
+  -v talos-config:/root/.talos \
+  talos-admin
 
-# With kubeconfig and talos config mounted
+# Or with bind mounts to host directories (for local development)
 docker run -it --rm \
   -v ~/.kube:/root/.kube \
   -v ~/.talos:/root/.talos \
   talos-admin
+```
+
+### Managing Volumes
+
+```bash
+# List volumes
+docker volume ls
+
+# Inspect volume contents
+docker run --rm -v talos-kubeconfig:/data alpine ls -la /data
+
+# Copy files to/from volumes
+docker run --rm -v talos-kubeconfig:/data -v $(pwd):/host alpine cp /host/config /data/
+
+# Remove volumes when no longer needed
+docker volume rm talos-kubeconfig talos-config
 ```
 
 ### Included Tools
