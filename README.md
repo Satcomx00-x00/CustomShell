@@ -87,7 +87,7 @@ docker volume rm talos-kubeconfig talos-config
 - `kn` → `kubens`
 - `ks` → `stern`
 
-## Usage Examples
+## Usage ezamples
 
 ### Talos Operations
 ```bash

@@ -105,7 +105,7 @@ install_dependencies() {
 
     # List of packages to install
     local packages=(
-        "exa:exa"          # Modern ls replacement
+        "eza:eza"          # Modern ls replacement
         "bat:bat"          # Modern cat replacement
         "tmux:tmux"        # Terminal multiplexer
         "docker:docker"    # Container runtime
@@ -140,7 +140,7 @@ install_dependencies() {
     echo "    sudo usermod -aG docker \$USER"
     echo "    Then log out and back in for the changes to take effect."
     echo "  - For tmux: The configuration includes smart session management."
-    echo "  - For exa/bat: Enhanced file listing and viewing commands."
+    echo "  - For eza/bat: Enhanced file listing and viewing commands."
     echo
     log_success "CustomShell dependencies installation finished!"
 }

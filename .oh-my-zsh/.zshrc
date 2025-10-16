@@ -92,6 +92,18 @@ docker_aliases() {
         dkb='docker build'
 }
 
+# Distrobox aliases
+distrobox_aliases() {
+    set_tool_aliases distrobox distrobox \
+        db='distrobox' \
+        dbc='distrobox create' \
+        dbe='distrobox enter' \
+        dbl='distrobox list' \
+        dbs='distrobox stop' \
+        dbrm='distrobox rm' \
+        dbu='distrobox upgrade'
+}
+
 # Git aliases
 git_aliases() {
     set_tool_aliases git git \
@@ -144,12 +156,12 @@ utility_aliases() {
 # Enhanced tools aliases
 enhanced_tools_aliases() {
     # Enhanced listing aliases
-    if command -v exa &> /dev/null; then
-        alias ls='exa --color=auto'
-        alias ll='exa -alF --color=auto'
-        alias la='exa -a --color=auto'
-        alias l='exa -CF'
-        alias lt='exa --tree --color=auto'
+    if command -v eza &> /dev/null; then
+        alias ls='eza --color=auto'
+        alias ll='eza -alF --color=auto'
+        alias la='eza -a --color=auto'
+        alias l='eza -CF'
+        alias lt='eza --tree --color=auto'
     else
         alias ll='ls -alF'
         alias la='ls -A'
@@ -164,6 +176,7 @@ enhanced_tools_aliases() {
 python_aliases
 tmux_aliases
 docker_aliases
+distrobox_aliases
 git_aliases
 navigation_aliases
 system_aliases
@@ -255,7 +268,7 @@ export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python3"
 # --- Plugin Configs ---
 plugins=(ag alias-finder aliases ansible ant apache2-macports arcanist  argocd asdf autoenv autojump autopep8 battery bazel bbedit bedtools bgnotify bower branch bridgetown bun bundler cabal cake cakephp3 capistrano cask catimg celery charm chruby chucknorris cloudfoundry codeclimate coffee colemak colored-man-pages colorize command-not-found common-aliases compleat composer copybuffer copyfile copypath cp cpanm dash dbt debian deno dircycle direnv dirhistory dirpersist dnf dnote docker docker-compose docker-machine doctl dotenv dotnet droplr drush eecms emacs ember-cli emoji emoji-clock emotty encode64 extract eza fabric fancy-ctrl-z fasd fastfile fbterm fd fig firewalld flutter fluxcd fnm forklift fossil frontend-search fzf gas gatsby gcloud geeknote gem genpass gh git git-auto-fetch git-commit git-escape-magic git-extras git-flow git-flow-avh git-hubflow git-lfs git-prompt gitfast github gitignore glassfish globalias gnu-utils golang gpg-agent gradle grails grc grunt gulp hanami hasura helm heroku heroku-alias history history-substring-search hitchhiker hitokoto homestead httpie invoke ionic ipfs isodate istioctl iterm2 jake-node jenv jfrog jhbuild jira jruby jsontools juju jump kate keychain kind kitchen kitty kn knife knife_ssh kops kube-ps1 kubectl kubectx lando laravel laravel4 laravel5 last-working-dir lein lighthouse lol lpass lxd macos macports magic-enter man marked2 marktext mercurial meteor microk8s minikube mise mix mix-fast mongo-atlas mongocli mosh multipass mvn mysql-macports n98-magerun nanoc nats ng nmap node nodenv nomad npm nvm oc octozen operator-sdk otp pass paver pep8 per-directory-history percol perl perms phing pip pipenv pj please pm2 pod podman poetry poetry-env postgres pow powder powify pre-commit procs profiles pyenv pylint python qodana rails rake rake-fast rand-quote rbenv rbfu rbw react-native rebar redis-cli repo ripgrep ros rsync rtx ruby rust rvm safe-paste salt samtools sbt scala scd screen scw sdk sfdx sfffe shell-proxy shrink-path sigstore singlechar skaffold snap spring sprunge ssh ssh-agent stack starship stripe sublime sublime-merge sudo supervisor suse svcat svn svn-fast-info swiftpm systemadmin systemd taskwarrior term_tab terminitor terraform textastic textmate thefuck themes thor tig timer tldr tmux tmux-cssh tmuxinator toolbox transfer tugboat ubuntu ufw universalarchive urltools vault vi-mode vim-interaction virtualenv virtualenvwrapper volta vscode vundle watson wd web-search xcode yarn yii yii2 yum z zbell zeus zoxide zsh-interactive-cd zsh-navigation-tools )
 
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#939393,bold,underline"
 ZSH_AUTOSUGGEST_USE_ASYNC=1
 FAST_HIGHLIGHT_MAXLENGTH=300
 
