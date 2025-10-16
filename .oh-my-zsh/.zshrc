@@ -351,3 +351,5 @@ help-zsh() {
 alias help='help-zsh'
 
 banner
+
+eval "$(starship init zsh)"
