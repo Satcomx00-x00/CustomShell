@@ -9,8 +9,6 @@ export NODE_OPTIONS="--max-old-space-size=16384 --max-semi-space-size=64 --optim
 
 # --- Key Bindings ---
 bindkey -e
-bindkey '^[[A' history-substring-search-up
-bindkey '^[[B' history-substring-search-down
 
 # --- History ---
 HISTSIZE=10000
@@ -255,85 +253,14 @@ export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python3"
 [[ -f "/usr/local/bin/virtualenvwrapper.sh" ]] && source "/usr/local/bin/virtualenvwrapper.sh"
 
 # --- Plugin Configs ---
+plugins=(1password adb ag alias-finder aliases ansible ant apache2-macports arcanist archlinux argocd asdf autoenv autojump autopep8 aws azure battery bazel bbedit bedtools bgnotify bower branch brew bridgetown bun bundler cabal cake cakephp3 capistrano cask catimg celery charm chruby chucknorris cloudfoundry codeclimate coffee colemak colored-man-pages colorize command-not-found common-aliases compleat composer copybuffer copyfile copypath cp cpanm dash dbt debian deno dircycle direnv dirhistory dirpersist dnf dnote docker docker-compose docker-machine doctl dotenv dotnet droplr drush eecms emacs ember-cli emoji emoji-clock emotty encode64 extract eza fabric fancy-ctrl-z fasd fastfile fbterm fd fig firewalld flutter fluxcd fnm forklift fossil frontend-search fzf gas gatsby gcloud geeknote gem genpass gh git git-auto-fetch git-commit git-escape-magic git-extras git-flow git-flow-avh git-hubflow git-lfs git-prompt gitfast github gitignore glassfish globalias gnu-utils golang gpg-agent gradle grails grc grunt gulp hanami hasura helm heroku heroku-alias history history-substring-search hitchhiker hitokoto homestead httpie invoke ionic ipfs isodate istioctl iterm2 jake-node jenv jfrog jhbuild jira jruby jsontools juju jump kate keychain kind kitchen kitty kn knife knife_ssh kops kube-ps1 kubectl kubectx lando laravel laravel4 laravel5 last-working-dir lein lighthouse lol lpass lxd macos macports magic-enter man marked2 marktext mercurial meteor microk8s minikube mise mix mix-fast mongo-atlas mongocli mosh multipass mvn mysql-macports n98-magerun nanoc nats ng nmap node nodenv nomad npm nvm oc octozen operator-sdk otp pass paver pep8 per-directory-history percol perl perms phing pip pipenv pj please pm2 pod podman poetry poetry-env postgres pow powder powify pre-commit procs profiles pyenv pylint python qodana qrcode rails rake rake-fast rand-quote rbenv rbfu rbw react-native rebar redis-cli repo ripgrep ros rsync rtx ruby rust rvm safe-paste salt samtools sbt scala scd screen scw sdk sfdx sfffe shell-proxy shrink-path sigstore singlechar skaffold snap spring sprunge ssh ssh-agent stack starship stripe sublime sublime-merge sudo supervisor suse svcat svn svn-fast-info swiftpm symfony symfony2 symfony6 systemadmin systemd taskwarrior term_tab terminitor terraform textastic textmate thefuck themes thor tig timer tldr tmux tmux-cssh tmuxinator toolbox torrent transfer tugboat ubuntu ufw universalarchive urltools vagrant vagrant-prompt vault vi-mode vim-interaction virtualenv virtualenvwrapper volta vscode vundle wakeonlan watson wd web-search wp-cli xcode yarn yii yii2 yum z zbell zeus zoxide zsh-interactive-cd zsh-navigation-tools )
+
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
 ZSH_AUTOSUGGEST_USE_ASYNC=1
 FAST_HIGHLIGHT_MAXLENGTH=300
 
 # --- Welcome Message ---
 # echo -e "\e[35mWelcome to your purple Zsh terminal!\e[0m"
-
-banner() {
-    # Get system information
-    local hostname
-    hostname=$(hostname 2>/dev/null || echo "Unknown")
-    local username
-    username=$(whoami 2>/dev/null || echo "Unknown")
-    local uptime
-    uptime=$(uptime 2>/dev/null | sed 's/.*up \([^,]*\).*/\1/' | xargs 2>/dev/null || echo "Unknown")
-    local kernel
-    kernel=$(uname -r 2>/dev/null || echo "Unknown")
-    local os
-    os=$(uname -s 2>/dev/null || echo "Unknown")
-    
-    # Get IP addresses
-    local local_ip
-    local_ip=$(ip route get 1.1.1.1 2>/dev/null | grep -oP 'src \K\S+' 2>/dev/null || echo "No connection")
-    local public_ip
-    public_ip=$(curl -s --max-time 3 ipinfo.io/ip 2>/dev/null || echo "Unknown")
-    
-    # Get memory info
-    local mem_info="N/A"
-    if [[ "$os" == "Linux" ]]; then
-        if command -v free &> /dev/null; then
-            local mem_total
-            mem_total=$(free -h 2>/dev/null | awk '/^Mem:/ {print $2}' 2>/dev/null || echo "N/A")
-            local mem_used
-            mem_used=$(free -h 2>/dev/null | awk '/^Mem:/ {print $3}' 2>/dev/null || echo "N/A")
-            mem_info="$mem_used / $mem_total"
-        fi
-    elif [[ "$os" == "Darwin" ]]; then
-        local mem_total
-        mem_total=$(sysctl -n hw.memsize 2>/dev/null | awk '{print int($1/1024/1024/1024)"GB"}' 2>/dev/null || echo "N/A")
-        mem_info="Total: $mem_total"
-    fi
-    
-    # Get load average
-    local load_avg="N/A"
-    if command -v uptime &> /dev/null; then
-        load_avg=$(uptime 2>/dev/null | grep -oP 'load average: \K.*' 2>/dev/null || echo "N/A")
-    fi
-    
-    # Get current time
-    local current_time
-    current_time=$(date '+%Y-%m-%d %H:%M:%S' 2>/dev/null || echo "Unknown")
-    local timezone
-    timezone=$(date '+%Z' 2>/dev/null || echo "Unknown")
-    
-    # Get shell info
-    local shell_version
-    shell_version=$(zsh --version 2>/dev/null | cut -d' ' -f2 2>/dev/null || echo "Unknown")
-    
-    # Get terminal size
-    local term_size="${COLUMNS:-Unknown}x${LINES:-Unknown}"
-    
-    # Print the banner
-    echo -e "\e[35m╔════════════════════════════════════════════════════════════════════════════╗\e[0m"
-    echo -e "\e[35m║\e[0m                          \e[1;35m🚀 Custom Zsh Shell\e[0m                             \e[35m║\e[0m"
-    echo -e "\e[35m╠════════════════════════════════════════════════════════════════════════════╣\e[0m"
-    
-    # Dynamic information
-    printf "  \e[36m👤 User:\e[0m %-18s \e[36m🖥️  Host:\e[0m %s\n" "$username" "$hostname"
-    printf "  \e[36m🌐 Local IP:\e[0m %-14s \e[36m🌍 Public IP:\e[0m %s\n" "$local_ip" "$public_ip"
-    printf "  \e[36m⏰ Time:\e[0m %-19s \e[36m🌎 Zone:\e[0m %s\n" "$current_time" "$timezone"
-    printf "  \e[36m⏱️  Uptime:\e[0m %-16s \e[36m🧠 Memory:\e[0m %s\n" "$uptime" "$mem_info"
-    printf "  \e[36m📊 Load:\e[0m %-18s \e[36m🖥️  Terminal:\e[0m %s\n" "$load_avg" "$term_size"
-    printf "  \e[36m🐧 Kernel:\e[0m %-15s \e[36m🐚 Zsh:\e[0m %s\n" "$kernel" "$shell_version"
-    
-    echo -e "\e[35m╠════════════════════════════════════════════════════════════════════════════╣\e[0m"
-    echo -e "\e[35m║\e[0m                    \e[33m💡 Type 'help' for available commands\e[0m                    \e[35m║\0m"
-    echo -e "\e[35m╚════════════════════════════════════════════════════════════════════════════╝\e[0m"
-    echo
-}
 
 # --- Help Command ---
 help-zsh() {
@@ -350,6 +277,6 @@ help-zsh() {
 
 alias help='help-zsh'
 
-banner
+
 
 eval "$(starship init zsh)"
