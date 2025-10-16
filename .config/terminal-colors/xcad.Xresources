@@ -1,0 +1,38 @@
+! xcad color scheme for X terminals
+! To use: xrdb -merge ~/.config/terminal-colors/xcad.Xresources
+
+*background: #1A1A1A
+*foreground: #F1F1F1
+*cursorColor: #FFFFFF
+
+! Black
+*color0: #121212
+*color8: #666666
+
+! Red
+*color1: #A52AFF
+*color9: #BA5AFF
+
+! Green
+*color2: #7129FF
+*color10: #905AFF
+
+! Yellow
+*color3: #3D2AFF
+*color11: #685AFF
+
+! Blue
+*color4: #2B4FFF
+*color12: #5C78FF
+
+! Purple/Magenta
+*color5: #2883FF
+*color13: #5EA2FF
+
+! Cyan
+*color6: #28B9FF
+*color14: #5AC8FF
+
+! White
+*color7: #F1F1F1
+*color15: #FFFFFF
