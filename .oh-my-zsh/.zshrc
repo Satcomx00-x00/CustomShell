@@ -253,7 +253,7 @@ export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python3"
 [[ -f "/usr/local/bin/virtualenvwrapper.sh" ]] && source "/usr/local/bin/virtualenvwrapper.sh"
 
 # --- Plugin Configs ---
-plugins=(1password adb ag alias-finder aliases ansible ant apache2-macports arcanist archlinux argocd asdf autoenv autojump autopep8 aws azure battery bazel bbedit bedtools bgnotify bower branch brew bridgetown bun bundler cabal cake cakephp3 capistrano cask catimg celery charm chruby chucknorris cloudfoundry codeclimate coffee colemak colored-man-pages colorize command-not-found common-aliases compleat composer copybuffer copyfile copypath cp cpanm dash dbt debian deno dircycle direnv dirhistory dirpersist dnf dnote docker docker-compose docker-machine doctl dotenv dotnet droplr drush eecms emacs ember-cli emoji emoji-clock emotty encode64 extract eza fabric fancy-ctrl-z fasd fastfile fbterm fd fig firewalld flutter fluxcd fnm forklift fossil frontend-search fzf gas gatsby gcloud geeknote gem genpass gh git git-auto-fetch git-commit git-escape-magic git-extras git-flow git-flow-avh git-hubflow git-lfs git-prompt gitfast github gitignore glassfish globalias gnu-utils golang gpg-agent gradle grails grc grunt gulp hanami hasura helm heroku heroku-alias history history-substring-search hitchhiker hitokoto homestead httpie invoke ionic ipfs isodate istioctl iterm2 jake-node jenv jfrog jhbuild jira jruby jsontools juju jump kate keychain kind kitchen kitty kn knife knife_ssh kops kube-ps1 kubectl kubectx lando laravel laravel4 laravel5 last-working-dir lein lighthouse lol lpass lxd macos macports magic-enter man marked2 marktext mercurial meteor microk8s minikube mise mix mix-fast mongo-atlas mongocli mosh multipass mvn mysql-macports n98-magerun nanoc nats ng nmap node nodenv nomad npm nvm oc octozen operator-sdk otp pass paver pep8 per-directory-history percol perl perms phing pip pipenv pj please pm2 pod podman poetry poetry-env postgres pow powder powify pre-commit procs profiles pyenv pylint python qodana qrcode rails rake rake-fast rand-quote rbenv rbfu rbw react-native rebar redis-cli repo ripgrep ros rsync rtx ruby rust rvm safe-paste salt samtools sbt scala scd screen scw sdk sfdx sfffe shell-proxy shrink-path sigstore singlechar skaffold snap spring sprunge ssh ssh-agent stack starship stripe sublime sublime-merge sudo supervisor suse svcat svn svn-fast-info swiftpm symfony symfony2 symfony6 systemadmin systemd taskwarrior term_tab terminitor terraform textastic textmate thefuck themes thor tig timer tldr tmux tmux-cssh tmuxinator toolbox torrent transfer tugboat ubuntu ufw universalarchive urltools vagrant vagrant-prompt vault vi-mode vim-interaction virtualenv virtualenvwrapper volta vscode vundle wakeonlan watson wd web-search wp-cli xcode yarn yii yii2 yum z zbell zeus zoxide zsh-interactive-cd zsh-navigation-tools )
+plugins=(ag alias-finder aliases ansible ant apache2-macports arcanist  argocd asdf autoenv autojump autopep8 battery bazel bbedit bedtools bgnotify bower branch bridgetown bun bundler cabal cake cakephp3 capistrano cask catimg celery charm chruby chucknorris cloudfoundry codeclimate coffee colemak colored-man-pages colorize command-not-found common-aliases compleat composer copybuffer copyfile copypath cp cpanm dash dbt debian deno dircycle direnv dirhistory dirpersist dnf dnote docker docker-compose docker-machine doctl dotenv dotnet droplr drush eecms emacs ember-cli emoji emoji-clock emotty encode64 extract eza fabric fancy-ctrl-z fasd fastfile fbterm fd fig firewalld flutter fluxcd fnm forklift fossil frontend-search fzf gas gatsby gcloud geeknote gem genpass gh git git-auto-fetch git-commit git-escape-magic git-extras git-flow git-flow-avh git-hubflow git-lfs git-prompt gitfast github gitignore glassfish globalias gnu-utils golang gpg-agent gradle grails grc grunt gulp hanami hasura helm heroku heroku-alias history history-substring-search hitchhiker hitokoto homestead httpie invoke ionic ipfs isodate istioctl iterm2 jake-node jenv jfrog jhbuild jira jruby jsontools juju jump kate keychain kind kitchen kitty kn knife knife_ssh kops kube-ps1 kubectl kubectx lando laravel laravel4 laravel5 last-working-dir lein lighthouse lol lpass lxd macos macports magic-enter man marked2 marktext mercurial meteor microk8s minikube mise mix mix-fast mongo-atlas mongocli mosh multipass mvn mysql-macports n98-magerun nanoc nats ng nmap node nodenv nomad npm nvm oc octozen operator-sdk otp pass paver pep8 per-directory-history percol perl perms phing pip pipenv pj please pm2 pod podman poetry poetry-env postgres pow powder powify pre-commit procs profiles pyenv pylint python qodana rails rake rake-fast rand-quote rbenv rbfu rbw react-native rebar redis-cli repo ripgrep ros rsync rtx ruby rust rvm safe-paste salt samtools sbt scala scd screen scw sdk sfdx sfffe shell-proxy shrink-path sigstore singlechar skaffold snap spring sprunge ssh ssh-agent stack starship stripe sublime sublime-merge sudo supervisor suse svcat svn svn-fast-info swiftpm systemadmin systemd taskwarrior term_tab terminitor terraform textastic textmate thefuck themes thor tig timer tldr tmux tmux-cssh tmuxinator toolbox transfer tugboat ubuntu ufw universalarchive urltools vault vi-mode vim-interaction virtualenv virtualenvwrapper volta vscode vundle watson wd web-search xcode yarn yii yii2 yum z zbell zeus zoxide zsh-interactive-cd zsh-navigation-tools )
 
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=8"
 ZSH_AUTOSUGGEST_USE_ASYNC=1
@@ -275,8 +275,28 @@ help-zsh() {
     echo "See the .zshrc file for more aliases and functions."
 }
 
+# --- Awesome Terminal Banner ---
+banner() {
+    echo -e "\e[1;36m"
+    echo "  _____       _                      ";
+    echo " / ____|     | |                     ";
+    echo "| (___   __ _| |_ ___ ___  _ __ ___  ";
+    echo " \___ \ / _\` | __/ __/ _ \| '_ \` _ \ ";
+    echo " ____) | (_| | || (_| (_) | | | | | |";
+    echo "|_____/ \__,_|\__\___\___/|_| |_| |_|";
+    echo -e "\e[0m"
+    echo -e "\e[1;32mWelcome to CustomShell!\e[0m"
+    echo ""
+    echo -e "\e[1;33mUser:\e[0m $(whoami) | \e[1;33mHost:\e[0m $(hostname)"
+    echo -e "\e[1;33mOS:\e[0m $(uname -s) $(uname -r) | \e[1;33mUptime:\e[0m $(uptime -p)"
+    echo -e "\e[1;33mMemory:\e[0m $(free -h | awk 'NR==2{printf "%.1fG/%.1fG", $3/1024, $2/1024}')"
+    echo ""
+}
+
 alias help='help-zsh'
 
 
+
+banner
 
 eval "$(starship init zsh)"
