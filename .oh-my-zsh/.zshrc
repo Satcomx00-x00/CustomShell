@@ -301,7 +301,10 @@ banner() {
     echo -e "\e[1;32mWelcome to CustomShell!\e[0m"
     echo ""
     echo -e "\e[1;33mUser:\e[0m $(whoami) | \e[1;33mHost:\e[0m $(hostname)"
-    echo -e "\e[1;33mOS:\e[0m $(uname -s) $(uname -r) | \e[1;33mUptime:\e[0m $(uptime -p)"
+    # Get distro-friendly name(s)
+    local distro_info
+    distro_info=$(get_distro_name)
+    echo -e "\e[1;33mOS:\e[0m ${distro_info} | \e[1;33mKernel:\e[0m $(uname -s) $(uname -r) | \e[1;33mUptime:\e[0m $(uptime -p)"
     echo -e "\e[1;33mMemory:\e[0m $(free -h | awk 'NR==2{printf "%.1fG/%.1fG", $3/1024, $2/1024}')"
     echo ""
 }
@@ -310,6 +313,55 @@ alias help='help-zsh'
 
 
 
-banner
+# Helper: return friendly distro name (maps common /etc/os-release IDs)
+get_distro_name() {
+    # Default fallback values
+    local id=""
+    local version=""
+    local pretty=""
+
+    if [[ -r "/etc/os-release" ]]; then
+        # shellcheck disable=SC1091
+        . /etc/os-release
+        id=${ID:-}
+        version=${VERSION_ID:-}
+        pretty=${PRETTY_NAME:-}
+    elif command -v lsb_release &> /dev/null; then
+        id=$(lsb_release -si | tr '[:upper:]' '[:lower:]')
+        version=$(lsb_release -sr)
+        pretty=$(lsb_release -sd)
+    fi
+
+    # Normalize and map common IDs to friendly names
+    local name=""
+    case "${id}" in
+        debian) name="Debian" ;;
+        ubuntu) name="Ubuntu" ;;
+        alpine) name="Alpine Linux" ;;
+        arch) name="Arch Linux" ;;
+        manjaro) name="Manjaro" ;;
+        fedora) name="Fedora" ;;
+        centos) name="CentOS" ;;
+        rhel|redhat) name="Red Hat Enterprise Linux" ;;
+        rocky) name="Rocky Linux" ;;
+        ol) name="Oracle Linux" ;;
+        suse|opensuse|sles) name="openSUSE/SUSE" ;;
+        *) name="${pretty:-${id:-Unknown}}" ;;
+    esac
+
+    if [[ -n "${version}" ]]; then
+        echo -n "${name} ${version}"
+    else
+        echo -n "${name}"
+    fi
+}
+
+# Show banner on interactive shells only
+if [[ -n "$PS1" || -n "$ZSH_NAME" || -n "$ZSH_VERSION" ]]; then
+    # Avoid printing during non-interactive runs
+    if [[ -t 1 ]]; then
+        banner
+    fi
+fi
 
 eval "$(starship init zsh)"
