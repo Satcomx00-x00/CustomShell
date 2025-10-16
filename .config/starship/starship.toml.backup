@@ -1,27 +1,26 @@
 # Starship Configuration File
 # This file customizes the appearance and behavior of the Starship prompt
 # Starship is a fast, customizable shell prompt written in Rust
-# ◉ ◎ ◝ ◞ ☕ ☘ 📡 🗿
+
 # Main format string - defines the overall layout of the prompt
-# Uses powerline-style separators () and background colors
+# Uses powerline-style separators () and background colors
 # The format is a template string with modules separated by powerline symbols
 format = """
 [░▒▓](#c4a7e7)\
 [ 👺 ](bg:#c4a7e7 fg:#090c0c)\
-[](bg:#9c27b0 fg:#c4a7e7)\
+[](bg:#9c27b0 fg:#c4a7e7)\
 $directory\
-[](fg:#9c27b0 bg:#6b46c1)\
+[](fg:#9c27b0 bg:#6b46c1)\
 $git_branch\
 $git_status\
-[](fg:#6b46c1 bg:#4c1d95)\
+[](fg:#6b46c1 bg:#4c1d95)\
 $nodejs\
 $rust\
 $golang\
 $php\
-[](fg:#4c1d95 bg:#2d1b69)\
+[](fg:#4c1d95 bg:#2d1b69)\
 $time\
-[](fg:#2d1b69)\
-$fill\
+[ ](fg:#2d1b69)\
 \n$character"""
 
 # Right format - displays modules on the right side of the terminal
@@ -38,7 +37,7 @@ $jobs\
 $battery\
 [](fg:#c4a7e7 bg:#9c27b0)\
 $username\
-[](fg:#c4a7e7)"""
+[░▒▓](fg:#c4a7e7)"""
 
 # Directory module - shows current working directory
 [directory]
@@ -163,12 +162,7 @@ format = '[[ $symbol $percentage ](fg:#e3e5e5 bg:#9c27b0)]($style)'
 
 # Username module - shows current username
 [username]
+# Text color for username
+style = "fg:#090c0c bg:#c4a7e7"
 # Format: [ $user ](style)
 format = '[ $user ](fg:#090c0c bg:#c4a7e7)'
-
-# Fill module - fills the remaining space on the line
-[fill]
-# Symbol to use for filling
-symbol = "─"
-# Style for the fill
-style = "fg:#ffffff"

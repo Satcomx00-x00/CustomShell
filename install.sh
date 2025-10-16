@@ -15,9 +15,19 @@ NC='\033[0m' # No Color
 # Logging functions
 log_info() {
     echo -e "${BLUE}[INFO]${NC} $1"
-}
+}🗿
 
-log_success() {
+log_success() {[ERROR] - (starship::config): Unable to parse the config file: TOML parse error at line 1, column 2                                                                                                                                                                                                                        
+  |
+1 | k# Starship Configuration File
+  |  ^
+expected `.`, `=`
+
+[ERROR] - (starship::config): Unable to parse the config file: TOML parse error at line 1, column 2
+  |
+1 | k# Starship Configuration File
+  |  ^
+expected `.`, `=`
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
@@ -275,8 +285,8 @@ install_dependencies() {
     # Copy starship config
     log_info "Installing starship configuration..."
     mkdir -p "$HOME/.config"
-    if [[ -f ".config/starship/starship.toml" ]]; then
-        if cp ".config/starship/starship.toml" "$HOME/.config/starship.toml"; then
+    if [[ -f ".config//starship.toml" ]]; then
+        if cp ".config//starship.toml" "$HOME/.config/starship.toml"; then
             log_success "Starship configuration (starship.toml) installed"
         else
             log_warning "Failed to copy starship.toml (continuing anyway)"

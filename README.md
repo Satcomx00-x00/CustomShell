@@ -97,7 +97,7 @@ chsh -s $(which zsh)
 
 ### Starship Prompt
 
-The starship configuration is located in `.config/starship/starship.toml`. Customize it to your liking:
+The starship configuration is located in `.config//starship.toml`. Customize it to your liking:
 
 ```toml
 # Example customizations
