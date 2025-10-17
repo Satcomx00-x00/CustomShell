@@ -26,11 +26,8 @@
   # The list of segments shown on the left. Fill it with the most important segments.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
-    os_icon                 # os identifier
     dir                     # current directory
     vcs                     # git status
-    # =========================[ Line #2 ]=========================
-    newline                 # \n
     prompt_char             # prompt symbol
   )
 
@@ -101,7 +98,7 @@
     # cpu_arch              # CPU architecture
     # time                  # current time
     # =========================[ Line #2 ]=========================
-    newline
+    # newline
     # ip                    # ip address and bandwidth usage for a specified network interface
     # public_ip             # public IP address
     # proxy                 # system-wide http/https/ftp proxy
@@ -189,7 +186,7 @@
 
   # Dir
   typeset -g POWERLEVEL9K_DIR_FOREGROUND='#F1F1F1'
-  typeset -g POWERLEVEL9K_DIR_BACKGROUND='#1A1A1A'
+  typeset -g POWERLEVEL9K_DIR_BACKGROUND='#2D1B69'
   typeset -g POWERLEVEL9K_SHORTEN_STRATEGY=truncate_to_unique
   typeset -g POWERLEVEL9K_SHORTEN_DELIMITER=
   typeset -g POWERLEVEL9K_DIR_SHORTENED_FOREGROUND='#F1F1F1'
@@ -365,7 +362,7 @@
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=3
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PRECISION=0
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND='#685AFF'
-  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='#1A1A1A'
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='#2D1B69'
 
   # Background jobs
   typeset -g POWERLEVEL9K_BACKGROUND_JOBS_VERBOSE=false
