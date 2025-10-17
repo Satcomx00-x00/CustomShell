@@ -1,5 +1,5 @@
 # --- Path and Environment ---
-
+POWERLEVEL9K_DISABLE_CONFIGURATION_WIZARD=true
 export PATH="/usr/bin:$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH"
 export LANG="en_US.UTF-8"
 export LC_ALL="en_US.UTF-8"
@@ -63,20 +63,6 @@ python_aliases() {
     alias pipi3='pip3 install'
     alias pipu3='pip3 uninstall'
     alias pipir3='pip3 install -r requirements.txt'
-}
-
-# Tmux aliases
-tmux_aliases() {
-    set_tool_aliases tmux tmux \
-        tmux='tmux -2' \
-        tma='tmux attach -t 2>/dev/null || echo "No session found. Use tms <name> to create one."' \
-        tms='tmux new-session -s' \
-        tmk='tmux kill-session -t' \
-        ts='[[ -n "$TMUX" ]] && unset TMUX; tmux new-session -s' \
-        tl='tmux list-sessions 2>/dev/null || echo "No tmux sessions running."' \
-        tat='tmux attach 2>/dev/null || tmux new-session -s main' \
-        tk='tmux kill-server' \
-        tx='tmux-start'
 }
 
 # Docker aliases
@@ -174,7 +160,6 @@ enhanced_tools_aliases() {
 
 # --- Setup Aliases ---
 python_aliases
-tmux_aliases
 docker_aliases
 distrobox_aliases
 git_aliases
@@ -266,11 +251,61 @@ export VIRTUALENVWRAPPER_PYTHON="/usr/bin/python3"
 [[ -f "/usr/local/bin/virtualenvwrapper.sh" ]] && source "/usr/local/bin/virtualenvwrapper.sh"
 
 # --- Plugin Configs ---
-plugins=(ag alias-finder aliases ansible ant apache2-macports arcanist  argocd asdf autoenv autojump autopep8 battery bazel bbedit bedtools bgnotify bower branch bridgetown bun bundler cabal cake cakephp3 capistrano cask catimg celery charm chruby chucknorris cloudfoundry codeclimate coffee colemak colored-man-pages colorize command-not-found common-aliases compleat composer copybuffer copyfile copypath cp cpanm dash dbt debian deno dircycle direnv dirhistory dirpersist dnf dnote docker docker-compose docker-machine doctl dotenv dotnet droplr drush eecms emacs ember-cli emoji emoji-clock emotty encode64 extract eza fabric fancy-ctrl-z fasd fastfile fbterm fd fig firewalld flutter fluxcd fnm forklift fossil frontend-search fzf gas gatsby gcloud geeknote gem genpass gh git git-auto-fetch git-commit git-escape-magic git-extras git-flow git-flow-avh git-hubflow git-lfs git-prompt gitfast github gitignore glassfish globalias gnu-utils golang gpg-agent gradle grails grc grunt gulp hanami hasura helm heroku heroku-alias history history-substring-search hitchhiker hitokoto homestead httpie invoke ionic ipfs isodate istioctl iterm2 jake-node jenv jfrog jhbuild jira jruby jsontools juju jump kate keychain kind kitchen kitty kn knife knife_ssh kops kube-ps1 kubectl kubectx lando laravel laravel4 laravel5 last-working-dir lein lighthouse lol lpass lxd macos macports magic-enter man marked2 marktext mercurial meteor microk8s minikube mise mix mix-fast mongo-atlas mongocli mosh multipass mvn mysql-macports n98-magerun nanoc nats ng nmap node nodenv nomad npm nvm oc octozen operator-sdk otp pass paver pep8 per-directory-history percol perl perms phing pip pipenv pj please pm2 pod podman poetry poetry-env postgres pow powder powify pre-commit procs profiles pyenv pylint python qodana rails rake rake-fast rand-quote rbenv rbfu rbw react-native rebar redis-cli repo ripgrep ros rsync rtx ruby rust rvm safe-paste salt samtools sbt scala scd screen scw sdk sfdx sfffe shell-proxy shrink-path sigstore singlechar skaffold snap spring sprunge ssh ssh-agent stack starship stripe sublime sublime-merge sudo supervisor suse svcat svn svn-fast-info swiftpm systemadmin systemd taskwarrior term_tab terminitor terraform textastic textmate thefuck themes thor tig timer tldr tmux tmux-cssh tmuxinator toolbox transfer tugboat ubuntu ufw universalarchive urltools vault vi-mode vim-interaction virtualenv virtualenvwrapper volta vscode vundle watson wd web-search xcode yarn yii yii2 yum z zbell zeus zoxide zsh-interactive-cd zsh-navigation-tools )
+plugins=(
+    # Essential Zsh plugins
+    colored-man-pages
+    command-not-found
+    extract
+    history
+    history-substring-search
 
-ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#939393,bold,underline"
-ZSH_AUTOSUGGEST_USE_ASYNC=1
-FAST_HIGHLIGHT_MAXLENGTH=300
+    # Docker
+    docker
+    docker-compose
+    docker-machine
+
+    # Kubernetes
+    kubectl
+    kubectx
+    kube-ps1
+    kops
+    kind
+
+    # Python
+    python
+    pip
+    pipenv
+    pyenv
+    pylint
+
+    # Node.js
+    node
+    npm
+    nvm
+
+    # Bun
+    bun
+
+    # Git
+    git
+    git-auto-fetch
+    git-commit
+    git-escape-magic
+    git-extras
+    git-flow
+    git-flow-avh
+    git-hubflow
+    git-lfs
+    git-prompt
+    gitfast
+    github
+    gitignore
+
+    # Navigation
+    z
+    jump
+    wd
+)
 
 # --- Welcome Message ---
 # echo -e "\e[35mWelcome to your purple Zsh terminal!\e[0m"

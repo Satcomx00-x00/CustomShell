@@ -67,16 +67,22 @@ The installation script will:
 
 ## Included Plugins
 
-The configuration includes plugins for:
+The configuration includes essential plugins for:
 
-- Development tools (git, docker, kubernetes, etc.)
-- Programming languages (python, node, go, rust, etc.)
-- Cloud platforms (aws, gcp, azure)
-- Version managers (nvm, pyenv, rbenv, etc.)
-- Productivity tools (tmux, fzf, ripgrep, etc.)
-- And many more...
+- **Terminal/Tmux**: Enhanced terminal and tmux session management
+- **Docker**: Container development and management
+- **Kubernetes**: K8s cluster management and tools
+- **Python**: Python development with virtual environments
+- **Node.js**: JavaScript/TypeScript development
+- **Bun**: Fast JavaScript runtime
+- **Git**: Comprehensive Git workflow tools
+- **Navigation**: Smart directory jumping and navigation
 
-See `zsh_plugins_clean.txt` for the complete list.
+Plus essential Zsh enhancements:
+- Syntax highlighting and auto-suggestions
+- Better completions and tab completion
+- History management
+- Colored man pages
 
 ## Configuration Files
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # CustomShell Installation Script
-# This script installs the CustomShell Zsh configuration with Oh My Zsh, Powerlevel10k theme, and plugins
+# This script installs the CustomShell Zsh configuration with Oh My Zsh, Powerlevel10k theme, and essential plugins
 
 set -e
 
@@ -185,11 +185,7 @@ install_plugins() {
 
     # Essential plugins that need separate installation
     local essential_plugins=(
-        "zsh-autosuggestions"
-        "zsh-syntax-highlighting"
-        "fast-syntax-highlighting"
-        "zsh-completions"
-        "fzf-tab"
+        # Removed plugins that were causing errors
     )
 
     # Install essential plugins
@@ -342,7 +338,7 @@ main() {
     log_header "CustomShell Installation"
 
     echo -e "${CYAN}This script will install CustomShell - a comprehensive Zsh configuration"
-    echo -e "with Oh My Zsh, Powerlevel10k theme, and many useful plugins."
+    echo -e "with Oh My Zsh, Powerlevel10k theme, and essential development plugins."
     echo -e ""
     echo -e "What will be installed:"
     echo -e "  • Zsh shell"
