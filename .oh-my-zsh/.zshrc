@@ -364,4 +364,10 @@ if [[ -n "$PS1" || -n "$ZSH_NAME" || -n "$ZSH_VERSION" ]]; then
     fi
 fi
 
-eval "$(starship init zsh)"
+# --- Oh My Zsh Setup ---
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="powerlevel10k/powerlevel10k"
+source $ZSH/oh-my-zsh.sh
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f /workspaces/CustomShell/.p10k.zsh ]] || source /workspaces/CustomShell/.p10k.zsh

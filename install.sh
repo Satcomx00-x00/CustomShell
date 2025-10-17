@@ -1,33 +1,59 @@
 #!/bin/bash
 
-# CustomShell Dependency Installer
-# This script installs optional dependencies for the custom Zsh configuration
+# CustomShell Installation Script
+# This script installs the CustomShell Zsh configuration with Oh My Zsh, Powerlevel10k theme, and plugins
 
-# set -e  # Exit on any error - commented out to allow graceful handling of failures
+set -e
 
 # Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
+PURPLE='\033[0;35m'
+CYAN='\033[0;36m'
 NC='\033[0m' # No Color
+
+# Configuration
+REPO_URL="https://github.com/Satcomx00-x00/CustomShell.git"
+ZSH_CUSTOM="${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}"
+BACKUP_DIR="$HOME/.zsh_backup_$(date +%Y%m%d_%H%M%S)"
+
+# Parse command line arguments
+DEPS_ONLY=false
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        -d|--deps-only)
+            DEPS_ONLY=true
+            shift
+            ;;
+        -h|--help)
+            echo "CustomShell Installation Script"
+            echo ""
+            echo "Usage: $0 [OPTIONS]"
+            echo ""
+            echo "Options:"
+            echo "  -d, --deps-only    Install only dependencies (zsh, git, curl)"
+            echo "  -h, --help         Show this help message"
+            echo ""
+            echo "Without any options, performs full installation."
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Use -h or --help for usage information."
+            exit 1
+            ;;
+    esac
+done
 
 # Logging functions
 log_info() {
     echo -e "${BLUE}[INFO]${NC} $1"
-}🗿
+}
 
-log_success() {[ERROR] - (starship::config): Unable to parse the config file: TOML parse error at line 1, column 2                                                                                                                                                                                                                        
-  |
-1 | k# Starship Configuration File
-  |  ^
-expected `.`, `=`
-
-[ERROR] - (starship::config): Unable to parse the config file: TOML parse error at line 1, column 2
-  |
-1 | k# Starship Configuration File
-  |  ^
-expected `.`, `=`
+log_success() {
     echo -e "${GREEN}[SUCCESS]${NC} $1"
 }
 
@@ -39,280 +65,324 @@ log_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-# Detect package manager
-detect_package_manager() {
-    if command -v apt &> /dev/null; then
-        echo "apt"
-    elif command -v brew &> /dev/null; then
-        echo "brew"
-    elif command -v yum &> /dev/null; then
-        echo "yum"
-    elif command -v dnf &> /dev/null; then
-        echo "dnf"
-    elif command -v pacman &> /dev/null; then
-        echo "pacman"
-    else
-        echo "unknown"
+log_header() {
+    echo -e "${PURPLE}================================${NC}"
+    echo -e "${PURPLE}$1${NC}"
+    echo -e "${PURPLE}================================${NC}"
+}
+
+# Check if command exists
+command_exists() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+# Backup existing configuration
+backup_existing_config() {
+    log_info "Checking for existing Zsh configuration..."
+
+    if [[ -f "$HOME/.zshrc" ]]; then
+        log_warning "Found existing .zshrc file. Creating backup..."
+        mkdir -p "$BACKUP_DIR"
+        cp "$HOME/.zshrc" "$BACKUP_DIR/.zshrc.backup"
+        log_success "Backup created at $BACKUP_DIR/.zshrc.backup"
+    fi
+
+    if [[ -f "$HOME/.p10k.zsh" ]]; then
+        log_warning "Found existing .p10k.zsh file. Creating backup..."
+        mkdir -p "$BACKUP_DIR"
+        cp "$HOME/.p10k.zsh" "$BACKUP_DIR/.p10k.zsh.backup"
+        log_success "Backup created at $BACKUP_DIR/.p10k.zsh.backup"
+    fi
+
+    if [[ -d "$HOME/.oh-my-zsh" ]]; then
+        log_warning "Found existing Oh My Zsh installation. Creating backup..."
+        mkdir -p "$BACKUP_DIR"
+        mv "$HOME/.oh-my-zsh" "$BACKUP_DIR/.oh-my-zsh.backup"
+        log_success "Backup created at $BACKUP_DIR/.oh-my-zsh.backup"
     fi
 }
 
-# Check if we have sudo access
-check_sudo() {
-    if [[ $EUID -eq 0 ]]; then
-        # Already root
-        return 0
-    elif command -v sudo &> /dev/null && sudo -n true 2>/dev/null; then
-        # Have sudo and it's configured
-        return 0
+# Install prerequisites
+install_prerequisites() {
+    log_header "Installing Prerequisites"
+
+    # Check for required commands
+    local missing_deps=()
+
+    if ! command_exists curl; then
+        missing_deps+=("curl")
+    fi
+
+    if ! command_exists git; then
+        missing_deps+=("git")
+    fi
+
+    if ! command_exists zsh; then
+        missing_deps+=("zsh")
+    fi
+
+    if [[ ${#missing_deps[@]} -gt 0 ]]; then
+        log_info "Installing missing dependencies: ${missing_deps[*]}"
+
+        # Detect package manager
+        if command_exists apt-get; then
+            sudo apt-get update
+            sudo apt-get install -y "${missing_deps[@]}"
+        elif command_exists yum; then
+            sudo yum install -y "${missing_deps[@]}"
+        elif command_exists dnf; then
+            sudo dnf install -y "${missing_deps[@]}"
+        elif command_exists pacman; then
+            sudo pacman -Syu --noconfirm "${missing_deps[@]}"
+        elif command_exists brew; then
+            brew install "${missing_deps[@]}"
+        else
+            log_error "Could not detect package manager. Please install manually: ${missing_deps[*]}"
+            exit 1
+        fi
+    fi
+
+    log_success "Prerequisites installed"
+}
+
+# Install Oh My Zsh
+install_oh_my_zsh() {
+    log_header "Installing Oh My Zsh"
+
+    if [[ -d "$HOME/.oh-my-zsh" ]]; then
+        log_warning "Oh My Zsh already installed. Skipping..."
+        return
+    fi
+
+    log_info "Installing Oh My Zsh..."
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+
+    log_success "Oh My Zsh installed"
+}
+
+# Install Powerlevel10k theme
+install_powerlevel10k() {
+    log_header "Installing Powerlevel10k Theme"
+
+    local theme_dir="$ZSH_CUSTOM/themes/powerlevel10k"
+
+    if [[ -d "$theme_dir" ]]; then
+        log_warning "Powerlevel10k already installed. Skipping..."
+        return
+    fi
+
+    log_info "Installing Powerlevel10k theme..."
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git "$theme_dir"
+
+    log_success "Powerlevel10k theme installed"
+}
+
+# Install plugins
+install_plugins() {
+    log_header "Installing Zsh Plugins"
+
+    local plugins_dir="$ZSH_CUSTOM/plugins"
+
+    # Essential plugins that need separate installation
+    local essential_plugins=(
+        "zsh-autosuggestions"
+        "zsh-syntax-highlighting"
+        "fast-syntax-highlighting"
+        "zsh-completions"
+        "fzf-tab"
+    )
+
+    # Install essential plugins
+    for plugin in "${essential_plugins[@]}"; do
+        local plugin_dir="$plugins_dir/$plugin"
+
+        if [[ -d "$plugin_dir" ]]; then
+            log_info "Plugin $plugin already installed. Skipping..."
+            continue
+        fi
+
+        log_info "Installing essential plugin: $plugin"
+
+        case "$plugin" in
+            "zsh-autosuggestions")
+                git clone https://github.com/zsh-users/zsh-autosuggestions "$plugin_dir"
+                ;;
+            "zsh-syntax-highlighting")
+                git clone https://github.com/zsh-users/zsh-syntax-highlighting "$plugin_dir"
+                ;;
+            "fast-syntax-highlighting")
+                git clone https://github.com/zdharma-continuum/fast-syntax-highlighting "$plugin_dir"
+                ;;
+            "zsh-completions")
+                git clone https://github.com/zsh-users/zsh-completions "$plugin_dir"
+                ;;
+            "fzf-tab")
+                git clone https://github.com/Aloxaf/fzf-tab "$plugin_dir"
+                ;;
+        esac
+    done
+
+    log_success "Essential plugins installation completed"
+}
+
+# Install additional tools
+install_additional_tools() {
+    log_header "Installing Additional Tools"
+
+    # Install eza (modern ls replacement)
+    if ! command_exists eza; then
+        log_info "Installing eza..."
+        if command_exists apt-get; then
+            sudo apt-get install -y eza
+        elif command_exists brew; then
+            brew install eza
+        else
+            log_warning "Could not install eza. Please install manually."
+        fi
+    fi
+
+    # Install bat (modern cat replacement)
+    if ! command_exists bat; then
+        log_info "Installing bat..."
+        if command_exists apt-get; then
+            sudo apt-get install -y bat
+        elif command_exists brew; then
+            brew install bat
+        else
+            log_warning "Could not install bat. Please install manually."
+        fi
+    fi
+
+    log_success "Additional tools installation completed"
+}
+
+# Copy configuration files
+copy_config_files() {
+    log_header "Copying Configuration Files"
+
+    # Copy .zshrc
+    if [[ -f ".oh-my-zsh/.zshrc" ]]; then
+        log_info "Copying .zshrc..."
+        cp ".oh-my-zsh/.zshrc" "$HOME/.zshrc"
+        log_success ".zshrc copied"
     else
-        return 1
+        log_error ".zshrc not found in repository"
+        exit 1
+    fi
+
+    # Copy .p10k.zsh
+    if [[ -f ".p10k.zsh" ]]; then
+        log_info "Copying .p10k.zsh..."
+        cp ".p10k.zsh" "$HOME/.p10k.zsh"
+        log_success ".p10k.zsh copied"
+    else
+        log_error ".p10k.zsh not found in repository"
+        exit 1
     fi
 }
 
-# Install package using detected package manager
-install_package() {
-    local package="$1"
-    local pm
-    pm=$(detect_package_manager)
+# Set Zsh as default shell
+set_default_shell() {
+    log_header "Setting Zsh as Default Shell"
 
-    log_info "Installing $package using $pm..."
+    local current_shell
+    current_shell=$(basename "$SHELL")
 
-    case "$pm" in
-        apt)
-            if ! check_sudo; then
-                log_error "sudo access required for apt. Please run with sudo or as root."
-                return 1
-            fi
-            sudo apt update
-            if sudo apt install -y "$package" 2>/dev/null; then
-                log_success "$package installed successfully"
-                return 0
-            else
-                log_warning "$package not found in apt repositories, skipping..."
-                return 1
-            fi
-            ;;
-        brew)
-            if brew install "$package" 2>/dev/null; then
-                log_success "$package installed successfully"
-                return 0
-            else
-                log_warning "$package not found in brew, skipping..."
-                return 1
-            fi
-            ;;
-        yum)
-            if ! check_sudo; then
-                log_error "sudo access required for yum. Please run with sudo or as root."
-                return 1
-            fi
-            if sudo yum install -y "$package" 2>/dev/null; then
-                log_success "$package installed successfully"
-                return 0
-            else
-                log_warning "$package not found in yum repositories, skipping..."
-                return 1
-            fi
-            ;;
-        dnf)
-            if ! check_sudo; then
-                log_error "sudo access required for dnf. Please run with sudo or as root."
-                return 1
-            fi
-            if sudo dnf install -y "$package" 2>/dev/null; then
-                log_success "$package installed successfully"
-                return 0
-            else
-                log_warning "$package not found in dnf repositories, skipping..."
-                return 1
-            fi
-            ;;
-        pacman)
-            if ! check_sudo; then
-                log_error "sudo access required for pacman. Please run with sudo or as root."
-                return 1
-            fi
-            if sudo pacman -S --noconfirm "$package" 2>/dev/null; then
-                log_success "$package installed successfully"
-                return 0
-            else
-                log_warning "$package not found in pacman repositories, skipping..."
-                return 1
-            fi
-            ;;
-        *)
-            log_error "Unsupported package manager. Please install $package manually."
-            return 1
-            ;;
-    esac
-}
+    if [[ "$current_shell" == "zsh" ]]; then
+        log_info "Zsh is already the default shell"
+        return
+    fi
 
-# Check if package is installed
-is_installed() {
-    command -v "$1" &> /dev/null
+    log_info "Changing default shell to Zsh..."
+    if command_exists chsh; then
+        sudo chsh -s "$(which zsh)" "$USER"
+        log_success "Default shell changed to Zsh. Please log out and back in for changes to take effect."
+    else
+        log_warning "Could not change default shell automatically. Please run: chsh -s $(which zsh)"
+    fi
 }
 
 # Main installation function
-install_dependencies() {
-    local pm
-    pm=$(detect_package_manager)
+main() {
+    if [[ "$DEPS_ONLY" == true ]]; then
+        log_header "CustomShell Dependencies Installation"
 
-    if [[ "$pm" == "unknown" ]]; then
-        log_error "No supported package manager found. Please install dependencies manually."
-        exit 1
-    fi
+        echo -e "${CYAN}This script will install only the dependencies required for CustomShell."
+        echo -e "This includes zsh, git, and curl."
+        echo -e ""
+        echo -e "What will be installed:"
+        echo -e "  • Zsh shell"
+        echo -e "  • Git"
+        echo -e "  • Curl"
+        echo -e ""
+        echo -e "Existing configurations will be backed up.${NC}"
+        echo ""
 
-    log_info "Detected package manager: $pm"
-    log_info "Starting dependency installation..."
-
-    # Essential packages for zsh starship shell
-    local essential_packages=(
-        "zsh:zsh"         # Zsh shell
-        "curl:curl"       # For downloading oh-my-zsh and starship
-        "wget:wget"       # Alternative downloader
-        "git:git"         # Required for oh-my-zsh
-    )
-
-    # Optional packages for enhanced functionality
-    local optional_packages=(
-        "eza:eza"          # Modern ls replacement
-        "bat:bat"          # Modern cat replacement
-        "tmux:tmux"        # Terminal multiplexer
-        "docker:docker"    # Container runtime
-        "htop:htop"        # Process viewer
-        "python3:python3"  # Python interpreter
-        "pip3:python3-pip" # Python package manager
-    )
-
-    local installed_count=0
-    local total_count=$(( ${#essential_packages[@]} + ${#optional_packages[@]} ))
-
-    log_info "Installing essential packages..."
-    for package_info in "${essential_packages[@]}"; do
-        IFS=':' read -r command_name package_name <<< "$package_info"
-
-        if is_installed "$command_name"; then
-            log_info "$command_name is already installed"
-            ((installed_count++))
-        else
-            if install_package "$package_name"; then
-                ((installed_count++))
-            fi
+        read -p "Continue with dependencies installation? (y/N): " -n 1 -r
+        echo
+        if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+            log_info "Installation cancelled."
+            exit 0
         fi
-    done
 
-    log_info "Installing optional packages..."
-    for package_info in "${optional_packages[@]}"; do
-        IFS=':' read -r command_name package_name <<< "$package_info"
+        # Run only dependency installation steps
+        backup_existing_config
+        install_prerequisites
 
-        if is_installed "$command_name"; then
-            log_info "$command_name is already installed"
-            ((installed_count++))
-        else
-            if install_package "$package_name"; then
-                ((installed_count++))
-            fi
-        fi
-    done
+        log_header "Dependencies Installation Complete!"
 
-    # Install oh-my-zsh if not present
-    if [[ ! -d "$HOME/.oh-my-zsh" ]]; then
-        log_info "Installing oh-my-zsh..."
-        if command -v curl &> /dev/null; then
-            if sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended 2>/dev/null; then
-                log_success "oh-my-zsh installed"
-            else
-                log_error "Failed to install oh-my-zsh"
-                exit 1
-            fi
-        elif command -v wget &> /dev/null; then
-            if sh -c "$(wget -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended 2>/dev/null; then
-                log_success "oh-my-zsh installed"
-            else
-                log_error "Failed to install oh-my-zsh"
-                exit 1
-            fi
-        else
-            log_error "Neither curl nor wget available for oh-my-zsh installation"
-            exit 1
-        fi
-    else
-        log_info "oh-my-zsh is already installed"
+        echo -e "${GREEN}Dependencies have been successfully installed!${NC}"
+        echo ""
+        echo -e "${CYAN}You can now run the full installation or set up CustomShell manually.${NC}"
+        echo ""
+        echo -e "${YELLOW}If you encounter any issues, check the backups in: $BACKUP_DIR${NC}"
+        return
     fi
 
-    # Install starship if not present
-    if ! command -v starship &> /dev/null; then
-        log_info "Installing starship..."
-        if command -v curl &> /dev/null; then
-            if curl -sS https://starship.rs/install.sh | sh -s -- --yes 2>/dev/null; then
-                log_success "starship installed"
-            else
-                log_error "Failed to install starship"
-                exit 1
-            fi
-        elif command -v wget &> /dev/null; then
-            if wget -O- https://starship.rs/install.sh | sh -s -- --yes 2>/dev/null; then
-                log_success "starship installed"
-            else
-                log_error "Failed to install starship"
-                exit 1
-            fi
-        else
-            log_error "Neither curl nor wget available for starship installation"
-            exit 1
-        fi
-    else
-        log_info "starship is already installed"
-    fi
+    log_header "CustomShell Installation"
 
-    # Copy configuration files
-    log_info "Setting up configuration files..."
+    echo -e "${CYAN}This script will install CustomShell - a comprehensive Zsh configuration"
+    echo -e "with Oh My Zsh, Powerlevel10k theme, and many useful plugins."
+    echo -e ""
+    echo -e "What will be installed:"
+    echo -e "  • Zsh shell"
+    echo -e "  • Oh My Zsh framework"
+    echo -e "  • Powerlevel10k theme"
+    echo -e "  • Essential Zsh plugins"
+    echo -e "  • Custom configuration files"
+    echo -e "  • Additional tools (eza, bat)"
+    echo -e ""
+    echo -e "Existing configurations will be backed up.${NC}"
+    echo ""
 
-    # Backup existing .zshrc if it exists
-    if [[ -f "$HOME/.zshrc" ]]; then
-        cp "$HOME/.zshrc" "$HOME/.zshrc.backup.$(date +%Y%m%d_%H%M%S)"
-        log_info "Backed up existing .zshrc"
-    fi
-
-    # Copy the custom .zshrc
-    if cp ".oh-my-zsh/.zshrc" "$HOME/.zshrc"; then
-        log_success "Custom .zshrc installed"
-    else
-        log_error "Failed to copy .zshrc"
-        exit 1
-    fi
-
-    # Copy starship config
-    log_info "Installing starship configuration..."
-    mkdir -p "$HOME/.config"
-    if [[ -f ".config//starship.toml" ]]; then
-        if cp ".config//starship.toml" "$HOME/.config/starship.toml"; then
-            log_success "Starship configuration (starship.toml) installed"
-        else
-            log_warning "Failed to copy starship.toml (continuing anyway)"
-        fi
-    else
-        log_warning "starship.toml not found in repository (continuing anyway)"
-    fi
-
-    log_success "Installation complete: $installed_count/$total_count packages ready"
-
-    # Post-installation notes
+    read -p "Continue with installation? (y/N): " -n 1 -r
     echo
-    log_info "Post-installation notes:"
-    echo "  - Zsh and Starship are now installed and configured"
-    echo "  - To use zsh as your default shell, run: chsh -s $(which zsh)"
-    echo "  - Your old .zshrc has been backed up"
-    echo "  - For Docker: You may need to add your user to the docker group:"
-    echo "    sudo usermod -aG docker \$USER"
-    echo "    Then log out and back in for the changes to take effect."
-    echo "  - For tmux: The configuration includes smart session management."
-    echo "  - For eza/bat: Enhanced file listing and viewing commands."
-    echo "  - For starship: Consider installing a Nerd Font for better icon support:"
-    echo "    https://www.nerdfonts.com/"
-    echo
-    log_success "CustomShell setup finished! Run 'zsh' to start your new shell."
+    if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+        log_info "Installation cancelled."
+        exit 0
+    fi
+
+    # Run installation steps
+    backup_existing_config
+    install_prerequisites
+    install_oh_my_zsh
+    install_powerlevel10k
+    install_plugins
+    install_additional_tools
+    copy_config_files
+    set_default_shell
+
+    log_header "Installation Complete!"
+
+    echo -e "${GREEN}CustomShell has been successfully installed!${NC}"
+    echo ""
+    echo -e "${CYAN}Next steps:${NC}"
+    echo "1. Log out and back in, or run: exec zsh"
+    echo "2. Run 'p10k configure' to customize the Powerlevel10k prompt"
+    echo "3. Enjoy your new shell!"
+    echo ""
+    echo -e "${YELLOW}If you encounter any issues, check the backups in: $BACKUP_DIR${NC}"
 }
 
-# Run the installation
-install_dependencies
+# Run main function
+main "$@"
