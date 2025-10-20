@@ -362,7 +362,7 @@
   #####################################[ vcs: git status ]######################################
   # Version control background colors.
   typeset -g POWERLEVEL9K_VCS_CLEAN_BACKGROUND='#7129FF'
-  typeset -g POWERLEVEL9K_VCS_MODIFIED_BACKGROUND='#3D2AFF'
+  typeset -g POWERLEVEL9K_VCS_MODIFIED_BACKGROUND='#7129FF'
   typeset -g POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND='#7129FF'
   typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND='#A52AFF'
   typeset -g POWERLEVEL9K_VCS_LOADING_BACKGROUND='#121212'
@@ -533,7 +533,7 @@
   # it will signify error by turning red.
   typeset -g POWERLEVEL9K_STATUS_ERROR=true
   typeset -g POWERLEVEL9K_STATUS_ERROR_VISUAL_IDENTIFIER_EXPANSION='✘'
-  typeset -g POWERLEVEL9K_STATUS_ERROR_FOREGROUND='#3D2AFF'
+  typeset -g POWERLEVEL9K_STATUS_ERROR_FOREGROUND='#7129FF'
   typeset -g POWERLEVEL9K_STATUS_ERROR_BACKGROUND='#A52AFF'
 
   # Status when the last command was terminated by a signal.
@@ -541,20 +541,20 @@
   # Use terse signal names: "INT" instead of "SIGINT(2)".
   typeset -g POWERLEVEL9K_STATUS_VERBOSE_SIGNAME=false
   typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL_VISUAL_IDENTIFIER_EXPANSION='✘'
-  typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL_FOREGROUND='#3D2AFF'
+  typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL_FOREGROUND='#7129FF'
   typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL_BACKGROUND='#A52AFF'
 
   # Status when some part of a pipe command fails and the overall exit status is also non-zero.
   # It may look like this: 1|0.
   typeset -g POWERLEVEL9K_STATUS_ERROR_PIPE=true
   typeset -g POWERLEVEL9K_STATUS_ERROR_PIPE_VISUAL_IDENTIFIER_EXPANSION='✘'
-  typeset -g POWERLEVEL9K_STATUS_ERROR_PIPE_FOREGROUND='#3D2AFF'
+  typeset -g POWERLEVEL9K_STATUS_ERROR_PIPE_FOREGROUND='#7129FF'
   typeset -g POWERLEVEL9K_STATUS_ERROR_PIPE_BACKGROUND='#A52AFF'
 
   ###################[ command_execution_time: duration of the last command ]###################
   # Execution time color.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND='#121212'
-  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='#3D2AFF'
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='#7129FF'
   # Show duration of the last command if takes at least this many seconds.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=3
   # Show this many fractional digits. Zero means round to seconds.
@@ -577,7 +577,7 @@
 
   #######################[ direnv: direnv status (https://direnv.net/) ]########################
   # Direnv color.
-  typeset -g POWERLEVEL9K_DIRENV_FOREGROUND='#3D2AFF'
+  typeset -g POWERLEVEL9K_DIRENV_FOREGROUND='#7129FF'
   typeset -g POWERLEVEL9K_DIRENV_BACKGROUND='#121212'
   # Custom icon.
   # typeset -g POWERLEVEL9K_DIRENV_VISUAL_IDENTIFIER_EXPANSION='⭐'
@@ -730,7 +730,7 @@
 
   # Haskell version from asdf.
   typeset -g POWERLEVEL9K_ASDF_HASKELL_FOREGROUND='#121212'
-  typeset -g POWERLEVEL9K_ASDF_HASKELL_BACKGROUND='#3D2AFF'
+  typeset -g POWERLEVEL9K_ASDF_HASKELL_BACKGROUND='#7129FF'
   # typeset -g POWERLEVEL9K_ASDF_HASKELL_VISUAL_IDENTIFIER_EXPANSION='⭐'
   # typeset -g POWERLEVEL9K_ASDF_HASKELL_SHOW_ON_UPGLOB='*.foo|*.bar'
 
@@ -752,14 +752,14 @@
 
   #################[ ranger: ranger shell (https://github.com/ranger/ranger) ]##################
   # Ranger shell color.
-  typeset -g POWERLEVEL9K_RANGER_FOREGROUND='#3D2AFF'
+  typeset -g POWERLEVEL9K_RANGER_FOREGROUND='#7129FF'
   typeset -g POWERLEVEL9K_RANGER_BACKGROUND='#121212'
   # Custom icon.
   typeset -g POWERLEVEL9K_RANGER_VISUAL_IDENTIFIER_EXPANSION='▲'
   
   ####################[ yazi: yazi shell (https://github.com/sxyazi/yazi) ]#####################
   # Yazi shell color.
-  typeset -g POWERLEVEL9K_YAZI_FOREGROUND='#3D2AFF'
+  typeset -g POWERLEVEL9K_YAZI_FOREGROUND='#7129FF'
   typeset -g POWERLEVEL9K_YAZI_BACKGROUND='#121212'
   # Custom icon.
   typeset -g POWERLEVEL9K_YAZI_VISUAL_IDENTIFIER_EXPANSION='▲'
@@ -794,7 +794,7 @@
 
   ######[ midnight_commander: midnight commander shell (https://midnight-commander.org/) ]######
   # Midnight Commander shell color.
-  typeset -g POWERLEVEL9K_MIDNIGHT_COMMANDER_FOREGROUND='#3D2AFF'
+  typeset -g POWERLEVEL9K_MIDNIGHT_COMMANDER_FOREGROUND='#7129FF'
   typeset -g POWERLEVEL9K_MIDNIGHT_COMMANDER_BACKGROUND='#121212'
   # Custom icon.
   # typeset -g POWERLEVEL9K_MIDNIGHT_COMMANDER_VISUAL_IDENTIFIER_EXPANSION='⭐'
@@ -822,10 +822,10 @@
 
   ##################################[ disk_usage: disk usage ]##################################
   # Colors for different levels of disk usage.
-  typeset -g POWERLEVEL9K_DISK_USAGE_NORMAL_FOREGROUND='#3D2AFF'
+  typeset -g POWERLEVEL9K_DISK_USAGE_NORMAL_FOREGROUND='#7129FF'
   typeset -g POWERLEVEL9K_DISK_USAGE_NORMAL_BACKGROUND='#121212'
   typeset -g POWERLEVEL9K_DISK_USAGE_WARNING_FOREGROUND='#121212'
-  typeset -g POWERLEVEL9K_DISK_USAGE_WARNING_BACKGROUND='#3D2AFF'
+  typeset -g POWERLEVEL9K_DISK_USAGE_WARNING_BACKGROUND='#7129FF'
   typeset -g POWERLEVEL9K_DISK_USAGE_CRITICAL_FOREGROUND='#F1F1F1'
   typeset -g POWERLEVEL9K_DISK_USAGE_CRITICAL_BACKGROUND='#A52AFF'
   # Thresholds for different levels of disk usage (percentage points).
@@ -1841,4 +1841,3 @@ typeset -g POWERLEVEL9K_CONFIG_FILE=${${(%):-%x}:a}
 
 (( ${#p10k_config_opts} )) && setopt ${p10k_config_opts[@]}
 'builtin' 'unset' 'p10k_config_opts'
-
