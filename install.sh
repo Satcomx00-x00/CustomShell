@@ -107,7 +107,7 @@ install_prerequisites() {
     log_header "Installing Prerequisites"
 
     # Check for required commands
-    local missing_deps=()
+    local missing_deps=("cargo")
 
     if ! command_exists curl; then
         missing_deps+=("curl")
@@ -379,6 +379,10 @@ main() {
     echo ""
     echo -e "${YELLOW}If you encounter any issues, check the backups in: $BACKUP_DIR${NC}"
 }
+
+
+
+
 
 # Run main function
 main "$@"
