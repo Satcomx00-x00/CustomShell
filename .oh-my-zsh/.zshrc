@@ -131,7 +131,11 @@ git_aliases() {
         gbr='git branch' \
         gbrd='git branch -d' \
         gbrm='git branch -m' \
-        gpr='git pull --rebase'
+        gpr='git pull --rebase' \
+        gkr='bash $HOME/.config/git-scripts/git-keep-local.sh' \
+        gkrh='bash $HOME/.config/git-scripts/git-keep-local.sh -h' \
+        gcr='bash $HOME/.config/git-scripts/git-conflicts-resolver.sh' \
+        gcrh='bash $HOME/.config/git-scripts/git-conflicts-resolver.sh -h'
 }
 
 # Directory navigation aliases
@@ -335,15 +339,66 @@ plugins=(
 
 # --- Help Command ---
 help-zsh() {
-    echo "Available commands and aliases:"
-    echo "  - reload: Reload the shell"
-    echo "  - update-zshrc: Update the .zshrc file"
-    echo "  - mkcd <dir>: Create directory and cd into it"
-    echo "  - tmux-smart: Interactive tmux session manager"
-    echo "  - tmux-start: Smart tmux starter"
-    echo "  - extract <file>: Extract archives"
-    echo "  - banner: Display system information banner"
-    echo "See the .zshrc file for more aliases and functions."
+    # Find available zshrc to inspect
+    local zshrc
+    if [[ -f "$HOME/.oh-my-zsh/.zshrc" ]]; then
+        zshrc="$HOME/.oh-my-zsh/.zshrc"
+    elif [[ -f "$HOME/.zshrc" ]]; then
+        zshrc="$HOME/.zshrc"
+    else
+        zshrc=""
+    fi
+
+    cat <<'EOF'
+Available commands and functions:
+  - reload: Reload the shell
+  - update-zshrc: Update the .zshrc file
+  - mkcd <dir>: Create directory and cd into it
+  - tmux-smart: Interactive tmux session manager
+  - tmux-start: Smart tmux starter
+  - extract <file>: Extract archives
+  - banner: Display system information banner
+  - help: This help output
+EOF
+
+    echo
+    echo "Active aliases in this shell:"
+    if alias >/dev/null 2>&1; then
+        # Format: alias NAME='VALUE' ->  - NAME -> VALUE
+        alias | sed -E "s/^alias[[:space:]]+([^=]+)='(.*)'$/  - \1 -> \2/"
+    else
+        echo "  (no active aliases detected)"
+    fi
+
+    echo
+    if [[ -n "$zshrc" ]]; then
+        echo "Configured aliases (grouped) from: $zshrc"
+
+        local groups=(python_aliases docker_aliases distrobox_aliases git_aliases navigation_aliases system_aliases utility_aliases enhanced_tools_aliases)
+        for fn in "${groups[@]}"; do
+            if grep -q -E "^${fn}\(\)" "$zshrc" 2>/dev/null; then
+                # friendly heading
+                local heading="${fn%_aliases}"
+                heading="${heading//_/ }"
+                echo
+                printf "  %s aliases:\n" "$heading"
+
+                # Extract block and show alias-like entries
+                awk "/^${fn}\\(\\)/,/^}/" "$zshrc" | \
+                    sed -e 's/^[[:space:]]*//' -e 's/\\\s*$//' -e '/^$/d' | \
+                    grep -E "^(alias |[A-Za-z0-9_+\-]+=)" | sed 's/^/    - /' || true
+            fi
+        done
+
+        echo
+        echo "All alias definitions in $zshrc:"
+        grep -E "^[[:space:]]*alias |^[[:space:]]*[A-Za-z0-9_+\-]+=\'" "$zshrc" 2>/dev/null | sed -e 's/^[[:space:]]*//' -e 's/^/  - /' || echo "  (none)"
+    else
+        echo "Configured aliases: (no zshrc file found)"
+    fi
+
+    echo
+    echo "Tip: run 'alias' to list aliases active in this shell, or open the zshrc file to view all configured aliases."
 }
 
 # --- Awesome Terminal Banner ---
